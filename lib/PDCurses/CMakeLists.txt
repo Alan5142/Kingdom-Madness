@@ -1,7 +1,3 @@
-project(PDCurses)
-
-cmake_minimum_required(VERSION 3.0)
-
 if (WIN32 OR MSVC)
 
     set (SOURCE_FILES
@@ -66,11 +62,13 @@ if (WIN32 OR MSVC)
     #        /wd4244 # disable conversion warning from long to short
     #        /wd4996 # disable 'GetVersion' deprecation warning
     #)
+    add_definitions(-DPDC_WIDE=1)
 
     add_library(PDcurses
             ${SOURCE_FILES}
             ${HEADER_FILES}
             )
+
 
     target_include_directories(PDcurses
             PUBLIC

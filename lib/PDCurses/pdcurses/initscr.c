@@ -20,22 +20,20 @@ initscr
     int resize_term(int nlines, int ncols);
     bool is_termresized(void);
     const char *curses_version(void);
-    void PDC_get_version(PDC_VERSION *ver);
-
-    int set_tabsize(int tabsize);
 
 ### Description
 
-   initscr() should be the first curses routine called. It will
-   initialize all curses data structures, and arrange that the first
-   call to refresh() will clear the screen. In case of error, initscr()
-   will write a message to standard error and end the program.
+   initscr() should be the first curses routine called.  It will
+   initialize all curses data structures, and arrange that the
+   first call to refresh() will clear the screen.  In case of
+   error, initscr() will write a message to standard error and end
+   the program.
 
-   endwin() should be called before exiting or escaping from curses mode
-   temporarily. It will restore tty modes, move the cursor to the lower
-   left corner of the screen and reset the terminal into the proper
-   non-visual mode. To resume curses after a temporary escape, call
-   refresh() or doupdate().
+   endwin() should be called before exiting or escaping from curses
+   mode temporarily.  It will restore tty modes, move the cursor to
+   the lower left corner of the screen and reset the terminal into
+   the proper non-visual mode.  To resume curses after a temporary
+   escape, call refresh() or doupdate().
 
    isendwin() returns TRUE if endwin() has been called without a
    subsequent refresh, unless SP is NULL.
@@ -44,38 +42,49 @@ initscr
    multiple terminals. Here, it's just an alternative interface for
    initscr(). It always returns SP, or NULL.
 
-   delscreen() frees the memory allocated by newterm() or initscr(),
-   since it's not freed by endwin(). This function is usually not
-   needed. In PDCurses, the parameter must be the value of SP, and
-   delscreen() sets SP to NULL.
+   delscreen() frees the memory allocated by newterm() or
+   initscr(), since it's not freed by endwin(). This function is
+   usually not needed. In PDCurses, the parameter must be the
+   value of SP, and delscreen() sets SP to NULL.
 
-   set_term() does nothing meaningful in PDCurses, but is included for
-   compatibility with other curses implementations.
+   set_term() does nothing meaningful in PDCurses, but is included
+   for compatibility with other curses implementations.
 
-   resize_term() is effectively two functions: When called with nonzero
-   values for nlines and ncols, it attempts to resize the screen to the
-   given size. When called with (0, 0), it merely adjusts the internal
-   structures to match the current size after the screen is resized by
-   the user. On the currently supported platforms, SDL, Windows console,
-   and X11 allow user resizing, while DOS, OS/2, SDL and Windows console
-   allow programmatic resizing. If you want to support user resizing,
-   you should check for getch() returning KEY_RESIZE, and/or call
-   is_termresized() at appropriate times; if either condition occurs,
-   call resize_term(0, 0). Then, with either user or programmatic
-   resizing, you'll have to resize any windows you've created, as
-   appropriate; resize_term() only handles stdscr and curscr.
+   resize_term() is effectively two functions: When called with
+   nonzero values for nlines and ncols, it attempts to resize the
+   screen to the given size. On some platforms,  you can do this
+   before calling initscr(), thereby setting the starting screen
+   size.  When called with (0, 0), it merely adjusts the internal
+   structures to match the current size after the screen is
+   resized by the user.  User,  pre-initscr(),  and programmatic
+   resizing is platform-dependent,  as follows (with ncurses added
+   as a "platform" for comparison;  it supports only user resizing.)
 
-   is_termresized() returns TRUE if the curses screen has been resized
-   by the user, and a call to resize_term() is needed. Checking for
-   KEY_RESIZE is generally preferable, unless you're not handling the
-   keyboard.
+   Platform  User Init Programmatic
+   DOS        -     -      x
+   ncurses    x     -      -
+   OS/2       -     -      x
+   SDL1       x     x      x
+   SDL2       x     x      x
+   VT         x     x      x
+   Wincon     x     -      x
+   WinGUI     x     x      x
+   X11        x     x      -
 
-   curses_version() returns a string describing the version of PDCurses.
+   If you want to support user resizing, you should check for getch()
+   returning KEY_RESIZE, and/or call is_termresized() at appropriate
+   times; if either condition occurs, call resize_term(0, 0). Then,
+   with either user or programmatic resizing, you'll have to resize
+   any windows you've created, as appropriate; resize_term() only
+   handles stdscr and curscr.
 
-   PDC_get_version() fills a PDC_VERSION structure provided by the user
-   with more detailed version info (see curses.h).
+   is_termresized() returns TRUE if the curses screen has been
+   resized by the user, and a call to resize_term() is needed.
+   Checking for KEY_RESIZE is generally preferable, unless you're
+   not handling the keyboard.
 
-   set_tabsize() sets the tab interval, stored in TABSIZE.
+   curses_version() returns a string describing the version of
+   PDCurses.
 
 ### Return Value
 
@@ -83,17 +92,16 @@ initscr
    returns OK, and resize_term(), which returns either OK or ERR.
 
 ### Portability
-                             X/Open  ncurses  NetBSD
+                             X/Open    BSD    SYS V
     initscr                     Y       Y       Y
     endwin                      Y       Y       Y
-    isendwin                    Y       Y       Y
-    newterm                     Y       Y       Y
-    set_term                    Y       Y       Y
-    delscreen                   Y       Y       Y
-    resize_term                 -       Y       Y
-    set_tabsize                 -       Y       Y
-    curses_version              -       Y       -
+    isendwin                    Y       -      3.0
+    newterm                     Y       -       Y
+    set_term                    Y       -       Y
+    delscreen                   Y       -      4.0
+    resize_term                 -       -       -
     is_termresized              -       -       -
+    curses_version              -       -       -
 
 **man-end****************************************************************/
 
@@ -101,24 +109,31 @@ initscr
 
 char ttytype[128];
 
-const char *_curses_notice = "PDCurses " PDC_VERDOT " - " __DATE__;
+#define PDC_STR( x) #x
+#define PDC_str( x) PDC_STR( x)
+
+static const char *_curses_notice =
+      "PDCurses " PDC_str(PDC_VER_MAJOR) "."
+                  PDC_str(PDC_VER_MINOR) "."
+                  PDC_str(PDC_VER_CHANGE) " - Public Domain "
+                  PDC_str(PDC_VER_YEAR) "-"
+                  PDC_str(PDC_VER_MONTH) "-"
+                  PDC_str(PDC_VER_DAY);
 
 SCREEN *SP = (SCREEN*)NULL;           /* curses variables */
 WINDOW *curscr = (WINDOW *)NULL;      /* the current screen image */
 WINDOW *stdscr = (WINDOW *)NULL;      /* the default screen window */
+WINDOW *pdc_lastscr = (WINDOW *)NULL; /* the last screen image */
 
 int LINES = 0;                        /* current terminal height */
 int COLS = 0;                         /* current terminal width */
 int TABSIZE = 8;
 
-MOUSE_STATUS Mouse_status;
+MOUSE_STATUS Mouse_status, pdc_mouse_status;
 
 extern RIPPEDOFFLINE linesripped[5];
 extern char linesrippedoff;
 
-#ifndef XCURSES
-static
-#endif
 WINDOW *Xinitscr(int argc, char *argv[])
 {
     int i;
@@ -138,22 +153,17 @@ WINDOW *Xinitscr(int argc, char *argv[])
     SP->raw_out = FALSE;     /* tty I/O modes */
     SP->raw_inp = FALSE;     /* tty I/O modes */
     SP->cbreak = TRUE;
-    SP->key_modifiers = 0L;
+    SP->save_key_modifiers = FALSE;
     SP->return_key_modifiers = FALSE;
     SP->echo = TRUE;
     SP->visibility = 1;
     SP->resized = FALSE;
     SP->_trap_mbe = 0L;
+    SP->_map_mbe_to_key = 0L;
     SP->linesrippedoff = 0;
     SP->linesrippedoffontop = 0;
     SP->delaytenths = 0;
     SP->line_color = -1;
-    SP->lastscr = (WINDOW *)NULL;
-    SP->dbfp = NULL;
-    SP->color_started = FALSE;
-    SP->dirty = FALSE;
-    SP->sel_start = -1;
-    SP->sel_end = -1;
 
     SP->orig_cursor = PDC_get_cursor_mode();
 
@@ -167,22 +177,20 @@ WINDOW *Xinitscr(int argc, char *argv[])
         exit(4);
     }
 
-    curscr = newwin(LINES, COLS, 0, 0);
-    if (!curscr)
+    if ((curscr = newwin(LINES, COLS, 0, 0)) == (WINDOW *)NULL)
     {
         fprintf(stderr, "initscr(): Unable to create curscr.\n");
         exit(2);
     }
 
-    SP->lastscr = newwin(LINES, COLS, 0, 0);
-    if (!SP->lastscr)
+    if ((pdc_lastscr = newwin(LINES, COLS, 0, 0)) == (WINDOW *)NULL)
     {
-        fprintf(stderr, "initscr(): Unable to create SP->lastscr.\n");
+        fprintf(stderr, "initscr(): Unable to create pdc_lastscr.\n");
         exit(2);
     }
 
-    wattrset(SP->lastscr, (chtype)(-1));
-    werase(SP->lastscr);
+    wattrset(pdc_lastscr, (chtype)(-1));
+    werase(pdc_lastscr);
 
     PDC_slk_initialize();
     LINES -= SP->slklines;
@@ -204,8 +212,7 @@ WINDOW *Xinitscr(int argc, char *argv[])
 
     linesrippedoff = 0;
 
-    stdscr = newwin(LINES, COLS, SP->linesrippedoffontop, 0);
-    if (!stdscr)
+    if (!(stdscr = newwin(LINES, COLS, SP->linesrippedoffontop, 0)))
     {
         fprintf(stderr, "initscr(): Unable to create stdscr.\n");
         exit(1);
@@ -237,7 +244,7 @@ WINDOW *Xinitscr(int argc, char *argv[])
 
     def_shell_mode();
 
-    sprintf(ttytype, "pdcurses|PDCurses for %s", PDC_sysname());
+    longname( );   /* to ensure that ttytype is initialized */
 
     return stdscr;
 }
@@ -297,14 +304,14 @@ void delscreen(SCREEN *sp)
 
     delwin(stdscr);
     delwin(curscr);
-    delwin(SP->lastscr);
+    delwin(pdc_lastscr);
     stdscr = (WINDOW *)NULL;
     curscr = (WINDOW *)NULL;
-    SP->lastscr = (WINDOW *)NULL;
+    pdc_lastscr = (WINDOW *)NULL;
 
     SP->alive = FALSE;
 
-    PDC_scr_free();     /* free SP */
+    PDC_scr_free();     /* free SP and pdc_atrtab */
 
     SP = (SCREEN *)NULL;
 }
@@ -313,8 +320,11 @@ int resize_term(int nlines, int ncols)
 {
     PDC_LOG(("resize_term() - called: nlines %d\n", nlines));
 
-    if (!stdscr || PDC_resize_screen(nlines, ncols) == ERR)
+    if( PDC_resize_screen(nlines, ncols) == ERR)
         return ERR;
+
+    if (!stdscr)
+        return OK;
 
     SP->lines = PDC_get_rows();
     LINES = SP->lines - SP->linesrippedoff - SP->slklines;
@@ -322,10 +332,10 @@ int resize_term(int nlines, int ncols)
 
     if (wresize(curscr, SP->lines, SP->cols) == ERR ||
         wresize(stdscr, LINES, COLS) == ERR ||
-        wresize(SP->lastscr, SP->lines, SP->cols) == ERR)
+        wresize(pdc_lastscr, SP->lines, SP->cols) == ERR)
         return ERR;
 
-    werase(SP->lastscr);
+    werase(pdc_lastscr);
     curscr->_clear = TRUE;
 
     if (SP->slk_winptr)
@@ -341,7 +351,6 @@ int resize_term(int nlines, int ncols)
 
     touchwin(stdscr);
     wnoutrefresh(stdscr);
-
     return OK;
 }
 
@@ -355,46 +364,4 @@ bool is_termresized(void)
 const char *curses_version(void)
 {
     return _curses_notice;
-}
-
-void PDC_get_version(PDC_VERSION *ver)
-{
-    if (!ver)
-        return;
-
-    ver->flags = 0
-#ifdef PDCDEBUG
-        | PDC_VFLAG_DEBUG
-#endif
-#ifdef PDC_WIDE
-        | PDC_VFLAG_WIDE
-#endif
-#ifdef PDC_FORCE_UTF8
-        | PDC_VFLAG_UTF8
-#endif
-#ifdef PDC_DLL_BUILD
-        | PDC_VFLAG_DLL
-#endif
-#ifdef PDC_RGB
-        | PDC_VFLAG_RGB
-#endif
-        ;
-
-    ver->build = PDC_BUILD;
-    ver->major = PDC_VER_MAJOR;
-    ver->minor = PDC_VER_MINOR;
-    ver->csize = sizeof(chtype);
-    ver->bsize = sizeof(bool);
-}
-
-int set_tabsize(int tabsize)
-{
-    PDC_LOG(("set_tabsize() - called: tabsize %d\n", tabsize));
-
-    if (tabsize < 1)
-        return ERR;
-
-    TABSIZE = tabsize;
-
-    return OK;
 }

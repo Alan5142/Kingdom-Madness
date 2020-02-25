@@ -45,6 +45,7 @@
 /******************************************************************************/
 
 #include <curses.h>
+#include <signal.h>
 
 void lil(WINDOW *);
 void midtop(WINDOW *);

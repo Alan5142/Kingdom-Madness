@@ -154,8 +154,7 @@ int main(int argc, char *argv[])
     const struct options *op;
     struct worm *w;
     short **ref, *ip;
-    time_t seed;
-    int x, y, n, h, last, bottom;
+    int x, y, n, h, last, bottom, seed;
 
     for (x = 1; x < argc; x++)
     {
@@ -207,7 +206,7 @@ int main(int argc, char *argv[])
 #else
     initscr();
 #endif
-    seed = time((time_t *)0);
+    seed = (int)time((time_t *)0);
     srand(seed);
 
     noecho();

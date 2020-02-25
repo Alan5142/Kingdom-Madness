@@ -1,4 +1,4 @@
-/* PDCurses */
+/* Public Domain Curses */
 
 #if defined(__EMX__) || defined(__WATCOMC__) || defined(__IBMC__) || \
 defined(__TURBOC__)
@@ -19,21 +19,26 @@ pdckbd
 
 ### Description
 
-   PDC_get_input_fd() returns the file descriptor that PDCurses reads
-   its input from. It can be used for select().
+   PDC_get_input_fd() returns the file descriptor that PDCurses
+   reads its input from. It can be used for select().
 
 ### Portability
-                             X/Open  ncurses  NetBSD
+                             X/Open    BSD    SYS V
     PDC_get_input_fd            -       -       -
 
 **man-end****************************************************************/
 
+#ifdef EMXVIDEO
+# include <termios.h>
+static int tahead = -1;
+#else
 static KBDINFO kbdinfo;     /* default keyboard mode */
 static HMOU mouse_handle = 0;
 static MOUSE_STATUS old_mouse_status;
 static USHORT old_shift = 0;
 static bool key_pressed = FALSE;
 static int mouse_events = 0;
+#endif
 
 /************************************************************************
  *    Table for key code translation of function keys in keypad mode    *
@@ -86,12 +91,16 @@ static short key_table[] =
     ALT_PADSLASH,   ALT_TAB,        ALT_PADENTER,   -1
 };
 
+unsigned long pdc_key_modifiers = 0L;
+
 unsigned long PDC_get_input_fd(void)
 {
     PDC_LOG(("PDC_get_input_fd() - called\n"));
 
     return (unsigned long)fileno(stdin);
 }
+
+#ifndef EMXVIDEO
 
 void PDC_get_keyboard_info(void)
 {
@@ -104,10 +113,13 @@ void PDC_set_keyboard_default(void)
     KbdSetStatus(&kbdinfo, 0);
 }
 
+#endif /* ifndef EMXVIDEO */
+
 void PDC_set_keyboard_binary(bool on)
 {
     PDC_LOG(("PDC_set_keyboard_binary() - called\n"));
 
+#ifndef EMXVIDEO
     if (on)
     {
         kbdinfo.fsMask &= ~(KEYBOARD_ASCII_MODE);
@@ -120,6 +132,7 @@ void PDC_set_keyboard_binary(bool on)
     }
 
     KbdSetStatus(&kbdinfo, 0);
+#endif
 
 #ifdef HAVE_SIGNAL
     signal(SIGBREAK, on ? SIG_IGN : SIG_DFL);
@@ -130,7 +143,24 @@ void PDC_set_keyboard_binary(bool on)
 
 bool PDC_check_key(void)
 {
+#if !defined(_MSC_VER) && !defined(EMXVIDEO)
     KBDKEYINFO keyInfo = {0};
+#endif
+
+#ifdef EMXVIDEO
+    if (tahead == -1)       /* Nothing typed yet */
+    {
+        tahead = _read_kbd(0, 0, 0);
+
+        /* Read additional */
+
+        if (tahead == 0)
+            tahead = _read_kbd(0, 1, 0) << 8;
+    }
+
+    return (tahead != -1);
+#else
+# ifndef _MSC_VER
 
     KbdGetStatus(&kbdinfo, 0);
 
@@ -157,7 +187,13 @@ bool PDC_check_key(void)
 
     KbdPeek(&keyInfo, 0);   /* peek at keyboard  */
     return (keyInfo.fbStatus != 0);
+# else
+    return kbhit();
+# endif
+#endif
 }
+
+#ifndef EMXVIDEO
 
 static int _process_mouse_events(void)
 {
@@ -174,7 +210,7 @@ static int _process_mouse_events(void)
 
     for (i = 0; i < 3; i++)
     {
-        SP->mouse_status.button[i] =
+        pdc_mouse_status.button[i] =
             ((event.fs & move_mask[i]) ? BUTTON_MOVED : 0) |
             ((event.fs & press_mask[i]) ? BUTTON_PRESSED : 0);
 
@@ -182,13 +218,13 @@ static int _process_mouse_events(void)
            events. A MOVE should always follow a PRESS, so treat a MOVE
            immediately after a RELEASE as a PRESS. */
 
-        if ((SP->mouse_status.button[i] == BUTTON_MOVED) &&
+        if ((pdc_mouse_status.button[i] == BUTTON_MOVED) &&
             (old_mouse_status.button[i] == BUTTON_RELEASED))
         {
-            SP->mouse_status.button[i] = BUTTON_PRESSED;
+            pdc_mouse_status.button[i] = BUTTON_PRESSED;
         }
 
-        if (SP->mouse_status.button[i] == BUTTON_PRESSED && SP->mouse_wait)
+        if (pdc_mouse_status.button[i] == BUTTON_PRESSED && SP->mouse_wait)
         {
             /* Check for a click -- a PRESS followed immediately by a
                release */
@@ -208,38 +244,38 @@ static int _process_mouse_events(void)
                 MouReadEventQue(&event, &count, mouse_handle);
 
                 if (!(event.fs & button_mask[i]))
-                    SP->mouse_status.button[i] = BUTTON_CLICKED;
+                    pdc_mouse_status.button[i] = BUTTON_CLICKED;
             }
         }
     }
 
-    SP->mouse_status.x = event.col;
-    SP->mouse_status.y = event.row;
+    pdc_mouse_status.x = event.col;
+    pdc_mouse_status.y = event.row;
 
-    SP->mouse_status.changes = 0;
+    pdc_mouse_status.changes = 0;
 
     for (i = 0; i < 3; i++)
     {
-        if (old_mouse_status.button[i] != SP->mouse_status.button[i])
-            SP->mouse_status.changes |= (1 << i);
+        if (old_mouse_status.button[i] != pdc_mouse_status.button[i])
+            pdc_mouse_status.changes |= (1 << i);
 
-        if (SP->mouse_status.button[i] == BUTTON_MOVED)
+        if (pdc_mouse_status.button[i] == BUTTON_MOVED)
         {
             /* Discard non-moved "moves" */
 
-            if (SP->mouse_status.x == old_mouse_status.x &&
-                SP->mouse_status.y == old_mouse_status.y)
+            if (pdc_mouse_status.x == old_mouse_status.x &&
+                pdc_mouse_status.y == old_mouse_status.y)
                 return -1;
 
             /* Motion events always flag the button as changed */
 
-            SP->mouse_status.changes |= (1 << i);
-            SP->mouse_status.changes |= PDC_MOUSE_MOVED;
+            pdc_mouse_status.changes |= (1 << i);
+            pdc_mouse_status.changes |= PDC_MOUSE_MOVED;
             break;
         }
     }
 
-    old_mouse_status = SP->mouse_status;
+    old_mouse_status = pdc_mouse_status;
 
     /* Treat click events as release events for comparison purposes */
 
@@ -264,8 +300,8 @@ static int _process_mouse_events(void)
     {
         for (i = 0; i < 3; i++)
         {
-            if (SP->mouse_status.changes & (1 << i))
-                SP->mouse_status.button[i] |= shift_flags;
+            if (pdc_mouse_status.changes & (1 << i))
+                pdc_mouse_status.button[i] |= shift_flags;
         }
     }
 
@@ -276,14 +312,35 @@ static int _process_mouse_events(void)
     return KEY_MOUSE;
 }
 
+#endif
+
 /* return the next available key or mouse event */
 
 int PDC_get_key(void)
 {
     int key, scan;
+#ifndef EMXVIDEO
     KBDKEYINFO keyInfo = {0};
+#endif
 
-    SP->key_modifiers = 0L;
+#ifdef EMXVIDEO
+    if (tahead == -1)
+    {
+        tahead = _read_kbd(0, 1, 0);
+
+        /* Read additional */
+
+        if (tahead == 0)
+            tahead = _read_kbd(0, 1, 0) << 8;
+    }
+
+    key = tahead & 0xff;
+    scan = tahead >> 8;
+    pdc_key_modifiers = 0L;
+
+    tahead = -1;
+#else
+    pdc_key_modifiers = 0L;
 
     if (mouse_handle && mouse_events)
         return _process_mouse_events();
@@ -329,18 +386,21 @@ int PDC_get_key(void)
     key = keyInfo.chChar;
     scan = keyInfo.chScan;
 
-    if (keyInfo.fsState & KBDSTF_ALT)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_ALT;
+    if (SP->save_key_modifiers)
+    {
+        if (keyInfo.fsState & KBDSTF_ALT)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_ALT;
 
-    if (keyInfo.fsState & KBDSTF_CONTROL)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_CONTROL;
+        if (keyInfo.fsState & KBDSTF_CONTROL)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_CONTROL;
 
-    if (keyInfo.fsState & KBDSTF_NUMLOCK_ON)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_NUMLOCK;
+        if (keyInfo.fsState & KBDSTF_NUMLOCK_ON)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_NUMLOCK;
 
-    if (keyInfo.fsState & (KBDSTF_LEFTSHIFT|KBDSTF_RIGHTSHIFT))
-        SP->key_modifiers |= PDC_KEY_MODIFIER_SHIFT;
-
+        if (keyInfo.fsState & (KBDSTF_LEFTSHIFT|KBDSTF_RIGHTSHIFT))
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_SHIFT;
+    }
+#endif
     if (scan == 0x1c && key == 0x0a)    /* ^Enter */
         key = CTL_ENTER;
     else if (scan == 0xe0 && key == 0x0d)   /* PadEnter */
@@ -407,10 +467,14 @@ void PDC_flushinp(void)
 {
     PDC_LOG(("PDC_flushinp() - called\n"));
 
+#ifdef EMXVIDEO
+    tcflush(0, TCIFLUSH);
+#else
     if (mouse_handle)
         MouFlushQue(mouse_handle);
 
     KbdFlushBuffer(0);
+#endif
 }
 
 bool PDC_has_mouse(void)
@@ -426,6 +490,8 @@ bool PDC_has_mouse(void)
 
 int PDC_mouse_set(void)
 {
+#ifndef EMXVIDEO
+
     unsigned long mbe = SP->_trap_mbe;
 
     if (mbe && !mouse_handle)
@@ -452,7 +518,7 @@ int PDC_mouse_set(void)
 
         MouSetEventMask(&mask, mouse_handle);
     }
-
+#endif
     return OK;
 }
 

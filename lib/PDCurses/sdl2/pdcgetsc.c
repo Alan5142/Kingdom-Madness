@@ -1,4 +1,4 @@
-/* PDCurses */
+/* Public Domain Curses */
 
 #include "pdcsdl.h"
 

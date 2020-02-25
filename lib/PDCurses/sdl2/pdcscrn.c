@@ -1,30 +1,25 @@
-/* PDCurses */
+/* Public Domain Curses */
 
 #include "pdcsdl.h"
 
 #include <stdlib.h>
 #ifndef PDC_WIDE
-# include "../common/font437.h"
+# include "deffont.h"
 #endif
-#include "../common/iconbmp.h"
+#include "deficon.h"
 
 #ifdef PDC_WIDE
 # ifndef PDC_FONT_PATH
 #  ifdef _WIN32
-#   define PDC_FONT_PATH "C:/Windows/Fonts/consola.ttf"
+#   define PDC_FONT_PATH "C:/Windows/Fonts/lucon.ttf"
 #  elif defined(__APPLE__)
-#   define PDC_FONT_PATH "/System/Library/Fonts/Menlo.ttc"
+#   define PDC_FONT_PATH "/Library/Fonts/Courier New.ttf"
 #  else
-#   define PDC_FONT_PATH "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+#   define PDC_FONT_PATH "/usr/share/fonts/truetype/freefont/FreeMono.ttf"
 #  endif
 # endif
 TTF_Font *pdc_ttffont = NULL;
-int pdc_font_size =
-# ifdef _WIN32
- 16;
-# else
- 17;
-# endif
+int pdc_font_size = 18;
 #endif
 
 SDL_Window *pdc_window = NULL;
@@ -32,10 +27,13 @@ SDL_Surface *pdc_screen = NULL, *pdc_font = NULL, *pdc_icon = NULL,
             *pdc_back = NULL, *pdc_tileback = NULL;
 int pdc_sheight = 0, pdc_swidth = 0, pdc_yoffset = 0, pdc_xoffset = 0;
 
-SDL_Color pdc_color[PDC_MAXCOL];
-Uint32 pdc_mapped[PDC_MAXCOL];
-int pdc_fheight, pdc_fwidth, pdc_fthick, pdc_flastc;
+SDL_Color pdc_color[256];
+Uint32 pdc_mapped[256];
+int pdc_fheight, pdc_fwidth, pdc_flastc;
 bool pdc_own_window;
+
+/* special purpose function keys */
+static int PDC_shutdown_key[PDC_MAX_FUNCTION_KEYS] = { 0, 0, 0, 0, 0 };
 
 /* COLOR_PAIR to attribute encoding table. */
 
@@ -101,45 +99,27 @@ void PDC_scr_free(void)
         free(SP);
 }
 
-static void _initialize_colors(void)
+/* This is called twice a second,  in a separate thread,  and 'pushes' an
+event to the main thread.  See https://wiki.libsdl.org/SDL_AddTimer for
+more info.  The result redraws cursor and blinking text every 500 ms. */
+
+Uint32 timer_callback( Uint32 interval, void *param)
 {
-    int i, r, g, b;
+    SDL_Event event;
 
-    for (i = 0; i < 8; i++)
-    {
-        pdc_color[i].r = (i & COLOR_RED) ? 0xc0 : 0;
-        pdc_color[i].g = (i & COLOR_GREEN) ? 0xc0 : 0;
-        pdc_color[i].b = (i & COLOR_BLUE) ? 0xc0 : 0;
-
-        pdc_color[i + 8].r = (i & COLOR_RED) ? 0xff : 0x40;
-        pdc_color[i + 8].g = (i & COLOR_GREEN) ? 0xff : 0x40;
-        pdc_color[i + 8].b = (i & COLOR_BLUE) ? 0xff : 0x40;
-    }
-
-    /* 256-color xterm extended palette: 216 colors in a 6x6x6 color
-       cube, plus 24 shades of gray */
-
-    for (i = 16, r = 0; r < 6; r++)
-        for (g = 0; g < 6; g++)
-            for (b = 0; b < 6; b++, i++)
-            {
-                pdc_color[i].r = (r ? r * 40 + 55 : 0);
-                pdc_color[i].g = (g ? g * 40 + 55 : 0);
-                pdc_color[i].b = (b ? b * 40 + 55 : 0);
-            }
-
-    for (i = 232; i < 256; i++)
-        pdc_color[i].r = pdc_color[i].g = pdc_color[i].b = (i - 232) * 10 + 8;
-
-    for (i = 0; i < 256; i++)
-        pdc_mapped[i] = SDL_MapRGB(pdc_screen->format, pdc_color[i].r,
-                                   pdc_color[i].g, pdc_color[i].b);
+    event.type = SDL_USEREVENT;
+    SDL_PushEvent( &event);
+    return( interval);
 }
+
+static int default_pdc_swidth = 80, default_pdc_sheight = 25;
 
 /* open the physical screen -- allocate SP, miscellaneous intialization */
 
 int PDC_scr_open(int argc, char **argv)
 {
+    int i, r, g, b;
+
     PDC_LOG(("PDC_scr_open() - called\n"));
 
     SP = calloc(1, sizeof(SCREEN));
@@ -156,6 +136,7 @@ int PDC_scr_open(int argc, char **argv)
             fprintf(stderr, "Could not start SDL: %s\n", SDL_GetError());
             return ERR;
         }
+        SDL_AddTimer( 500, timer_callback, NULL);  /* 500 millisec blink */
 
         atexit(_clean);
     }
@@ -200,7 +181,7 @@ int PDC_scr_open(int argc, char **argv)
     }
 
     if (!pdc_font)
-        pdc_font = SDL_LoadBMP_RW(SDL_RWFromMem(font437, sizeof(font437)), 0);
+        pdc_font = SDL_LoadBMP_RW(SDL_RWFromMem(deffont, sizeof(deffont)), 0);
 
     if (!pdc_font)
     {
@@ -228,11 +209,9 @@ int PDC_scr_open(int argc, char **argv)
 
 #ifdef PDC_WIDE
     TTF_SizeText(pdc_ttffont, "W", &pdc_fwidth, &pdc_fheight);
-    pdc_fthick = pdc_font_size / 20 + 1;
 #else
     pdc_fheight = pdc_font->h / 8;
     pdc_fwidth = pdc_font->w / 32;
-    pdc_fthick = 1;
 
     if (!SP->mono)
         pdc_flastc = pdc_font->format->palette->ncolors - 1;
@@ -244,21 +223,21 @@ int PDC_scr_open(int argc, char **argv)
         pdc_icon = SDL_LoadBMP(iname ? iname : "pdcicon.bmp");
 
         if (!pdc_icon)
-            pdc_icon = SDL_LoadBMP_RW(SDL_RWFromMem(iconbmp,
-                                                    sizeof(iconbmp)), 0);
+            pdc_icon = SDL_LoadBMP_RW(SDL_RWFromMem(deficon,
+                                                    sizeof(deficon)), 0);
     }
 
     if (pdc_own_window)
     {
         const char *env = getenv("PDC_LINES");
-        pdc_sheight = (env ? atoi(env) : 25) * pdc_fheight;
+        pdc_sheight = (env ? atoi(env) : default_pdc_sheight) * pdc_fheight;
 
         env = getenv("PDC_COLS");
-        pdc_swidth = (env ? atoi(env) : 80) * pdc_fwidth;
+        pdc_swidth = (env ? atoi(env) : default_pdc_swidth) * pdc_fwidth;
 
-        pdc_window = SDL_CreateWindow((argc ? argv[0] : "PDCurses"),
-            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, pdc_swidth,
-            pdc_sheight, SDL_WINDOW_RESIZABLE);
+        pdc_window = SDL_CreateWindow((argc ? argv[0] : "PDCurses"), SDL_WINDOWPOS_UNDEFINED,
+                          SDL_WINDOWPOS_UNDEFINED, pdc_swidth, pdc_sheight,
+                          SDL_WINDOW_RESIZABLE);
         if (pdc_window == NULL)
         {
             fprintf(stderr, "Could not open SDL window: %s\n", SDL_GetError());
@@ -273,13 +252,9 @@ int PDC_scr_open(int argc, char **argv)
         pdc_screen = SDL_GetWindowSurface(pdc_window);
         if (pdc_screen == NULL)
         {
-            fprintf(stderr, "Could not open SDL window surface: %s\n",
-                    SDL_GetError());
+            fprintf(stderr, "Could not open SDL window surface: %s\n", SDL_GetError());
             return ERR;
         }
-
-        pdc_sheight = pdc_screen->h;
-        pdc_swidth  = pdc_screen->w;
     }
     else
     {
@@ -302,7 +277,34 @@ int PDC_scr_open(int argc, char **argv)
     if (SP->orig_attr)
         PDC_retile();
 
-    _initialize_colors();
+    COLORS = 256;       /* we have 256 colors in this flavor of PDCurses */
+    for (i = 0; i < 8; i++)
+    {
+        pdc_color[i].r = (i & COLOR_RED) ? 0xc0 : 0;
+        pdc_color[i].g = (i & COLOR_GREEN) ? 0xc0 : 0;
+        pdc_color[i].b = (i & COLOR_BLUE) ? 0xc0 : 0;
+
+        pdc_color[i + 8].r = (i & COLOR_RED) ? 0xff : 0x40;
+        pdc_color[i + 8].g = (i & COLOR_GREEN) ? 0xff : 0x40;
+        pdc_color[i + 8].b = (i & COLOR_BLUE) ? 0xff : 0x40;
+    }
+
+           /* 256-color xterm extended palette:  216 colors in a
+            6x6x6 color cube,  plus 24 (not 50) shades of gray */
+    i = 16;
+    for( r = 0; r < 6; r++)
+        for( g = 0; g < 6; g++)
+            for( b = 0; b < 6; b++, i++)
+            {
+                pdc_color[i].r = ( r ? r * 40 + 55 : 0);
+                pdc_color[i].g = ( g ? g * 40 + 55 : 0);
+                pdc_color[i].b = ( b ? b * 40 + 55 : 0);
+            }
+    for( i = 232; i < 256; i++)
+        pdc_color[i].r = pdc_color[i].g = pdc_color[i].b = (i - 232) * 10 + 8;
+    for (i = 0; i < 256; i++)
+        pdc_mapped[i] = SDL_MapRGB(pdc_screen->format, pdc_color[i].r,
+                                   pdc_color[i].g, pdc_color[i].b);
 
     SDL_StartTextInput();
 
@@ -317,11 +319,6 @@ int PDC_scr_open(int argc, char **argv)
     SP->mouse_wait = PDC_CLICK_PERIOD;
     SP->audible = FALSE;
 
-    SP->termattrs = A_COLOR | A_UNDERLINE | A_LEFT | A_RIGHT | A_REVERSE;
-#ifdef PDC_WIDE
-    SP->termattrs |= A_ITALIC;
-#endif
-
     PDC_reset_prog_mode();
 
     return OK;
@@ -331,31 +328,24 @@ int PDC_scr_open(int argc, char **argv)
 
 int PDC_resize_screen(int nlines, int ncols)
 {
+    if (!stdscr)      /* window hasn't been created yet;  we're */
+    {                 /* specifying its size before doing so    */
+        default_pdc_swidth = ncols;
+        default_pdc_sheight = nlines;
+        return OK;
+    }
+
     if (!pdc_own_window)
         return ERR;
 
     if (nlines && ncols)
     {
-#if SDL_VERSION_ATLEAST(2, 0, 5)
-        SDL_Rect max;
-        int top, left, bottom, right;
-
-        SDL_GetDisplayUsableBounds(0, &max);
-        SDL_GetWindowBordersSize(pdc_window, &top, &left, &bottom, &right);
-        max.h -= top + bottom;
-        max.w -= left + right;
-
-        while (nlines * pdc_fheight > max.h)
-            nlines--;
-        while (ncols * pdc_fwidth > max.w)
-            ncols--;
-#endif
         pdc_sheight = nlines * pdc_fheight;
         pdc_swidth = ncols * pdc_fwidth;
-
-        SDL_SetWindowSize(pdc_window, pdc_swidth, pdc_sheight);
-        pdc_screen = SDL_GetWindowSurface(pdc_window);
     }
+
+    SDL_SetWindowSize(pdc_window, pdc_swidth, pdc_sheight);
+    pdc_screen = SDL_GetWindowSurface(pdc_window);
 
     if (pdc_tileback)
         PDC_retile();
@@ -425,5 +415,29 @@ int PDC_init_color(short color, short red, short green, short blue)
     pdc_mapped[color] = SDL_MapRGB(pdc_screen->format, pdc_color[color].r,
                                    pdc_color[color].g, pdc_color[color].b);
 
+    wrefresh(curscr);
+
     return OK;
+}
+
+/* Does nothing in the SDL flavors of PDCurses.  That may change,  eventually,
+allowing one to limit the range of user-resizable windows.  See X11 or Win32a
+versions of this function for details. */
+
+void PDC_set_resize_limits( const int new_min_lines, const int new_max_lines,
+                  const int new_min_cols, const int new_max_cols)
+{
+}
+
+/* PDC_set_function_key() does nothing on this platform */
+int PDC_set_function_key( const unsigned function, const int new_key)
+{
+    int old_key = -1;
+
+    if( function < PDC_MAX_FUNCTION_KEYS)
+    {
+         old_key = PDC_shutdown_key[function];
+         PDC_shutdown_key[function] = new_key;
+    }
+    return( old_key);
 }

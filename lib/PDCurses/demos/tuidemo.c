@@ -1,6 +1,6 @@
 /*
  * Author : P.J. Kunst <kunst@prl.philips.nl>
- * Date   : 1993-02-25
+ * Date   : 25-02-93
  *
  * Purpose: This program demonstrates the use of the 'curses' library
  *          for the creation of (simple) menu-operated programs.
@@ -19,11 +19,7 @@
 
 /* change this if source at other location */
 
-#ifdef PDC_FORCE_UTF8
-# define FNAME "../demos/UTF-8-demo.txt"
-#else
-# define FNAME "../demos/tui.c"
-#endif
+# define FNAME  "../demos/tui.c"
 
 /**************************** strings entry box ***************************/
 
@@ -87,8 +83,17 @@ void showfile(char *fname)
 
             for (i = 0; i < bh - 1 && !ateof; i++)
             {
-                if (fgets(buf, MAXSTRLEN, fp))
+                buf[0] = '\0';
+                if( fgets(buf, MAXSTRLEN, fp))
+                {
+                    size_t j = 0;
+
+                    while( buf[j] >= ' ')
+                        j++;
+                    buf[j] = '\0';
                     bodymsg(buf);
+                    bodymsg( "\n");
+                }
                 else
                     ateof = TRUE;
             }

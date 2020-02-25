@@ -20,13 +20,18 @@ const uint16_t HEART_LOST = 0x02;
 
 void draw_health(health_t *health)
 {
+    resize_window(health->window, 3, health->max_health + 2);
     box(health->window, 0, 0);
 
     for (int i = 0; i < health->max_health; ++i)
     {
         const uint16_t color = i < health->health ? HEART_POINT : HEART_LOST;
         wattron(health->window, COLOR_PAIR(color));
-        mvwaddch(health->window, 1, 1 + i, ACS_DIAMOND);
+
+        //mvwaddch(health->window, 1, 1 + i, ACS_DIAMOND);
+        // mvwaddrawch(health->window, 1, 1 + i, 2665);
+        mvwaddwstr(health->window, 1, 1 + i, L"♥");
+
         wattroff(health->window, COLOR_PAIR(color));
     }
 
@@ -35,10 +40,11 @@ void draw_health(health_t *health)
 
 health_t *start_health(void)
 {
+    flash();
     health_t *health = malloc(sizeof(health_t));
     health->window = newwin(3, 14, 1, 1);
     health->health = START_HEALTH;
-    health->max_health = 12;
+    health->max_health = START_HEALTH;
 
     init_pair(HEART_POINT, HEART_POINT_FOREGROUND, HEART_POINT_BACKGROUND);
     init_pair(HEART_LOST, HEART_LOST_FOREGROUND, HEART_LOST_BACKGROUND);

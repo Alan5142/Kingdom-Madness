@@ -1,3 +1,5 @@
+/* Public Domain Curses */
+
 /* Private definitions and declarations for use within PDCurses.
    These should generally not be referenced by applications. */
 
@@ -8,16 +10,22 @@
 #include <curses.h>
 
 #if defined(__TURBOC__) || defined(__EMX__) || defined(__DJGPP__) || \
-    defined(PDC_99) || defined(__WATCOMC__)
+    defined(__CYGWIN__) || defined(__MINGW32__) || \
+    defined(__WATCOMC__) || defined(__PACIFIC__)
 # ifndef HAVE_VSSCANF
 #  define HAVE_VSSCANF       /* have vsscanf() */
 # endif
 #endif
 
-#if defined(PDC_99) || defined(__WATCOMC__)
+#if defined(__CYGWIN__) || defined(__MINGW32__) || \
+    defined(__LCC__) || defined(__WATCOMC__)
 # ifndef HAVE_VSNPRINTF
 #  define HAVE_VSNPRINTF     /* have vsnprintf() */
 # endif
+#endif
+
+#if defined(_MSC_VER) && defined(_WIN32) && !defined(_CRT_SECURE_NO_DEPRECATE)
+# define _CRT_SECURE_NO_DEPRECATE 1   /* kill nonsense warnings */
 #endif
 
 /*----------------------------------------------------------------------*/
@@ -41,6 +49,12 @@ typedef struct           /* structure for ripped off lines */
 #define _ECHAR     0x08  /* Erase char       (^H) */
 #define _DWCHAR    0x17  /* Delete Word char (^W) */
 #define _DLCHAR    0x15  /* Delete Line char (^U) */
+
+extern WINDOW *pdc_lastscr;
+extern FILE *pdc_dbfp;   /* tracing file pointer (NULL = off) */
+extern bool pdc_color_started;
+extern unsigned long pdc_key_modifiers;
+extern MOUSE_STATUS pdc_mouse_status;
 
 /*----------------------------------------------------------------------*/
 
@@ -93,14 +107,18 @@ size_t  PDC_wcstombs(char *, const wchar_t *, size_t);
 #endif
 
 #ifdef PDCDEBUG
-# define PDC_LOG(x) if (SP && SP->dbfp) PDC_debug x
+# define PDC_LOG(x) if (pdc_dbfp) PDC_debug x
 #else
 # define PDC_LOG(x)
 #endif
 
 /* Internal macros for attributes */
 
-#define PDC_COLOR_PAIRS 256
+#ifdef CHTYPE_LONG
+# define PDC_COLOR_PAIRS 256
+#else
+# define PDC_COLOR_PAIRS  32
+#endif
 
 #ifndef max
 # define max(a,b) (((a) > (b)) ? (a) : (b))
@@ -109,11 +127,9 @@ size_t  PDC_wcstombs(char *, const wchar_t *, size_t);
 # define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#define DIVROUND(num, divisor) ((num) + ((divisor) >> 1)) / (divisor)
+#define DIVROUND(num, divisor) (((num) + ((divisor) >> 1)) / (divisor))
 
 #define PDC_CLICK_PERIOD 150  /* time to wait for a click, if
                                  not set by mouseinterval() */
 
-#define PDC_MAXCOL 768        /* maximum possible COLORS; may be less */
-
-#endif /* __CURSES_INTERNALS__ */
+#endif /* __CURSES_INTERNALS__*/

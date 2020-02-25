@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-/* rain 1980-11-03 EPS/CITHEP */
+/* rain 11/3/1980 EPS/CITHEP */
 
 static int next_j(int j)
 {
@@ -55,8 +55,7 @@ static int next_j(int j)
 
 int main(int argc, char *argv[])
 {
-    time_t seed;
-    int x, y, j, r, c;
+    int x, y, j, r, c, seed;
     static int xpos[5], ypos[5];
 
 #ifdef XCURSES
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
 #else
     initscr();
 #endif
-    seed = time((time_t *)0);
+    seed = (int)time((time_t *)0);
     srand(seed);
 
     if (has_colors())

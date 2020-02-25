@@ -1,6 +1,7 @@
 #include <curses.h>
 #include <game/game.h>
 #include "start_screen.h"
+#include "play_music.h"
 
 int main()
 {
@@ -12,6 +13,7 @@ int main()
     noecho();
 
     refresh();
+    play_music(MUSIC_INTRO, false);
     switch (start_screen())
     {
         case START_SCREEN_QUIT:

@@ -5,10 +5,14 @@ set(CMAKE_C_STANDARD 11)
 
 add_subdirectory(lib/PDCurses)
 
+add_definitions(-DPDC_WIDE=1)
 add_executable(progra main.c
         src/start_screen.c
         src/game/game.c
-        src/game/health.c)
+        src/game/health.c src/play_music.c)
 
-target_link_libraries(progra PDcurses)
+target_link_libraries(progra PDcurses winmm)
 target_include_directories(progra PRIVATE include)
+
+add_custom_command(TARGET progra POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources ${CMAKE_BINARY_DIR})

@@ -1,16 +1,23 @@
-/* PDCurses */
+/* Public Domain Curses */
 
 #include "pdcwin.h"
 
-#include <stdlib.h>
+#ifdef CHTYPE_LONG
+# define PDC_OFFSET 32
+#else
+# define PDC_OFFSET  8
+#endif
+
+#ifndef ENABLE_EXTENDED_FLAGS
+# define ENABLE_EXTENDED_FLAGS 0x80
+#endif
+
+/* special purpose function keys */
+static int PDC_shutdown_key[PDC_MAX_FUNCTION_KEYS] = { 0, 0, 0, 0, 0 };
 
 /* COLOR_PAIR to attribute encoding table. */
 
-static struct {short f, b;} atrtab[PDC_COLOR_PAIRS];
-
-/* Color component table */
-
-PDCCOLOR pdc_color[PDC_MAXCOL];
+unsigned char *pdc_atrtab = (unsigned char *)NULL;
 
 HANDLE std_con_out = INVALID_HANDLE_VALUE;
 HANDLE pdc_con_out = INVALID_HANDLE_VALUE;
@@ -18,25 +25,13 @@ HANDLE pdc_con_in = INVALID_HANDLE_VALUE;
 
 DWORD pdc_quick_edit;
 
-static short realtocurs[16] =
+static short curstoreal[16], realtocurs[16] =
 {
     COLOR_BLACK, COLOR_BLUE, COLOR_GREEN, COLOR_CYAN, COLOR_RED,
     COLOR_MAGENTA, COLOR_YELLOW, COLOR_WHITE, COLOR_BLACK + 8,
     COLOR_BLUE + 8, COLOR_GREEN + 8, COLOR_CYAN + 8, COLOR_RED + 8,
     COLOR_MAGENTA + 8, COLOR_YELLOW + 8, COLOR_WHITE + 8
 };
-
-static short ansitocurs[16] =
-{
-    COLOR_BLACK, COLOR_RED, COLOR_GREEN, COLOR_YELLOW, COLOR_BLUE,
-    COLOR_MAGENTA, COLOR_CYAN, COLOR_WHITE, COLOR_BLACK + 8,
-    COLOR_RED + 8, COLOR_GREEN + 8, COLOR_YELLOW + 8, COLOR_BLUE + 8,
-    COLOR_MAGENTA + 8, COLOR_CYAN + 8, COLOR_WHITE + 8
-};
-
-short pdc_curstoreal[16], pdc_curstoansi[16];
-short pdc_oldf, pdc_oldb, pdc_oldu;
-bool pdc_conemu, pdc_ansi;
 
 enum { PDC_RESTORE_NONE, PDC_RESTORE_BUFFER };
 
@@ -77,7 +72,7 @@ static struct
     WCHAR    ConsoleTitle[0x100];
 } console_info;
 
-#ifdef HAVE_NO_INFOEX
+#ifndef HAVE_INFOEX
 /* Console screen buffer information (extended version) */
 typedef struct _CONSOLE_SCREEN_BUFFER_INFOEX {
     ULONG       cbSize;
@@ -109,13 +104,6 @@ static LPTOP_LEVEL_EXCEPTION_FILTER xcpt_filter;
 static DWORD old_console_mode = 0;
 
 static bool is_nt;
-
-static void _reset_old_colors(void)
-{
-    pdc_oldf = -1;
-    pdc_oldb = -1;
-    pdc_oldu = 0;
-}
 
 static HWND _find_console_handle(void)
 {
@@ -212,9 +200,6 @@ static int _set_console_infoex(void)
 
 static int _set_colors(void)
 {
-    SetConsoleTextAttribute(pdc_con_out, 7);
-    _reset_old_colors();
-
     if (pSetConsoleScreenBufferInfoEx)
         return _set_console_infoex();
     else
@@ -365,6 +350,10 @@ void PDC_scr_free(void)
 {
     if (SP)
         free(SP);
+    if (pdc_atrtab)
+        free(pdc_atrtab);
+
+    pdc_atrtab = (unsigned char *)NULL;
 
     if (pdc_con_out != std_con_out)
     {
@@ -384,22 +373,18 @@ int PDC_scr_open(int argc, char **argv)
     const char *str;
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     HMODULE h_kernel;
-    BOOL result;
     int i;
 
     PDC_LOG(("PDC_scr_open() - called\n"));
 
     SP = calloc(1, sizeof(SCREEN));
+    pdc_atrtab = calloc(PDC_COLOR_PAIRS * PDC_OFFSET, 1);
 
-    if (!SP)
+    if (!SP || !pdc_atrtab)
         return ERR;
 
     for (i = 0; i < 16; i++)
-    {
-        pdc_curstoreal[realtocurs[i]] = i;
-        pdc_curstoansi[ansitocurs[i]] = i;
-    }
-    _reset_old_colors();
+        curstoreal[realtocurs[i]] = i;
 
     std_con_out =
     pdc_con_out = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -411,11 +396,11 @@ int PDC_scr_open(int argc, char **argv)
         exit(1);
     }
 
+#if defined(_MSC_VER) && _MSC_VER >= 1800   /* VS2013 and above can't build */
+    is_nt = TRUE;    /* non-NT (Win9x/3.1/ME) targets anyway,  so always true */
+#else
     is_nt = !(GetVersion() & 0x80000000);
-
-    str = getenv("ConEmuANSI");
-    pdc_conemu = !!str;
-    pdc_ansi = pdc_conemu ? !strcmp(str, "ON") : FALSE;
+#endif
 
     GetConsoleScreenBufferInfo(pdc_con_out, &csbi);
     GetConsoleScreenBufferInfo(pdc_con_out, &orig_scr);
@@ -432,10 +417,6 @@ int PDC_scr_open(int argc, char **argv)
 
     SP->mouse_wait = PDC_CLICK_PERIOD;
     SP->audible = TRUE;
-
-    SP->termattrs = A_COLOR | A_REVERSE;
-    if (pdc_ansi)
-        SP->termattrs |= A_UNDERLINE | A_ITALIC;
 
     if (SP->lines < 2 || SP->lines > csbi.dwMaximumWindowSize.Y)
     {
@@ -483,11 +464,6 @@ int PDC_scr_open(int argc, char **argv)
     SetConsoleCtrlHandler(_ctrl_break, TRUE);
 
     SP->_preserve = (getenv("PDC_PRESERVE_SCREEN") != NULL);
-
-    /* ENABLE_LVB_GRID_WORLDWIDE */
-    result = SetConsoleMode(pdc_con_out, 0x0010);
-    if (result)
-        SP->termattrs |= A_UNDERLINE | A_LEFT | A_RIGHT;
 
     PDC_reset_prog_mode();
 
@@ -547,42 +523,38 @@ int PDC_resize_screen(int nlines, int ncols)
     SMALL_RECT rect;
     COORD size, max;
 
-    bool prog_resize = nlines || ncols;
-
-    if (!prog_resize)
+    if( nlines || ncols)
     {
-        nlines = PDC_get_rows();
-        ncols = PDC_get_columns();
-    }
+        if (nlines < 2 || ncols < 2)
+            return ERR;
 
-    if (nlines < 2 || ncols < 2)
-        return ERR;
+        if( !stdscr)      /* window hasn't been created yet;  we're */
+        {                 /* specifying its size before doing so    */
+            return OK;    /* ...which doesn't work (yet) on Win32   */
+        }
 
-    max = GetLargestConsoleWindowSize(pdc_con_out);
+        max = GetLargestConsoleWindowSize(pdc_con_out);
 
-    rect.Left = rect.Top = 0;
-    rect.Right = ncols - 1;
+        rect.Left = rect.Top = 0;
+        rect.Right = ncols - 1;
 
-    if (rect.Right > max.X)
-        rect.Right = max.X;
+        if (rect.Right > max.X)
+            rect.Right = max.X;
 
-    rect.Bottom = nlines - 1;
+        rect.Bottom = nlines - 1;
 
-    if (rect.Bottom > max.Y)
-        rect.Bottom = max.Y;
+        if (rect.Bottom > max.Y)
+            rect.Bottom = max.Y;
 
-    size.X = rect.Right + 1;
-    size.Y = rect.Bottom + 1;
+        size.X = rect.Right + 1;
+        size.Y = rect.Bottom + 1;
 
-    _fit_console_window(pdc_con_out, &rect);
-    SetConsoleScreenBufferSize(pdc_con_out, size);
-
-    if (prog_resize)
-    {
         _fit_console_window(pdc_con_out, &rect);
         SetConsoleScreenBufferSize(pdc_con_out, size);
+        _fit_console_window(pdc_con_out, &rect);
+        SetConsoleScreenBufferSize(pdc_con_out, size);
+        SetConsoleActiveScreenBuffer(pdc_con_out);
     }
-    SetConsoleActiveScreenBuffer(pdc_con_out);
 
     PDC_flushinp();
 
@@ -634,7 +606,7 @@ void PDC_reset_shell_mode(void)
         SetConsoleActiveScreenBuffer(pdc_con_out);
     }
 
-    SetConsoleMode(pdc_con_in, old_console_mode | 0x0080);
+    SetConsoleMode(pdc_con_in, old_console_mode | ENABLE_EXTENDED_FLAGS);
 }
 
 void PDC_restore_screen_mode(int i)
@@ -647,14 +619,38 @@ void PDC_save_screen_mode(int i)
 
 void PDC_init_pair(short pair, short fg, short bg)
 {
-    atrtab[pair].f = fg;
-    atrtab[pair].b = bg;
+    unsigned char att, temp_bg;
+    chtype i;
+
+    fg = curstoreal[fg];
+    bg = curstoreal[bg];
+
+    for (i = 0; i < PDC_OFFSET; i++)
+    {
+        att = fg | (bg << 4);
+
+        if (i & (A_REVERSE >> PDC_ATTR_SHIFT))
+            att = bg | (fg << 4);
+        if (i & (A_UNDERLINE >> PDC_ATTR_SHIFT))
+            att = 1;
+        if (i & (A_INVIS >> PDC_ATTR_SHIFT))
+        {
+            temp_bg = att >> 4;
+            att = temp_bg << 4 | temp_bg;
+        }
+        if (i & (A_BOLD >> PDC_ATTR_SHIFT))
+            att |= 8;
+        if (i & (A_BLINK >> PDC_ATTR_SHIFT))
+            att |= 128;
+
+        pdc_atrtab[pair * PDC_OFFSET + i] = att;
+    }
 }
 
 int PDC_pair_content(short pair, short *fg, short *bg)
 {
-    *fg = atrtab[pair].f;
-    *bg = atrtab[pair].b;
+    *fg = realtocurs[pdc_atrtab[pair * PDC_OFFSET] & 0x0F];
+    *bg = realtocurs[(pdc_atrtab[pair * PDC_OFFSET] & 0xF0) >> 4];
 
     return OK;
 }
@@ -666,68 +662,56 @@ bool PDC_can_change_color(void)
 
 int PDC_color_content(short color, short *red, short *green, short *blue)
 {
-    if (color < 16 && !pdc_conemu)
+    COLORREF *color_table = _get_colors();
+
+    if (color_table)
     {
-        COLORREF *color_table = _get_colors();
+        DWORD col = color_table[curstoreal[color]];
 
-        if (color_table)
-        {
-            DWORD col = color_table[pdc_curstoreal[color]];
+        *red = DIVROUND(GetRValue(col) * 1000, 255);
+        *green = DIVROUND(GetGValue(col) * 1000, 255);
+        *blue = DIVROUND(GetBValue(col) * 1000, 255);
 
-            *red = DIVROUND(GetRValue(col) * 1000, 255);
-            *green = DIVROUND(GetGValue(col) * 1000, 255);
-            *blue = DIVROUND(GetBValue(col) * 1000, 255);
-        }
-        else
-            return ERR;
-    }
-    else
-    {
-        if (!pdc_color[color].mapped)
-        {
-            *red = *green = *blue = -1;
-            return ERR;
-        }
-
-        *red = pdc_color[color].r;
-        *green = pdc_color[color].g;
-        *blue = pdc_color[color].b;
+        return OK;
     }
 
-    return OK;
+    return ERR;
 }
 
 int PDC_init_color(short color, short red, short green, short blue)
 {
-    if (red == -1 && green == -1 && blue == -1)
+    COLORREF *color_table = _get_colors();
+
+    if (color_table)
     {
-        pdc_color[color].mapped = FALSE;
-        return OK;
+        color_table[curstoreal[color]] =
+            RGB(DIVROUND(red * 255, 1000),
+                DIVROUND(green * 255, 1000),
+                DIVROUND(blue * 255, 1000));
+
+        return _set_colors();
     }
 
-    if (color < 16 && !pdc_conemu)
+    return ERR;
+}
+
+/* Does nothing in the Win32 flavor of PDCurses.  Included solely because
+without this,  we get an unresolved external... */
+
+void PDC_set_resize_limits( const int new_min_lines, const int new_max_lines,
+                  const int new_min_cols, const int new_max_cols)
+{
+}
+
+/* PDC_set_function_key() does nothing on this platform */
+int PDC_set_function_key( const unsigned function, const int new_key)
+{
+    int old_key = -1;
+
+    if( function < PDC_MAX_FUNCTION_KEYS)
     {
-        COLORREF *color_table = _get_colors();
-
-        if (color_table)
-        {
-            color_table[pdc_curstoreal[color]] =
-                RGB(DIVROUND(red * 255, 1000),
-                    DIVROUND(green * 255, 1000),
-                    DIVROUND(blue * 255, 1000));
-
-            return _set_colors();
-        }
-
-        return ERR;
+         old_key = PDC_shutdown_key[function];
+         PDC_shutdown_key[function] = new_key;
     }
-    else
-    {
-        pdc_color[color].r = red;
-        pdc_color[color].g = green;
-        pdc_color[color].b = blue;
-        pdc_color[color].mapped = TRUE;
-    }
-
-    return OK;
+    return( old_key);
 }

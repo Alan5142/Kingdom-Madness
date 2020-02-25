@@ -2,8 +2,9 @@
 #include <curses.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
-const int X_POSITION = 85;
+const int X_POSITION = 20;
 
 start_screen_result_t start_screen(void)
 {
@@ -15,7 +16,7 @@ start_screen_result_t start_screen(void)
     mvprintw(6, X_POSITION, " |_____|_| |_|_|\\___|_|\\___/ ");
 
     WINDOW *menu = newwin(10, 31, 15, X_POSITION);
-    resize_term(60, 200);
+    resize_term(40, 100);
 
     box(menu, '*', '*');
     wrefresh(menu);

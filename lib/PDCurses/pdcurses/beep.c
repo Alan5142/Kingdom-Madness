@@ -14,19 +14,19 @@ beep
 
 ### Description
 
-   beep() sounds the audible bell on the terminal, if possible; if not,
-   it calls flash().
+   beep() sounds the audible bell on the terminal, if possible;
+   if not, it calls flash().
 
    flash() "flashes" the screen, by inverting the foreground and
-   background of every cell, pausing, and then restoring the original
-   attributes.
+   background of every cell, pausing, and then restoring the
+   original attributes.
 
 ### Return Value
 
-   These functions return ERR if called before initscr(), otherwise OK.
+   These functions return OK.
 
 ### Portability
-                             X/Open  ncurses  NetBSD
+                             X/Open    BSD    SYS V
     beep                        Y       Y       Y
     flash                       Y       Y       Y
 
@@ -35,9 +35,6 @@ beep
 int beep(void)
 {
     PDC_LOG(("beep() - called\n"));
-
-    if (!SP)
-        return ERR;
 
     if (SP->audible)
         PDC_beep();
@@ -52,9 +49,6 @@ int flash(void)
     int z, y, x;
 
     PDC_LOG(("flash() - called\n"));
-
-    if (!curscr)
-        return ERR;
 
     /* Reverse each cell; wait; restore the screen */
 

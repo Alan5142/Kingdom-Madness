@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.11)
+
+INCLUDE(project_common)
+
+
+IF(WIN32)
+    SET_TARGET_PROPERTIES(${PROJECT_NAME}_newtest PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+ENDIF(WIN32)
+
+SET(CPACK_COMPONENTS_ALL applications)
+
+add_library()

@@ -19,15 +19,16 @@ debug
    information to the file "trace". Although not standard, similar
    functions are in some other curses implementations.
 
-   PDC_debug() is the function that writes to the file, based on whether
-   traceon() has been called. It's used from the PDC_LOG() macro.
+   PDC_debug() is the function that writes to the file, based on
+   whether traceon() has been called. It's used from the PDC_LOG()
+   macro.
 
-   The environment variable PDC_TRACE_FLUSH controls whether the trace
-   file contents are fflushed after each write. The default is not. Set
-   it to enable this (may affect performance).
+   The environment variable PDC_TRACE_FLUSH controls whether the
+   trace file contents are fflushed after each write.  The default
+   is not. Set it to 1 to enable this (may affect performance).
 
 ### Portability
-                             X/Open  ncurses  NetBSD
+                             X/Open    BSD    SYS V
     traceon                     -       -       -
     traceoff                    -       -       -
     PDC_debug                   -       -       -
@@ -39,6 +40,8 @@ debug
 #include <sys/types.h>
 #include <time.h>
 
+FILE *pdc_dbfp = NULL;
+static bool trace_on = FALSE;
 static bool want_fflush = FALSE;
 
 void PDC_debug(const char *fmt, ...)
@@ -47,60 +50,60 @@ void PDC_debug(const char *fmt, ...)
     char hms[9];
     time_t now;
 
-    if (!SP || !SP->dbfp)
+    if( !trace_on)
         return;
+    if (!pdc_dbfp)
+    {
+        pdc_dbfp = fopen("trace", "a");
+        if (!pdc_dbfp)
+        {
+            fprintf(stderr,
+                "PDC_debug(): Unable to open debug log file\n");
+            return;
+        }
+    }
 
     time(&now);
     strftime(hms, 9, "%H:%M:%S", localtime(&now));
-    fprintf(SP->dbfp, "At: %8.8ld - %s ", (long) clock(), hms);
+    fprintf(pdc_dbfp, "At: %8.8ld - %s ", (long) clock(), hms);
 
     va_start(args, fmt);
-    vfprintf(SP->dbfp, fmt, args);
+    vfprintf(pdc_dbfp, fmt, args);
     va_end(args);
 
     /* If you are crashing and losing debugging information, enable this
-       by setting the environment variable PDC_TRACE_FLUSH. This may
-       impact performance. */
-
+     * by setting the environment variable PDC_TRACE_FLUSH to 1. This may
+     * impact performance.
+     */
     if (want_fflush)
-        fflush(SP->dbfp);
+        fflush(pdc_dbfp);
 
     /* If with PDC_TRACE_FLUSH enabled you are still losing logging in
-       crashes, you may need to add a platform-dependent mechanism to
-       flush the OS buffers as well (such as fsync() on POSIX) -- but
-       expect terrible performance. */
+     * crashes, you may need to add a platform-dependent mechanism to flush
+     * the OS buffers as well (such as fsync() on POSIX) -- but expect
+     * terrible performance.
+     */
 }
 
 void traceon(void)
 {
-    if (!SP)
-        return;
+    char *env;
 
-    if (SP->dbfp)
-        fclose(SP->dbfp);
-
-    /* open debug log file append */
-    SP->dbfp = fopen("trace", "a");
-    if (!SP->dbfp)
-    {
-        fprintf(stderr, "PDC_debug(): Unable to open debug log file\n");
-        return;
-    }
-
-    if (getenv("PDC_TRACE_FLUSH"))
-        want_fflush = TRUE;
+    trace_on = TRUE;
+    if ((env = getenv("PDC_TRACE_FLUSH")))
+        want_fflush = atoi(env);
 
     PDC_LOG(("traceon() - called\n"));
 }
 
 void traceoff(void)
 {
-    if (!SP || !SP->dbfp)
+    if (!pdc_dbfp)
         return;
 
     PDC_LOG(("traceoff() - called\n"));
 
-    fclose(SP->dbfp);
-    SP->dbfp = NULL;
-    want_fflush = FALSE;
+    fclose(pdc_dbfp);
+    pdc_dbfp = NULL;
+    want_fflush = trace_on = FALSE;
 }

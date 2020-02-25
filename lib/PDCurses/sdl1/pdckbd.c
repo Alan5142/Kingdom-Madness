@@ -1,4 +1,4 @@
-/* PDCurses */
+/* Public Domain Curses */
 
 #include "pdcsdl.h"
 
@@ -13,16 +13,18 @@ pdckbd
 
 ### Description
 
-   PDC_get_input_fd() returns the file descriptor that PDCurses reads
-   its input from. It can be used for select().
+   PDC_get_input_fd() returns the file descriptor that PDCurses
+   reads its input from. It can be used for select().
 
 ### Portability
-                             X/Open  ncurses  NetBSD
+                             X/Open    BSD    SYS V
     PDC_get_input_fd            -       -       -
 
 **man-end****************************************************************/
 
 #include <string.h>
+
+unsigned long pdc_key_modifiers = 0L;
 
 static SDL_Event event;
 static SDLKey oldkey;
@@ -125,15 +127,13 @@ static int _process_key_event(void)
 {
     int i, key = 0;
 
-    SP->key_modifiers = 0L;
+    pdc_key_modifiers = 0L;
     SP->key_code = FALSE;
 
     if (event.type == SDL_KEYUP)
     {
         if (SP->return_key_modifiers && event.key.keysym.sym == oldkey)
         {
-            SP->key_code = TRUE;
-
             switch (oldkey)
             {
             case SDLK_RSHIFT:
@@ -151,8 +151,6 @@ static int _process_key_event(void)
             default:
                 break;
             }
-
-            SP->key_code = FALSE;
         }
 
         return -1;
@@ -160,17 +158,20 @@ static int _process_key_event(void)
 
     oldkey = event.key.keysym.sym;
 
-    if (event.key.keysym.mod & KMOD_NUM)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_NUMLOCK;
+    if (SP->save_key_modifiers)
+    {
+        if (event.key.keysym.mod & KMOD_NUM)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_NUMLOCK;
 
-    if (event.key.keysym.mod & KMOD_SHIFT)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_SHIFT;
+        if (event.key.keysym.mod & KMOD_SHIFT)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_SHIFT;
 
-    if (event.key.keysym.mod & KMOD_CTRL)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_CONTROL;
+        if (event.key.keysym.mod & KMOD_CTRL)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_CONTROL;
 
-    if (event.key.keysym.mod & KMOD_ALT)
-        SP->key_modifiers |= PDC_KEY_MODIFIER_ALT;
+        if (event.key.keysym.mod & KMOD_ALT)
+            pdc_key_modifiers |= PDC_KEY_MODIFIER_ALT;
+    }
 
     for (i = 0; key_table[i].keycode; i++)
     {
@@ -239,7 +240,7 @@ static int _process_mouse_event(void)
     SDLMod keymods;
     short shift_flags = 0;
 
-    memset(&SP->mouse_status, 0, sizeof(MOUSE_STATUS));
+    memset(&pdc_mouse_status, 0, sizeof(MOUSE_STATUS));
 
     keymods = SDL_GetModState();
 
@@ -256,22 +257,22 @@ static int _process_mouse_event(void)
     {
         int i;
 
-        SP->mouse_status.x = (event.motion.x - pdc_xoffset) / pdc_fwidth;
-        SP->mouse_status.y = (event.motion.y - pdc_yoffset) / pdc_fheight;
+        pdc_mouse_status.x = event.motion.x / pdc_fwidth;
+        pdc_mouse_status.y = event.motion.y / pdc_fheight;
 
         if (!event.motion.state ||
-           (SP->mouse_status.x == old_mouse_status.x &&
-            SP->mouse_status.y == old_mouse_status.y))
+           (pdc_mouse_status.x == old_mouse_status.x &&
+            pdc_mouse_status.y == old_mouse_status.y))
             return -1;
 
-        SP->mouse_status.changes = PDC_MOUSE_MOVED;
+        pdc_mouse_status.changes = PDC_MOUSE_MOVED;
 
         for (i = 0; i < 3; i++)
         {
             if (event.motion.state & SDL_BUTTON(i + 1))
             {
-                SP->mouse_status.button[i] = BUTTON_MOVED | shift_flags;
-                SP->mouse_status.changes |= (1 << i);
+                pdc_mouse_status.button[i] = BUTTON_MOVED | shift_flags;
+                pdc_mouse_status.changes |= (1 << i);
             }
         }
     }
@@ -285,21 +286,21 @@ static int _process_mouse_event(void)
 
         if ((btn >= 4 && btn <= 7) && action == BUTTON_RELEASED)
         {
-            SP->mouse_status.x = SP->mouse_status.y = -1;
+            pdc_mouse_status.x = pdc_mouse_status.y = -1;
 
             switch (btn)
             {
             case 4:
-                SP->mouse_status.changes = PDC_MOUSE_WHEEL_UP;
+                pdc_mouse_status.changes = PDC_MOUSE_WHEEL_UP;
                 break;
             case 5:
-                SP->mouse_status.changes = PDC_MOUSE_WHEEL_DOWN;
+                pdc_mouse_status.changes = PDC_MOUSE_WHEEL_DOWN;
                 break;
             case 6:
-                SP->mouse_status.changes = PDC_MOUSE_WHEEL_LEFT;
+                pdc_mouse_status.changes = PDC_MOUSE_WHEEL_LEFT;
                 break;
             case 7:
-                SP->mouse_status.changes = PDC_MOUSE_WHEEL_RIGHT;
+                pdc_mouse_status.changes = PDC_MOUSE_WHEEL_RIGHT;
             }
 
             SP->key_code = TRUE;
@@ -326,16 +327,16 @@ static int _process_mouse_event(void)
             }
         }
 
-        SP->mouse_status.x = (event.button.x - pdc_xoffset) / pdc_fwidth;
-        SP->mouse_status.y = (event.button.y - pdc_yoffset) / pdc_fheight;
+        pdc_mouse_status.x = event.button.x / pdc_fwidth;
+        pdc_mouse_status.y = event.button.y / pdc_fheight;
 
         btn--;
 
-        SP->mouse_status.button[btn] = action | shift_flags;
-        SP->mouse_status.changes = (1 << btn);
+        pdc_mouse_status.button[btn] = action | shift_flags;
+        pdc_mouse_status.changes = (1 << btn);
     }
 
-    old_mouse_status = SP->mouse_status;
+    old_mouse_status = pdc_mouse_status;
 
     SP->key_code = TRUE;
     return KEY_MOUSE;
@@ -360,7 +361,6 @@ int PDC_get_key(void)
             if (!SP->resized)
             {
                 SP->resized = TRUE;
-                SP->key_code = TRUE;
                 return KEY_RESIZE;
             }
         }
@@ -370,13 +370,13 @@ int PDC_get_key(void)
     case SDL_MOUSEBUTTONUP:
     case SDL_MOUSEBUTTONDOWN:
         oldkey = SDLK_SPACE;
-        return _process_mouse_event();
+        if (SP->_trap_mbe)
+            return _process_mouse_event();
+        break;
     case SDL_KEYUP:
     case SDL_KEYDOWN:
         PDC_mouse_set();
         return _process_key_event();
-    case SDL_USEREVENT:
-        PDC_blink_text();
     }
 
     return -1;

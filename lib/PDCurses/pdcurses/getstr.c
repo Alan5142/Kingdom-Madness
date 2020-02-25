@@ -30,39 +30,40 @@ getstr
 ### Description
 
    These routines call wgetch() repeatedly to build a string,
-   interpreting erase and kill characters along the way, until a newline
-   or carriage return is received. When PDCurses is built with wide-
-   character support enabled, the narrow-character functions convert the
-   wgetch()'d values into a multibyte string in the current locale
-   before returning it. The resulting string is placed in the area
-   pointed to by *str. The routines with n as the last argument read at
-   most n characters.
+   interpreting erase and kill characters along the way, until a
+   newline or carriage return is received. When PDCurses is built
+   with wide-character support enabled, the narrow-character
+   functions convert the wgetch()'d values into a multibyte string
+   in the current locale before returning it. The resulting string
+   is placed in the area pointed to by *str. The routines with n as
+   the last argument read at most n characters.
 
    Note that there's no way to know how long the buffer passed to
    wgetstr() is, so use wgetnstr() to avoid buffer overflows.
 
 ### Return Value
 
-   These functions return ERR on failure or any other value on success.
+   These functions return ERR on failure or any other value on
+   success.
 
 ### Portability
-                             X/Open  ncurses  NetBSD
+                             X/Open    BSD    SYS V
     getstr                      Y       Y       Y
     wgetstr                     Y       Y       Y
     mvgetstr                    Y       Y       Y
     mvwgetstr                   Y       Y       Y
-    getnstr                     Y       Y       Y
-    wgetnstr                    Y       Y       Y
-    mvgetnstr                   Y       Y       Y
-    mvwgetnstr                  Y       Y       Y
-    get_wstr                    Y       Y       Y
-    wget_wstr                   Y       Y       Y
-    mvget_wstr                  Y       Y       Y
-    mvwget_wstr                 Y       Y       Y
-    getn_wstr                   Y       Y       Y
-    wgetn_wstr                  Y       Y       Y
-    mvgetn_wstr                 Y       Y       Y
-    mvwgetn_wstr                Y       Y       Y
+    getnstr                     Y       -      4.0
+    wgetnstr                    Y       -      4.0
+    mvgetnstr                   Y       -       -
+    mvwgetnstr                  Y       -       -
+    get_wstr                    Y
+    wget_wstr                   Y
+    mvget_wstr                  Y
+    mvwget_wstr                 Y
+    getn_wstr                   Y
+    wgetn_wstr                  Y
+    mvgetn_wstr                 Y
+    mvwgetn_wstr                Y
 
 **man-end****************************************************************/
 
@@ -79,7 +80,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
     if (wgetn_wstr(win, (wint_t *)wstr, n) == ERR)
         return ERR;
 
-    return PDC_wcstombs(str, wstr, n);
+    return (int)PDC_wcstombs(str, wstr, n);
 #else
     int ch, i, num, x, chars;
     char *p;
@@ -122,7 +123,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
                 {
                     if (oldecho)
                         waddch(win, ch);
-                    *p++ = ch;
+                    *p++ = (char)ch;
                     ++chars;
                 }
                 else
@@ -188,7 +189,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
             {
                 if (!SP->key_code && ch < 0x100)
                 {
-                    *p++ = ch;
+                    *p++ = (char)ch;
                     if (oldecho)
                         waddch(win, ch);
                     chars++;

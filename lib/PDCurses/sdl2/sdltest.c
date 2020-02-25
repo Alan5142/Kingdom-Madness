@@ -3,8 +3,6 @@
    (assuming the default 8x16 font) stdscr at the bottom.
 */
 
-#define SDL_MAIN_HANDLED
-
 #include <SDL.h>
 #include <curses.h>
 #include <stdlib.h>
@@ -32,8 +30,7 @@ int main(int argc, char **argv)
 
     atexit(SDL_Quit);
 
-    pdc_window = SDL_CreateWindow("PDCurses for SDL", SDL_WINDOWPOS_UNDEFINED,
-                                  SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+    pdc_window = SDL_CreateWindow("PDCurses for SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
     pdc_screen = SDL_GetWindowSurface(pdc_window);
 
     /* Initialize PDCurses */

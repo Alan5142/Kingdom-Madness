@@ -1,6 +1,6 @@
-# Borland Makefile for PDCurses - Windows console
+# Borland MAKE Makefile for PDCurses library - Windows console BC++ 7.0+
 #
-# Usage: make -f [path\]Makefile.bcc [DEBUG=Y] [WIDE=Y] [UTF8=Y]
+# Usage: make -f [path\]Makefile.bcc [DEBUG=] [WIDE=] [UTF8=]
 #        [INFOEX=N] [target]
 #
 # where target can be any of:
@@ -14,16 +14,29 @@ RM = del
 PDCURSES_SRCDIR = ..
 !endif
 
-!include $(PDCURSES_SRCDIR)\common\libobjs.mif
+!include $(PDCURSES_SRCDIR)\version.mif
+!include $(PDCURSES_SRCDIR)\libobjs.mif
 
 osdir		= $(PDCURSES_SRCDIR)\wincon
 
-CC		= bcc32c -q
+!ifdef OLD_BCC
+CC		= bcc32 -q -DNO_STDINT_H
+!else
+CC		= bcc32c -q -Xdriver -Wno-deprecated-declarations
+!endif
 
 !ifdef DEBUG
 CFLAGS		= -N -v -y -DPDCDEBUG
 !else
-CFLAGS		= -O
+CFLAGS		= -O -DCHTYPE_32
+!endif
+
+!ifdef CHTYPE_32
+CFLAGS = $(CFLAGS) -DCHTYPE_32
+!endif
+
+!ifdef CHTYPE_16
+CFLAGS = $(CFLAGS) -DCHTYPE_16
 !endif
 
 !ifdef WIDE
@@ -38,9 +51,14 @@ UTF8OPT		= -DPDC_FORCE_UTF8
 INFOPT          = -DHAVE_NO_INFOEX
 !endif
 
+!ifdef OLD_BCC
 BUILD		= $(CC) -I$(PDCURSES_SRCDIR) -c -Tpe $(CFLAGS) \
+-w32 -w-par \
 $(WIDEOPT) $(UTF8OPT) $(INFOPT)
-BUILD_OS	= $(BUILD) -Xdriver -Wno-deprecated-declarations
+!else
+BUILD		= $(CC) -I$(PDCURSES_SRCDIR) -c -Tpe $(CFLAGS) \
+$(WIDEOPT) $(UTF8OPT)
+!endif
 
 LIBEXE		= tlib /C /E /0 /a
 
@@ -54,7 +72,7 @@ clean:
 	-$(RM) *.tds
 	-$(RM) *.exe
 
-demos:	$(LIBCURSES) $(DEMOS)
+demos:	$(DEMOS)
 
 $(LIBCURSES) : $(LIBOBJS) $(PDCOBJS)
 	-$(RM) $@
@@ -66,13 +84,13 @@ $(LIBCURSES) : $(LIBOBJS) $(PDCOBJS)
 	$(BUILD) $<
 
 {$(osdir)\}.c.obj:
-	$(BUILD_OS) $<
+	$(BUILD) $<
 
 {$(demodir)\}.c.obj:
 	$(BUILD) $<
 
 .c.obj:
-	$(BUILD_OS) $<
+	$(BUILD) $<
 
 .obj.exe:
 	$(CC) -e$@ $** $(LIBCURSES)
@@ -85,3 +103,9 @@ tui.obj: $(demodir)\tui.c $(demodir)\tui.h $(PDCURSES_CURSES_H)
 
 tuidemo.obj: $(demodir)\tuidemo.c $(PDCURSES_CURSES_H)
 	$(BUILD) -I$(demodir) $(demodir)\tuidemo.c
+
+PLATFORM1 = Borland C++ Wincon
+PLATFORM2 = Borland C/C++ 7.2 for Windows console
+ARCNAME = pdc$(VER)_bcc_wincon
+
+!include $(PDCURSES_SRCDIR)\makedist.mif

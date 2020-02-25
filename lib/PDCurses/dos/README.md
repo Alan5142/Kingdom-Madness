@@ -9,14 +9,18 @@ Building
 
 - Choose the appropriate makefile for your compiler:
 
-        Makefile     - DJGPP
-        Makefile.bcc - Borland C++
-        Makefile.wcc - Watcom
+        Makefile     - DJGPP V2
+        Makefile.bcc - Borland C++ 3.0+
+        Makefile.wcc - Open Watcom 1.8+ (16-bit or 32-bit)
+        Makefile.dmc - Digital Mars
+        Makefile.msc - Microsoft C
 
-- For 16-bit compilers, you can change the memory MODEL as a command-
-  line option. (Large model is the default, and recommended.) With
-  Watcom, specifying "MODEL=f" (flat) will automatically switch to a
-  32-bit build.
+- For 16-bit compilers, you can change the memory MODEL in the makefile.
+  (Large model is the default, and recommended.)
+
+  (For Open Watcom, pass MODEL=f (flat model) to "wmake" in order to use
+  the 32-bit compiler. Selcting a 16-bit MODEL (e.g. MODEL=l) will
+  invoke the 16-bit compiler.)
 
 - Optionally, you can build in a different directory than the platform
   directory by setting PDCURSES_SRCDIR to point to the directory where
@@ -28,15 +32,15 @@ Building
 
         make -f makefile
 
-  (For Watcom, use "wmake" instead of "make".) You'll get the library
-  (pdcurses.lib or .a, depending on your compiler) and a lot of object
-  files. Add the target "demos" to build the sample programs.
+  (For Watcom, use "wmake" instead of "make"; for MSVC, "nmake".) You'll
+  get the libraries (pdcurses.lib or .a, depending on your compiler; and
+  panel.lib or .a), the demos (*.exe), and a lot of object files.
 
 
 Distribution Status
 -------------------
 
-The files in this directory are released to the public domain.
+The files in this directory are released to the Public Domain.
 
 
 Acknowledgements
@@ -44,4 +48,4 @@ Acknowledgements
 
 Watcom C port was provided by Pieter Kunst <kunst@prl.philips.nl>
 
-DJGPP port was provided by David Nugent <davidn@csource.oz.au>
+DJGPP 1.x port was provided by David Nugent <davidn@csource.oz.au>
