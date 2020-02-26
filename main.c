@@ -3,9 +3,18 @@
 #include <utils/colors.h>
 #include "start_screen.h"
 #include "play_music.h"
+#include <windows.h>
 
 int main()
 {
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_FONT_INFOEX cfie;
+    ZeroMemory(&cfie, sizeof(cfie));
+    cfie.cbSize = sizeof(cfie);
+    cfie.dwFontSize.Y = 20;
+    lstrcpyW(cfie.FaceName, L"MS Gothic");
+    SetCurrentConsoleFontEx(hStdOut, false, &cfie);
+
     initscr();
 
     if (has_colors())
@@ -26,4 +35,6 @@ int main()
     }
 
     endwin();
+    CloseWindow(GetConsoleWindow());
+    SendMessage(GetConsoleWindow(), WM_CLOSE, 0, 0);
 }

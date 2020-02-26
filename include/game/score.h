@@ -13,6 +13,7 @@ typedef struct
 {
     WINDOW *window;
     uint32_t score;
+    uint8_t money;
 } score_t;
 
 score_t *start_score(void);

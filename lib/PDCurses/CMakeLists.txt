@@ -64,6 +64,8 @@ if (WIN32 OR MSVC)
     #)
     add_definitions(-DPDC_WIDE=1)
 
+    SET(WIDE "Y" CACHE STRING "Some user-specified option")
+
     add_library(PDcurses
             ${SOURCE_FILES}
             ${HEADER_FILES}

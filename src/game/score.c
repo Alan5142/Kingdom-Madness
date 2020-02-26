@@ -10,8 +10,9 @@ score_t *start_score(void)
 {
     score_t *score = malloc(sizeof(score_t));
     score->score = 0;
+    score->money = 0;
 
-    score->window = newwin(3, 17, 0, getmaxx(stdscr) - 17);
+    score->window = newwin(3, 21, 0, getmaxx(stdscr) - 21);
 
     draw_score(score);
 
@@ -23,7 +24,7 @@ void draw_score(score_t *score)
     // box(score->window, 0, 0);
 
     wattron(score->window, COLOR_PAIR(SCORE_COLOR_PAIR));
-    mvwprintw(score->window, 0, 0, "Puntaje: %08d", score->score);
+    mvwprintw(score->window, 0, 0, "$03%d Puntaje: %08d", score->money, score->score);
     wattroff(score->window, COLOR_PAIR(SCORE_COLOR_PAIR));
 
     wrefresh(score->window);
