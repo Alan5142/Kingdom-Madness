@@ -9,7 +9,10 @@ add_definitions(-DPDC_WIDE=1)
 add_executable(progra main.c
         src/start_screen.c
         src/game/game.c
-        src/game/health.c src/play_music.c)
+        src/game/health.c
+        src/play_music.c
+        src/game/score.c
+        src/utils/colors.c)
 
 target_link_libraries(progra PDcurses winmm)
 target_include_directories(progra PRIVATE include)

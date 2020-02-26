@@ -23,5 +23,7 @@ void draw_health(health_t *health);
 
 bool is_alive(health_t *health);
 
+void clean_health(health_t *health);
+
 
 #endif //PROGRA_HEALTH_H

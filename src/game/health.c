@@ -3,34 +3,25 @@
 //
 
 #include "game/health.h"
+#include "utils/colors.h"
 #include <curses.h>
 #include <stdlib.h>
 
 const uint8_t START_HEALTH = 8;
 const uint8_t MAX_HEALTH = 12;
 
-// color constants
-const uint16_t HEART_POINT_BACKGROUND = COLOR_WHITE;
-const uint16_t HEART_POINT_FOREGROUND = COLOR_RED;
-const uint16_t HEART_POINT = 0x01;
-
-const uint16_t HEART_LOST_BACKGROUND = COLOR_WHITE;
-const uint16_t HEART_LOST_FOREGROUND = COLOR_BLACK;
-const uint16_t HEART_LOST = 0x02;
-
 void draw_health(health_t *health)
 {
     resize_window(health->window, 3, health->max_health + 2);
-    box(health->window, 0, 0);
 
     for (int i = 0; i < health->max_health; ++i)
     {
-        const uint16_t color = i < health->health ? HEART_POINT : HEART_LOST;
+        const uint16_t color = i < health->health ? HEART_POINT_COLOR_PAIR : HEART_LOST_COLOR_PAIR;
         wattron(health->window, COLOR_PAIR(color));
 
         //mvwaddch(health->window, 1, 1 + i, ACS_DIAMOND);
         // mvwaddrawch(health->window, 1, 1 + i, 2665);
-        mvwaddwstr(health->window, 1, 1 + i, L"♥");
+        mvwaddwstr(health->window, 0, i, L"♥");
 
         wattroff(health->window, COLOR_PAIR(color));
     }
@@ -40,15 +31,17 @@ void draw_health(health_t *health)
 
 health_t *start_health(void)
 {
-    flash();
     health_t *health = malloc(sizeof(health_t));
-    health->window = newwin(3, 14, 1, 1);
+    health->window = newwin(3, 14, 0, 0);
     health->health = START_HEALTH;
     health->max_health = START_HEALTH;
-
-    init_pair(HEART_POINT, HEART_POINT_FOREGROUND, HEART_POINT_BACKGROUND);
-    init_pair(HEART_LOST, HEART_LOST_FOREGROUND, HEART_LOST_BACKGROUND);
     draw_health(health);
 
     return health;
+}
+
+void clean_health(health_t *health)
+{
+    delwin(health->window);
+    free(health);
 }
