@@ -7,18 +7,13 @@
 #include <sound.h>
 #include <time.h>
 
+
+extern void HandleMenuToggle( unsigned char *ptr_ignore_resize);
+
 int main()
 {
-    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_FONT_INFOEX cfie;
-    ZeroMemory(&cfie, sizeof(cfie));
-    cfie.cbSize = sizeof(cfie);
-    cfie.dwFontSize.Y = 20;
-    lstrcpyW(cfie.FaceName, L"MS Gothic");
-    SetCurrentConsoleFontEx(hStdOut, false, &cfie);
-
     initscr();
-
+    resize_term(40, 100);
     srand(time(0));
     if (has_colors())
         start_color();

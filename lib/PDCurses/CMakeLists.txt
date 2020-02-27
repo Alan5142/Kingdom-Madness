@@ -41,13 +41,20 @@ if (WIN32 OR MSVC)
             pdcurses/touch.c
             pdcurses/util.c
             pdcurses/window.c
-            wincon/pdcclip.c
-            wincon/pdcdisp.c
-            wincon/pdcgetsc.c
-            wincon/pdckbd.c
-            wincon/pdcscrn.c
-            wincon/pdcsetsc.c
-            wincon/pdcutil.c
+            #wincon/pdcclip.c
+            #wincon/pdcdisp.c
+            #wincon/pdcgetsc.c
+            #wincon/pdckbd.c
+            #wincon/pdcscrn.c
+            #wincon/pdcsetsc.c
+            #wincon/pdcutil.c
+            wingui/pdcclip.c
+            wingui/pdcdisp.c
+            wingui/pdcgetsc.c
+            wingui/pdckbd.c
+            wingui/pdcscrn.c
+            wingui/pdcsetsc.c
+            wingui/pdcutil.c
             )
 
     set (HEADER_FILES

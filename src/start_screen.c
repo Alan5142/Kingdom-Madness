@@ -8,7 +8,7 @@ const int X_POSITION = 40;
 
 start_screen_result_t start_screen(void)
 {
-    mvaddwstr(1, 0, L"　　　　　　　　　　/￣ヽ\n"
+    mvwaddwstr(stdscr, 1, 0, L"　　　　　　　　　　/￣ヽ\n"
                     "　　　　　　　　　/⌒⌒⌒ヽ／|\n"
                     "　　　　　　　⊂|　◎　　　　　∥\n"
                     "　　　　　　　　　ヽ　 ﾟ∀ﾟ丿＼|\n"
@@ -33,13 +33,14 @@ start_screen_result_t start_screen(void)
                     "　　　　　 /　　::|　　　　（_　　 ＼\n"
                     "　　　　　(＿＿ﾉ　　　　　 ＼＿__）");
 
-    mvaddwstr(36, 0, L"──────▄▀▄─────▄▀▄\n"
+    mvwaddwstr(stdscr, 36, 0, L"A──────▄▀▄─────▄▀▄\n"
                      "─────▄█░░▀▀▀▀▀░░█▄\n"
                      "─▄▄──█░░░░░░░░░░░█──▄▄\n"
                      "█▄▄█─█░░▀░░┬░░▀░░█─█▄▄█");
 
+    wrefresh(stdscr);
+
     WINDOW *menu = newwin(10, 31, 15, X_POSITION);
-    resize_term(40, 100);
 
     box(menu, '*', '*');
     wrefresh(menu);
