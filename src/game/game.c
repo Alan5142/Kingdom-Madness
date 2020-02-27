@@ -34,9 +34,9 @@ void start_game(void)
     score_t *score = start_score();
 
     // dibujar una carita bien prrona
-    WINDOW *face = newwin(0, 7, 0, getmaxx(stdscr) / 2 - 2);
+    WINDOW *face = newwin(0, 16, 0, getmaxx(stdscr) / 2 - 8);
 
-    mvwaddwstr(face, 0, 0, L"(ᵔᴥᵔ)");
+    mvwaddstr(face, 0, 0, "(ﾒ￣▽￣)︻┳═一");
     wrefresh(face);
 
     WINDOW *game = newwin(getmaxy(stdscr) - 1, getmaxx(stdscr), 1, 0);
@@ -48,7 +48,7 @@ void start_game(void)
     player.previous_x = player.x;
     player.previous_y = player.y;
 
-    mvwaddwstr(game, player.y, player.x, L"☺");
+    mvwaddstr(game, player.y, player.x, "☺");
     wrefresh(game);
 
     nodelay(game, true);
@@ -100,7 +100,7 @@ void start_game(void)
         if (key == KEY_LEFT || key == KEY_RIGHT || key == KEY_DOWN || key == KEY_UP)
         {
             mvwdelch(game, player.previous_y, player.previous_x);
-            mvwaddwstr(game, player.y, player.x, L"☺");
+            mvwaddstr(game, player.y, player.x, "☺");
             wrefresh(game);
         }
 

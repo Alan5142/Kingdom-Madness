@@ -70,8 +70,10 @@ if (WIN32 OR MSVC)
     #        /wd4996 # disable 'GetVersion' deprecation warning
     #)
     add_definitions(-DPDC_WIDE=1)
+    add_definitions(-DPDC_FORCE_UTF8=1)
 
-    SET(WIDE "Y" CACHE STRING "Some user-specified option")
+    set(WIDE "Y" CACHE STRING "Some user-specified option")
+    set(UTF8 "Y" CACHE STRING "Some user-specified option")
 
     add_library(PDcurses
             ${SOURCE_FILES}

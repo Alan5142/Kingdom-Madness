@@ -8,7 +8,7 @@ const int X_POSITION = 40;
 
 start_screen_result_t start_screen(void)
 {
-    mvwaddwstr(stdscr, 1, 0, L"　　　　　　　　　　/￣ヽ\n"
+    mvwaddstr(stdscr, 1, 0, "　　　　　　　　　　/￣ヽ\n"
                     "　　　　　　　　　/⌒⌒⌒ヽ／|\n"
                     "　　　　　　　⊂|　◎　　　　　∥\n"
                     "　　　　　　　　　ヽ　 ﾟ∀ﾟ丿＼|\n"
@@ -33,7 +33,7 @@ start_screen_result_t start_screen(void)
                     "　　　　　 /　　::|　　　　（_　　 ＼\n"
                     "　　　　　(＿＿ﾉ　　　　　 ＼＿__）");
 
-    mvwaddwstr(stdscr, 36, 0, L"A──────▄▀▄─────▄▀▄\n"
+    mvwaddstr(stdscr, 36, 0, "A──────▄▀▄─────▄▀▄\n"
                      "─────▄█░░▀▀▀▀▀░░█▄\n"
                      "─▄▄──█░░░░░░░░░░░█──▄▄\n"
                      "█▄▄█─█░░▀░░┬░░▀░░█─█▄▄█");

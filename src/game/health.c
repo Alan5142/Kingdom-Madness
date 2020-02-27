@@ -18,11 +18,7 @@ void draw_health(health_t *health)
     {
         const uint16_t color = i < health->health ? HEART_POINT_COLOR_PAIR : HEART_LOST_COLOR_PAIR;
         wattron(health->window, COLOR_PAIR(color));
-
-        //mvwaddch(health->window, 1, 1 + i, ACS_DIAMOND);
-        // mvwaddrawch(health->window, 1, 1 + i, 2665);
-        mvwaddwstr(health->window, 0, i, L"♥");
-
+        mvwaddstr(health->window, 0, i, "♥");
         wattroff(health->window, COLOR_PAIR(color));
     }
 
