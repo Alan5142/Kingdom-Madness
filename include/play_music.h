@@ -16,6 +16,6 @@ typedef enum music_t
  * @param music sonido a reproducir, debe ser miembro de music_t
  * @param loop Indica si el sonido se reproducirá en loop o dejará de reproducirse en cuanto termine
  */
-void play_music(music_t music, bool loop);
+void play_music(music_t music);
 
 #endif //PROGRA_PLAY_MUSIC_H

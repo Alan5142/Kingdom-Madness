@@ -7,6 +7,8 @@
 #include "game/health.h"
 #include "utils/colors.h"
 #include <curses.h>
+#include <sound.h>
+#include <stdlib.h>
 
 typedef struct
 {
@@ -19,12 +21,20 @@ typedef struct
 
 void start_game(void)
 {
-    play_music(MUSIC_GAME, true);
+    void *music = create_sound();
+
+    char music_path[64];
+
+    sprintf(music_path, "sound/game/%d.ogg", rand() % 2 + 1);
+    sound_open_file(music, music_path);
+    set_loop(music, true);
+    play_sound(music);
+
     health_t *player_health = start_health();
     score_t *score = start_score();
 
     // dibujar una carita bien prrona
-    WINDOW *face = newwin(0, 11, 0, getmaxx(stdscr) / 2 - 2);
+    WINDOW *face = newwin(0, 7, 0, getmaxx(stdscr) / 2 - 2);
 
     mvwaddwstr(face, 0, 0, L"(ᵔᴥᵔ)");
     wrefresh(face);
@@ -98,5 +108,7 @@ void start_game(void)
 
     // clean resources
     clean_health(player_health);
+    stop_sound(music);
+    delete_sound(music);
     clean_score(score);
 }

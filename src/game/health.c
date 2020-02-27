@@ -12,7 +12,7 @@ const uint8_t MAX_HEALTH = 12;
 
 void draw_health(health_t *health)
 {
-    resize_window(health->window, 3, health->max_health + 2);
+    resize_window(health->window, 1, health->max_health);
 
     for (int i = 0; i < health->max_health; ++i)
     {
@@ -32,7 +32,7 @@ void draw_health(health_t *health)
 health_t *start_health(void)
 {
     health_t *health = malloc(sizeof(health_t));
-    health->window = newwin(3, 14, 0, 0);
+    health->window = newwin(1, 14, 0, 0);
     health->health = START_HEALTH;
     health->max_health = START_HEALTH;
     draw_health(health);
