@@ -8,9 +8,7 @@
 inventory_t *create_inventory_screen(WINDOW *parent)
 {
     inventory_t *inventory = malloc(sizeof(inventory_t));
-    inventory->window = subwin(parent, 10, 20, 10, 10);
-    box(inventory->window, 0, 0);
-    draw_inventory(inventory);
+    inventory->window = subwin(parent, getmaxy(parent)-5, getmaxx(parent)-4, 3, 2);
     return inventory;
 }
 
@@ -22,14 +20,16 @@ void delete_inventory(inventory_t *inventory)
 
 void draw_inventory(inventory_t *inventory)
 {
-
-    for (int i = 0; i < 4; ++i)
+    wclear(inventory->window);
+    wattron(inventory->window, COLOR_PAIR(5));
+    for (int i = 0; i < 3; ++i)
     {
-        mvwvline(inventory->window, 0, 3 * (i + 1), 0, 20);
-        for (int j = 0; j < 4; ++j)
-        {
-            mvwhline(inventory->window, 3 * (j + 1), 0, 0, 20);
-        }
+        mvwvline(inventory->window, 1, getmaxx(inventory->window)/4 * (i + 1), 0, getmaxy(inventory->window));
     }
+    for (int j = 0; j < 3; ++j)
+    {
+        mvwhline(inventory->window, getmaxy(inventory->window)/4 * (j + 1), 0, 0, getmaxx(inventory->window));
+    }
+    box(inventory->window,0,0);
     wrefresh(inventory->window);
 }

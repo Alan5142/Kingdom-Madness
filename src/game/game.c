@@ -41,6 +41,8 @@ void start_game(void)
     mvwaddstr(game, player->y, player->x, "☺");
     wrefresh(game);
 
+    inventory_t *inventory = create_inventory_screen(game);
+
     nodelay(game, true);
     keypad(game, true);
 
@@ -65,7 +67,7 @@ void start_game(void)
                 menu = NULL;
                 wclear(game);
                 wrefresh(game);
-                mvwaddstr(game, player->y, player->x, "☺");
+                mvwaddstr(game, player->y, player->x, "😂");
                 continue;
             }
             switch (choice)
@@ -75,9 +77,14 @@ void start_game(void)
                     menu = NULL;
                     wclear(game);
                     wrefresh(game);
-                    mvwaddstr(game, player->y, player->x, "☺");
+                    mvwaddstr(game, player->y, player->x, "😂");
                     break;
                 case MENU_INVENTORY:
+                    delete_pause_menu(menu);
+                    wclear(game);
+                    wrefresh(game);
+                    menu = NULL;
+                    draw_inventory(inventory);
                     // TODO crear inventario
                     break;
                 case MENU_SAVE:

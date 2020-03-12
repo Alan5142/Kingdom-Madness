@@ -26,7 +26,7 @@ void delete_player(player_t *player)
 void draw_player(player_t *player)
 {
     mvwprintw(player->owning_window, player->previous_y, player->previous_x, " ");
-    mvwaddstr(player->owning_window, player->y, player->x, "☺");
+    mvwaddstr(player->owning_window, player->y, player->x, "😂");
     wrefresh(player->owning_window);
 }
 

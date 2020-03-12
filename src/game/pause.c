@@ -11,7 +11,7 @@ pause_menu_t *create_pause_menu(WINDOW *parent)
     static const char *choices[] = {"【 Continuar 】", "【 Inventario】", "【  Guardar  】", "【   Salir   】"};
 
     menu->menu = create_menu(choices, 4, parent, 6, 17, getmaxy(stdscr) / 2 - 2, getmaxx(stdscr) / 2 - 8, COLOR_PAIR(5));
-    draw_pause_menu(menu, -1);
+    draw_pause_menu(menu, MENU_NONE);
 
     return menu;
 }

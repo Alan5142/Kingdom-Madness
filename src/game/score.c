@@ -24,7 +24,7 @@ void draw_score(score_t *score)
     // box(score->window, 0, 0);
 
     wattron(score->window, COLOR_PAIR(SCORE_COLOR_PAIR));
-    mvwprintw(score->window, 0, 0, "$%04d Puntaje: %08d", score->money, score->score);
+    mvwprintw(score->window, 0, 0, "¤%04d Puntaje: %08d", score->money, score->score);
     wattroff(score->window, COLOR_PAIR(SCORE_COLOR_PAIR));
 
     wrefresh(score->window);
