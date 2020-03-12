@@ -36,7 +36,7 @@ health_t *start_health(void)
     return health;
 }
 
-void clean_health(health_t *health)
+void delete_health(health_t *health)
 {
     delwin(health->window);
     free(health);

@@ -3,21 +3,14 @@
 //
 #include <play_music.h>
 #include "game/score.h"
-#include "game/game.h"
 #include "game/health.h"
 #include "utils/colors.h"
 #include <curses.h>
 #include <sound.h>
 #include <stdlib.h>
-
-typedef struct
-{
-    int16_t x;
-    int16_t y;
-
-    uint16_t previous_x;
-    uint16_t previous_y;
-} player;
+#include <game/pause.h>
+#include <game/inventory.h>
+#include "game/player/player.h"
 
 void start_game(void)
 {
@@ -42,13 +35,10 @@ void start_game(void)
     WINDOW *game = newwin(getmaxy(stdscr) - 1, getmaxx(stdscr), 1, 0);
 
 
-    player player;
-    player.x = getmaxx(game) / 2;
-    player.y = getmaxy(game) / 2;
-    player.previous_x = player.x;
-    player.previous_y = player.y;
+    player_t *player = create_player(game, player_health);
+    draw_player(player);
 
-    mvwaddstr(game, player.y, player.x, "☺");
+    mvwaddstr(game, player->y, player->x, "☺");
     wrefresh(game);
 
     nodelay(game, true);
@@ -56,58 +46,62 @@ void start_game(void)
 
     wbkgd(game, COLOR_PAIR(GAME_COLOR_PAIR));
 
+    pause_menu_t *menu = NULL;
+
     while (1)
     {
         int key = wgetch(game);
-        if (key == 27)
+        if (menu != NULL)
         {
-            break;
+            menu_choice_e choice = draw_pause_menu(menu, key);
+            if (choice == MENU_EXIT)
+            {
+                delete_pause_menu(menu);
+                break;
+            }
+            if (key == 27)
+            {
+                delete_pause_menu(menu);
+                menu = NULL;
+                wclear(game);
+                wrefresh(game);
+                mvwaddstr(game, player->y, player->x, "☺");
+                continue;
+            }
+            switch (choice)
+            {
+                case MENU_RESUME:
+                    delete_pause_menu(menu);
+                    menu = NULL;
+                    wclear(game);
+                    wrefresh(game);
+                    mvwaddstr(game, player->y, player->x, "☺");
+                    break;
+                case MENU_INVENTORY:
+                    // TODO crear inventario
+                    break;
+                case MENU_SAVE:
+                    // TODO guardar
+                    break;
+                default:
+                    break;
+            }
+            continue;
         }
-        switch (key)
+        if (key == 27) // menu
         {
-            case KEY_UP:
-                player.previous_y = player.y;
-                player.previous_x = player.x;
-                player.y--;
-                if (player.y == -1)
-                    player.y = 0;
-                break;
-            case KEY_DOWN:
-                player.previous_y = player.y;
-                player.previous_x = player.x;
-                player.y++;
-                if (player.y == getmaxy(game))
-                    player.y = getmaxy(game) - 1;
-                break;
-            case KEY_RIGHT:
-                player.previous_y = player.y;
-                player.previous_x = player.x;
-                player.x++;
-                if (player.x == getmaxx(game))
-                    player.x = getmaxx(game) - 1;
-                break;
-            case KEY_LEFT:
-                player.previous_y = player.y;
-                player.previous_x = player.x;
-                player.x--;
-                if (player.x == -1)
-                    player.x = 0;
-                break;
-            default:
-                break;
-        }
-
-        if (key == KEY_LEFT || key == KEY_RIGHT || key == KEY_DOWN || key == KEY_UP)
-        {
-            mvwdelch(game, player.previous_y, player.previous_x);
-            mvwaddstr(game, player.y, player.x, "☺");
-            wrefresh(game);
+            menu = create_pause_menu(game);
+            continue;
         }
 
+        if (process_player_input(player, key))
+        {
+            draw_player(player);
+        }
     }
 
     // clean resources
-    clean_health(player_health);
+    delete_player(player);
     stop_sound(music);
     delete_sound(music);
     clean_score(score);

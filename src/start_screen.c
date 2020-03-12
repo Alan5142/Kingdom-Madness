@@ -3,101 +3,81 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <utils/menu.h>
 
 const int X_POSITION = 40;
 
 start_screen_result_t start_screen(void)
 {
     mvwaddstr(stdscr, 1, 0, "　　　　　　　　　　/￣ヽ\n"
-                    "　　　　　　　　　/⌒⌒⌒ヽ／|\n"
-                    "　　　　　　　⊂|　◎　　　　　∥\n"
-                    "　　　　　　　　　ヽ　 ﾟ∀ﾟ丿＼|\n"
-                    "　　　　　　　　　 __ 〃ヽ〈＿\n"
-                    "　 　　 　γ´⌒´-－ヾｖーヽ⌒ヽ-:,,　　\n"
-                    "　 　 　／⌒　 ｨ 　　 ／＼　　）; ｀ヽ-:,,　\n"
-                    "　　 　/　　 　ﾉ＾ ､　 | 萬 |　 _人　　|　\"-:,,\n"
-                    "　　　 !　　,,,ノ（　　　 ＼／　ﾉｒ;＾ >　 ）　　＼,\n"
-                    "　　　 .|　　 <_ ＼ﾍ､,, __,　､__ｒﾉ/＼ /:　　　　ヽ,,\n"
-                    "　 　 　|ヽ_／＼ ）ゝ､__,　､_ｱ〃 ／　　　　　　　＼\n"
-                    "　 　　 | ヽ､___ ヽ.=┬─┬〈　 ｿ　　　　　　　　　　\"-.,\n"
-                    "　　　　|　 　〈J　.〉､| 亀 |,　|ヽ-´　　　　　　　　　　　ゝ\n"
-                    "　　　　.|　　　/\"\"　| 甲 |:　| 　　　　　　　　　　　　　　ﾐ\n"
-                    "　　　　 |　　　ﾚ　　:| 男 .|　ﾘ　　　　　　　　　　　　　　　\"-:,,\n"
-                    "　　　　 |　　 /　　ﾉ|＿＿|　|　　　　　　　　　　　　　　　　　　\"-:,,\n"
-                    "　　　　 .|　　|　,,　ｿ　 ヽ　　） 　　　　　　　　　　　　　　　,,,-ｰ\"\n"
-                    "　　　　　|　.,ゝ 　 ）　　ｲ ヽ ﾉ　　　　　　　　　　　　　,,,-ｰ\"\n"
-                    "　　　　　.|　ｙ　｀ﾚｌ　　 〈´　 ﾘ 　　　　　　　　　,,,-ｰ\"\n"
-                    "　　　　　 | /　　 ﾉ　　　|　　 |　　　　／ \"\"\"\"\n"
-                    "　　　　　　ｌ￣￣/　　　ｌ￣￣|　　,,,-\n"
-                    "　　　　　　 〉　〈 `ｰ-ｰ-| 　　|-ｰ\"　\n"
-                    "　　　　　 /　　::|　　　　（_　　 ＼\n"
-                    "　　　　　(＿＿ﾉ　　　　　 ＼＿__）");
+                            "　　　　　　　　　/⌒⌒⌒ヽ／|\n"
+                            "　　　　　　　⊂|　◎　　　　　∥\n"
+                            "　　　　　　　　　ヽ　 ﾟ∀ﾟ丿＼|\n"
+                            "　　　　　　　　　 __ 〃ヽ〈＿\n"
+                            "　 　　 　γ´⌒´-－ヾｖーヽ⌒ヽ-:,,　　\n"
+                            "　 　 　／⌒　 ｨ 　　 ／＼　　）; ｀ヽ-:,,　\n"
+                            "　　 　/　　 　ﾉ＾ ､　 | 萬 |　 _人　　|　\"-:,,\n"
+                            "　　　 !　　,,,ノ（　　　 ＼／　ﾉｒ;＾ >　 ）　　＼,\n"
+                            "　　　 .|　　 <_ ＼ﾍ､,, __,　､__ｒﾉ/＼ /:　　　　ヽ,,\n"
+                            "　 　 　|ヽ_／＼ ）ゝ､__,　､_ｱ〃 ／　　　　　　　＼\n"
+                            "　 　　 | ヽ､___ ヽ.=┬─┬〈　 ｿ　　　　　　　　　　\"-.,\n"
+                            "　　　　|　 　〈J　.〉､| 亀 |,　|ヽ-´　　　　　　　　　　　ゝ\n"
+                            "　　　　.|　　　/\"\"　| 甲 |:　| 　　　　　　　　　　　　　　ﾐ\n"
+                            "　　　　 |　　　ﾚ　　:| 男 .|　ﾘ　　　　　　　　　　　　　　　\"-:,,\n"
+                            "　　　　 |　　 /　　ﾉ|＿＿|　|　　　　　　　　　　　　　　　　　　\"-:,,\n"
+                            "　　　　 .|　　|　,,　ｿ　 ヽ　　） 　　　　　　　　　　　　　　　,,,-ｰ\"\n"
+                            "　　　　　|　.,ゝ 　 ）　　ｲ ヽ ﾉ　　　　　　　　　　　　　,,,-ｰ\"\n"
+                            "　　　　　.|　ｙ　｀ﾚｌ　　 〈´　 ﾘ 　　　　　　　　　,,,-ｰ\"\n"
+                            "　　　　　 | /　　 ﾉ　　　|　　 |　　　　／ \"\"\"\"\n"
+                            "　　　　　　ｌ￣￣/　　　ｌ￣￣|　　,,,-\n"
+                            "　　　　　　 〉　〈 `ｰ-ｰ-| 　　|-ｰ\"　\n"
+                            "　　　　　 /　　::|　　　　（_　　 ＼\n"
+                            "　　　　　(＿＿ﾉ　　　　　 ＼＿__）");
 
-    mvwaddstr(stdscr, 36, 0, "A──────▄▀▄─────▄▀▄\n"
-                     "─────▄█░░▀▀▀▀▀░░█▄\n"
-                     "─▄▄──█░░░░░░░░░░░█──▄▄\n"
-                     "█▄▄█─█░░▀░░┬░░▀░░█─█▄▄█");
+    mvwaddstr(stdscr, 36, 0, " ──────▄▀▄─────▄▀▄\n"
+                             "─────▄█░░▀▀▀▀▀░░█▄\n"
+                             "─▄▄──█░░░░░░░░░░░█──▄▄\n"
+                             "█▄▄█─█░░▀░░┬░░▀░░█─█▄▄█");
 
     wrefresh(stdscr);
 
-    WINDOW *menu = newwin(10, 31, 15, X_POSITION);
+    static const char *choices[] = {"【Ｊｕｇａｒ】", "【Ｓａｌｉｒ】"};
+    menu_t *menu = create_menu(choices, 2, stdscr, 10, 17, 15, X_POSITION, COLOR_PAIR(5));
+    draw_menu(menu);
 
-    box(menu, '*', '*');
-    wrefresh(menu);
-
-    keypad(menu, true);
+    keypad(stdscr, true);
     curs_set(0);
 
     int choice = 0;
 
-    const char *choices[] = {"Jugar", "Salir"};
-    start_screen_result_t result;
+
+    start_screen_result_t result = -1;
 
     while (1)
     {
-        for (int i = 0; i < 2; i++)
-        {
-            if (i == choice)
-            {
-                wattron(menu, A_STANDOUT);
-            }
-            else
-            {
-                wattroff(menu, A_STANDOUT);
-            }
-            mvwprintw(menu, i + 1, 2, choices[i]);
-        }
-        wrefresh(menu);
-        int g = wgetch(menu);
+        int g = wgetch(stdscr);
         switch (g)
         {
             case KEY_UP:
-                choice--;
-                if (choice == -1)
-                    choice = 1;
+                execute_action(menu, MENU_MOVE_UP);
                 break;
             case KEY_DOWN:
-                choice++;
-                if (choice == 2)
-                    choice = 0;
+                execute_action(menu, MENU_MOVE_DOWN);
+                break;
+            case 10:
+                result = execute_action(menu, MENU_ENTER);
                 break;
             default:
                 break;
         }
-        if (g == 10)
+        draw_menu(menu);
+        if (result != -1)
         {
-            if (choice == 1)
-            {
-                result = START_SCREEN_QUIT;
-            }
-            else
-            {
-                result = START_SCREEN_PLAY;
-            }
             break;
         }
     }
-    delwin(menu);
+    delete_menu(menu);
+    menu = NULL;
     clear();
     refresh();
     return result;

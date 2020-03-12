@@ -10,7 +10,7 @@
 #include <curses.h>
 #include <stdint.h>
 
-typedef struct
+typedef struct health_t
 {
     WINDOW *window;
     uint8_t health;
@@ -23,7 +23,7 @@ void draw_health(health_t *health);
 
 bool is_alive(health_t *health);
 
-void clean_health(health_t *health);
+void delete_health(health_t *health);
 
 
 #endif //PROGRA_HEALTH_H

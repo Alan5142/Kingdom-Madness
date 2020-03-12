@@ -7,18 +7,16 @@
 #include <sound.h>
 #include <time.h>
 
-
-extern void HandleMenuToggle( unsigned char *ptr_ignore_resize);
-
 int main()
 {
     initscr();
     resize_term(40, 100);
-    srand(time(0));
+    srand(time(NULL));
     if (has_colors())
         start_color();
 
     noecho();
+    cbreak();
 
     refresh();
     void *music = create_sound();
@@ -31,14 +29,13 @@ int main()
     play_sound(music);
 
     init_color_pairs();
-    switch (start_screen())
+    while (start_screen() != START_SCREEN_QUIT)
     {
-        case START_SCREEN_QUIT:
-            break;
-        case START_SCREEN_PLAY:
-            stop_sound(music);
-            start_game();
-            break;
+        stop_sound(music);
+        start_game();
+        clear();
+        refresh();
+        play_sound(music);
     }
 
 
