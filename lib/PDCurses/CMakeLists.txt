@@ -30,7 +30,7 @@ if (WIN32 OR MSVC)
             pdcurses/outopts.c
             pdcurses/overlay.c
             pdcurses/pad.c
-            pdcurses/popup.c
+            pdcurses/panel.c
             pdcurses/printw.c
             pdcurses/refresh.c
             pdcurses/scanw.c
