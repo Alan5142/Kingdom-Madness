@@ -18,6 +18,7 @@ add_executable(progra main.c
         src/utils/colors.c
         src/utils/menu.c
         src/game/pause.c
+        src/utils/sprite.c
         src/player/player.c)
 
 target_link_libraries(progra PDcurses winmm sound_binding)

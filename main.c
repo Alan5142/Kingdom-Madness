@@ -6,9 +6,11 @@
 #include <windows.h>
 #include <sound.h>
 #include <time.h>
+#include <locale.h>
 
 int main()
 {
+    setlocale(LC_ALL, "");
     initscr();
     resize_term(40, 100);
     srand(time(NULL));

@@ -27,6 +27,10 @@ extern const uint16_t GAME_BACKGROUND;
 extern const uint16_t GAME_FOREGROUND;
 extern const uint16_t GAME_COLOR_PAIR;
 
+extern const uint16_t POTION_BACKGROUND;
+extern const uint16_t POTION_FOREGROUND;
+extern const uint16_t POTION_COLOR_PAIR;
+
 void init_color_pairs(void);
 
 

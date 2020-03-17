@@ -4,15 +4,18 @@
 
 #ifndef PROGRA_PLAYER_H
 #define PROGRA_PLAYER_H
+
 #include <stdint.h>
 #include <curses.h>
 #include <stdbool.h>
+#include <game/health.h>
+#include <game/inventory.h>
 
 
 /**
  * Contiene la información del jugador
  */
-typedef struct
+typedef struct player_t
 {
     /**
      * Posicion en x
@@ -55,7 +58,15 @@ typedef struct
  * @param health barra de salud
  * @return jugador creado c:
  */
-player_t *create_player(WINDOW *parent, struct health_t *health);
+player_t *create_player(WINDOW *parent, health_t *health);
+
+/**
+ * Dibuja el inventario del jugador
+ * @param player jugador
+ */
+void draw_player_inventory(player_t *player);
+
+void hide_player_inventory(player_t *player);
 
 /**
  * Dibuja a un jugador en la ventana especificada al crear al jugador

@@ -7,7 +7,7 @@
 
 const int X_POSITION = 40;
 
-start_screen_result_t start_screen(void)
+start_screen_result_e start_screen(void)
 {
     mvwaddstr(stdscr, 1, 0, "　　　　　　　　　　/￣ヽ\n"
                             "　　　　　　　　　/⌒⌒⌒ヽ／|\n"
@@ -48,10 +48,7 @@ start_screen_result_t start_screen(void)
     keypad(stdscr, true);
     curs_set(0);
 
-    int choice = 0;
-
-
-    start_screen_result_t result = -1;
+    start_screen_result_e result = -1;
 
     while (1)
     {

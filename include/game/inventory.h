@@ -3,8 +3,9 @@
 //
 #ifndef PROGRA_INVENTORY_H
 #define PROGRA_INVENTORY_H
+
 #include <stdint.h>
-#include "player/player.h"
+#include <stdbool.h>
 #include "health.h"
 
 typedef enum
@@ -13,7 +14,7 @@ typedef enum
     POTION_MEDIUM,
 } item_resource_e;
 
-typedef void(*item_effect_c)(player_t*);
+typedef void(*item_effect_c)(struct player_t *);
 
 typedef struct
 {
@@ -26,9 +27,10 @@ typedef struct inventory_t
 {
     WINDOW *window;
     item_t items[4][4];
+    bool shown;
 } inventory_t;
 
-inventory_t *create_inventory_screen(WINDOW *parent);
+inventory_t *create_inventory(WINDOW *parent);
 
 void draw_inventory(inventory_t *inventory);
 

@@ -34,14 +34,12 @@ void start_game(void)
 
     WINDOW *game = newwin(getmaxy(stdscr) - 1, getmaxx(stdscr), 1, 0);
 
-
     player_t *player = create_player(game, player_health);
     draw_player(player);
 
-    mvwaddstr(game, player->y, player->x, "☺");
+    draw_player(player);
     wrefresh(game);
 
-    inventory_t *inventory = create_inventory_screen(game);
 
     nodelay(game, true);
     keypad(game, true);
@@ -67,7 +65,7 @@ void start_game(void)
                 menu = NULL;
                 wclear(game);
                 wrefresh(game);
-                mvwaddstr(game, player->y, player->x, "😂");
+                draw_player(player);
                 continue;
             }
             switch (choice)
@@ -76,16 +74,14 @@ void start_game(void)
                     delete_pause_menu(menu);
                     menu = NULL;
                     wclear(game);
-                    wrefresh(game);
-                    mvwaddstr(game, player->y, player->x, "😂");
+                    draw_player(player);
                     break;
                 case MENU_INVENTORY:
                     delete_pause_menu(menu);
                     wclear(game);
                     wrefresh(game);
                     menu = NULL;
-                    draw_inventory(inventory);
-                    // TODO crear inventario
+                    draw_player_inventory(player);
                     break;
                 case MENU_SAVE:
                     // TODO guardar
@@ -97,11 +93,19 @@ void start_game(void)
         }
         if (key == 27) // menu
         {
-            menu = create_pause_menu(game);
-            continue;
+            if (player->inventory->shown) // eliminar
+            {
+                hide_player_inventory(player);
+                wclear(game);
+                wrefresh(game);
+                draw_player(player);
+            }
+            else
+            {
+                menu = create_pause_menu(game);
+            }
         }
-
-        if (process_player_input(player, key))
+        else if (process_player_input(player, key))
         {
             draw_player(player);
         }

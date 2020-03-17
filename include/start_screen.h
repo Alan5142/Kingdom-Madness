@@ -9,8 +9,8 @@ typedef enum
 {
     START_SCREEN_PLAY,
     START_SCREEN_QUIT
-} start_screen_result_t;
+} start_screen_result_e;
 
-start_screen_result_t start_screen(void);
+start_screen_result_e start_screen(void);
 
 #endif //PROGRA_START_SCREEN_H
