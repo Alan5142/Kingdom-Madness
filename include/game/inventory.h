@@ -12,6 +12,11 @@ typedef enum
 {
     POTION_LOW,
     POTION_MEDIUM,
+    ARMOR_LOW,
+    ARMOR_MEDIUM,
+    POWER_LOW,
+    POWER_MEDIUM,
+    NONE
 } item_resource_e;
 
 typedef void(*item_effect_c)(struct player_t *);
@@ -26,7 +31,7 @@ typedef struct
 typedef struct inventory_t
 {
     WINDOW *window;
-    item_t items[4][4];
+    item_t items[2][3];
     bool shown;
 } inventory_t;
 
