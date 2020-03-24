@@ -10,18 +10,21 @@
 
 typedef enum
 {
-    POTION_LOW,
-    POTION_MEDIUM,
-    ARMOR_LOW,
-    ARMOR_MEDIUM,
-    POWER_LOW,
-    POWER_MEDIUM,
-    NONE
+    ITEM_POTION_LOW,
+    ITEM_POTION_MEDIUM,
+    ITEM_ARMOR_LOW,
+    ITEM_ARMOR_MEDIUM,
+    ITEM_POWER_LOW,
+    ITEM_POWER_MEDIUM,
+    ITEM_NONE
 } item_resource_e;
+
+
+struct player_t;
 
 typedef void(*item_effect_c)(struct player_t *);
 
-typedef struct
+typedef struct item_t
 {
     uint8_t quantity;
     item_resource_e item;
@@ -40,5 +43,9 @@ inventory_t *create_inventory(WINDOW *parent);
 void draw_inventory(inventory_t *inventory);
 
 void delete_inventory(inventory_t *inventory);
+
+item_t create_item(item_resource_e item);
+
+const char *get_item_display_name(item_resource_e item);
 
 #endif //PROGRA_INVENTORY_H

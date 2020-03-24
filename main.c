@@ -13,7 +13,7 @@ int main()
     setlocale(LC_ALL, "");
     initscr();
     resize_term(40, 100);
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     if (has_colors())
         start_color();
 

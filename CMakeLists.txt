@@ -24,6 +24,16 @@ add_executable(progra main.c
 target_link_libraries(progra PDcurses winmm sound_binding)
 target_include_directories(progra PRIVATE include)
 
+if (MSVC)
+    target_compile_options(progra PRIVATE /W4 /WX /wd4005 /wd4244 -D_CRT_SECURE_NO_WARNINGS)
+else ()
+    target_compile_options(progra PRIVATE -Wall -Wextra -pedantic -Werror)
+endif ()
+
 add_custom_command(TARGET progra POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources ${CMAKE_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/lib/SFML/extlibs/bin/x64/openal32.dll ${CMAKE_BINARY_DIR})
+
+add_custom_target(copy_resources
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources ${CMAKE_BINARY_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/lib/SFML/extlibs/bin/x64/openal32.dll ${CMAKE_BINARY_DIR})

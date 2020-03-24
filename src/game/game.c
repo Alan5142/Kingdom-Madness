@@ -9,7 +9,7 @@
 #include <sound.h>
 #include <stdlib.h>
 #include <game/pause.h>
-#include <game/inventory.h>
+#include <utils/sprite.h>
 #include "game/player/player.h"
 
 void start_game(void)
@@ -47,6 +47,11 @@ void start_game(void)
     wbkgd(game, COLOR_PAIR(GAME_COLOR_PAIR));
 
     pause_menu_t *menu = NULL;
+
+    take_damage(player, 5);
+    draw_health(player->health);
+
+    draw_sprite(game, 5, 5, "STORE.txt", NULL, NULL);
 
     while (1)
     {

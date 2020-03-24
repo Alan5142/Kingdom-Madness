@@ -41,3 +41,19 @@ void delete_health(health_t *health)
     delwin(health->window);
     free(health);
 }
+
+void add_health(health_t *health, int8_t quantity)
+{
+    if ((int8_t) health->health + quantity < 0) // quantity < 0
+    {
+        health->health = 0;
+    }
+    else if (health->health > health->max_health)
+    {
+        health->health = health->max_health;
+    }
+    else
+    {
+        health->health += quantity;
+    }
+}

@@ -48,7 +48,7 @@ start_screen_result_e start_screen(void)
     keypad(stdscr, true);
     curs_set(0);
 
-    start_screen_result_e result = -1;
+    start_screen_result_e result = START_SCREEN_NONE;
 
     while (1)
     {
@@ -68,7 +68,7 @@ start_screen_result_e start_screen(void)
                 break;
         }
         draw_menu(menu);
-        if (result != -1)
+        if (result != START_SCREEN_NONE)
         {
             break;
         }

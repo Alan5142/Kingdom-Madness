@@ -49,6 +49,16 @@ typedef struct player_t
      * Inventario del jugador
      */
     struct inventory_t *inventory;
+
+    /**
+     * Multiplicador de armadura, si se utilizan pocimas de armadura este valor se reduce
+     */
+    float armor_multiplier;
+
+    /**
+     * Multiplicador de daño, entre mayor sea más daño hace
+     */
+    float damage_multiplier;
 } player_t;
 
 
@@ -67,6 +77,8 @@ player_t *create_player(WINDOW *parent, health_t *health);
 void draw_player_inventory(player_t *player);
 
 void hide_player_inventory(player_t *player);
+
+void take_damage(player_t *player, uint8_t quantity);
 
 /**
  * Dibuja a un jugador en la ventana especificada al crear al jugador

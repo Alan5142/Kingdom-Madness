@@ -15,6 +15,7 @@ player_t *create_player(WINDOW *parent, health_t *health)
     player->previous_x = player->x;
     player->previous_y = player->y;
     player->inventory = create_inventory(parent);
+    player->armor_multiplier = 1.f;
     return player;
 }
 
@@ -90,4 +91,10 @@ void hide_player_inventory(player_t *player)
     wclear(player->inventory->window);
     wrefresh(player->inventory->window);
     player->inventory->shown = false;
+}
+
+void take_damage(player_t *player, uint8_t quantity)
+{
+    int8_t health_result = (int8_t)((float)quantity * player->armor_multiplier);
+    add_health(player->health, -health_result);
 }
