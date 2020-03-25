@@ -8,12 +8,15 @@
 #include <curses.h>
 #include <stdint.h>
 #include <utils/menu.h>
+#include <stdbool.h>
 
 typedef struct
 {
     menu_t *menu;
     WINDOW *window;
-    int8_t current_choice;
+    int16_t *current_choice;
+    bool should_show;
+    int option;
 } pause_menu_t;
 
 typedef enum
@@ -26,7 +29,11 @@ typedef enum
 } menu_choice_e;
 
 pause_menu_t *create_pause_menu(WINDOW *parent);
-menu_choice_e draw_pause_menu(pause_menu_t *menu, int option);
+
+menu_choice_e execute_pause_menu_action(pause_menu_t *menu);
+
+void draw_pause_menu(pause_menu_t *menu);
+
 void delete_pause_menu(pause_menu_t *menu);
 
 #endif //PROGRA_PAUSE_H

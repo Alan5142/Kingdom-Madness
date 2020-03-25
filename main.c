@@ -2,15 +2,13 @@
 #include <game/game.h>
 #include <utils/colors.h>
 #include "start_screen.h"
-#include "play_music.h"
 #include <windows.h>
 #include <sound.h>
 #include <time.h>
-#include <locale.h>
+#include <stdbool.h>
 
 int main()
 {
-    setlocale(LC_ALL, "");
     initscr();
     resize_term(40, 100);
     srand((unsigned int)time(NULL));
@@ -25,7 +23,7 @@ int main()
 
     char music_path[64];
 
-    sprintf(music_path, "sound/intro/%d.ogg", rand() % 4 + 1);
+    sprintf(music_path, "intro/%d.ogg", rand() % 4 + 1);
     sound_open_file(music, music_path);
     set_loop(music, true);
     play_sound(music);

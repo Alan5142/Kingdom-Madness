@@ -30,8 +30,8 @@ void draw_score(score_t *score)
     wrefresh(score->window);
 }
 
-void clean_score(score_t *health)
+void clean_score(score_t *score)
 {
-    delwin(health->window);
-    free(health);
+    delwin(score->window);
+    free(score);
 }

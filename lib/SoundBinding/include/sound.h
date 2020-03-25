@@ -10,17 +10,20 @@ extern "C"
 {
 #endif
 
- void *create_sound();
 
- void sound_open_file(void *music_ptr, const char *file);
+typedef void* sound_t;
 
- void play_sound(void *music_ptr);
+sound_t create_sound();
 
- void delete_sound(void *music_ptr);
+ void sound_open_file(sound_t music_ptr, const char *file);
 
- void stop_sound(void *music_ptr);
+ void play_sound(sound_t music_ptr);
 
- void set_loop(void *music_ptr, unsigned char loop);
+ void delete_sound(sound_t music_ptr);
+
+ void stop_sound(sound_t music_ptr);
+
+ void set_loop(sound_t music_ptr, unsigned char loop);
 
 #ifdef __cplusplus
 }

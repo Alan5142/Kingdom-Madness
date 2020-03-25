@@ -74,7 +74,6 @@ start_screen_result_e start_screen(void)
         }
     }
     delete_menu(menu);
-    menu = NULL;
     clear();
     refresh();
     return result;

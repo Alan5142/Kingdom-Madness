@@ -4,33 +4,35 @@
 #include "sound.h"
 #include <SFML/Audio.hpp>
 
-void *create_sound()
+sound_t create_sound()
 {
     auto sound = new sf::Music;
     return sound;
 }
 
-void sound_open_file(void *music_ptr, const char *file)
+void sound_open_file(sound_t music_ptr, const char *file)
 {
-    static_cast<sf::Music*>(music_ptr)->openFromFile(file);
+    char path[64];
+    sprintf(path, "sound/%s", file);
+    static_cast<sf::Music*>(music_ptr)->openFromFile(path);
 }
 
-void play_sound(void *music_ptr)
+void play_sound(sound_t music_ptr)
 {
     static_cast<sf::Music*>(music_ptr)->play();
 }
 
-void delete_sound(void *music_ptr)
+void delete_sound(sound_t music_ptr)
 {
     delete static_cast<sf::Music*>(music_ptr);
 }
 
-void stop_sound(void *music_ptr)
+void stop_sound(sound_t music_ptr)
 {
     static_cast<sf::Music*>(music_ptr)->stop();
 }
 
-void set_loop(void *music_ptr, unsigned char loop)
+void set_loop(sound_t music_ptr, unsigned char loop)
 {
     static_cast<sf::Music*>(music_ptr)->setLoop(loop);
 }

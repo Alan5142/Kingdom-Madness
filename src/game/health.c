@@ -31,7 +31,7 @@ health_t *start_health(void)
     health->window = newwin(1, 14, 0, 0);
     health->health = START_HEALTH;
     health->max_health = START_HEALTH;
-    draw_health(health);
+    // draw_health(health);
 
     return health;
 }

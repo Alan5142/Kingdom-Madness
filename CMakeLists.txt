@@ -13,12 +13,12 @@ add_executable(progra main.c
         src/game/game.c
         src/game/health.c
         src/game/inventory.c
-        src/play_music.c
         src/game/score.c
         src/utils/colors.c
         src/utils/menu.c
         src/game/pause.c
         src/utils/sprite.c
+        src/utils/render_graph.c
         src/player/player.c)
 
 target_link_libraries(progra PDcurses winmm sound_binding)

@@ -113,7 +113,7 @@ inventory_t *create_inventory(WINDOW *parent)
         for (int j = 0; j <= 2; j++)
         {
             inventory->items[i][j] = create_item(ITEM_NONE);
-            inventory->items[i][j].item = ITEM_ARMOR_LOW;
+            inventory->items[i][j].item = ITEM_ARMOR_MEDIUM;
             inventory->items[i][j].quantity = 0;
             inventory->items[i][j].item_effect = NULL;
         }
@@ -304,7 +304,7 @@ item_t create_item(item_resource_e item)
             result.item_effect = NULL;
             break;
         default: // JAMAS DEBERÍA PASAR
-            exit(-1);
+            abort();
     }
     return result;
 }

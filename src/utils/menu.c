@@ -15,14 +15,14 @@ create_menu(const char **options,
             chtype default_attribute)
 {
     menu_t *menu = malloc(sizeof(menu_t));
+
+    menu->default_attribute = default_attribute;
     menu->length = size;
     menu->options = options;
     menu->current_choice = 0;
     menu->window = subwin(parent, nlines, ncolumns, y, x);
     wclear(menu->window);
-    set_menu_attribute(menu, default_attribute);
-    box(menu->window, 0, 0);
-    execute_action(menu, -1);
+    execute_action(menu, MENU_REDRAW);
     return menu;
 }
 
@@ -58,6 +58,11 @@ int16_t execute_action(menu_t *menu, menu_action_t action)
             break;
         case MENU_ENTER:
             return menu->current_choice;
+        case MENU_REDRAW:
+            wattroff(menu->window, A_STANDOUT);
+            set_menu_attribute(menu, menu->default_attribute);
+            box(menu->window, 0, 0);
+            break;
         default:
             break;
     }
