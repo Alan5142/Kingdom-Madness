@@ -10,7 +10,7 @@
 
 typedef enum
 {
-    ITEM_POTION_LOW,
+    ITEM_POTION_LOW = 0,
     ITEM_POTION_MEDIUM,
     ITEM_ARMOR_LOW,
     ITEM_ARMOR_MEDIUM,

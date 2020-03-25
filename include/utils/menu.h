@@ -7,7 +7,7 @@
 
 #include <curses.h>
 
-typedef struct
+typedef struct menu_t
 {
     WINDOW *window;
     const char **options;

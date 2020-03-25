@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <game/health.h>
 #include <game/inventory.h>
+#include <game/store.h>
 
 
 /**

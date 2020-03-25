@@ -2,12 +2,12 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="progra" targetName="sfml-system" />
       <config projectName="progra" targetName="sfml-audio" />
       <config projectName="progra" targetName="sfml-window" />
       <config projectName="progra" targetName="PDcurses" />
       <config projectName="progra" targetName="sfml-graphics" />
       <config projectName="progra" targetName="sfml-main" />
+      <config projectName="progra" targetName="sfml-system" />
       <config projectName="progra" targetName="sound_binding" />
       <config projectName="progra" targetName="progra" />
       <config projectName="progra" targetName="copy_resources" />
@@ -23,24 +23,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57cf3f40-40ce-4c8b-a3f6-0a97b6275c8b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/include/utils/render_graph.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/render_graph.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/game/store.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sound/intro/5.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/CASTLE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/PLAYER.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/STORE_INTERNAL.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/enemy/DEVIL.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/enemy/DEVIL_SECOND_PHASE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/enemy/DRAGON.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/enemy/GHOST.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/enemy/REAPER.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/store/STORE_SELLER.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sprites/store/STORE_SIGN.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/game/store.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/game/pause.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/game/pause.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/play_music.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/game/inventory.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/game/inventory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/game/player/player.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/game/player/player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/utils/menu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/utils/menu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/SoundBinding/include/sound.h" beforeDir="false" afterPath="$PROJECT_DIR$/lib/SoundBinding/include/sound.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/SoundBinding/src/sound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/lib/SoundBinding/src/sound.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game/game.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/game.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/health.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/health.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/inventory.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/inventory.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/pause.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/pause.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/score.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/score.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/play_music.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/start_screen.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/start_screen.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/menu.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/menu.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +89,9 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\alan2\Documentos\proyectos\progra\resources\sound\intro" />
+      <recent name="C:\Users\alan2\Documentos\proyectos\progra\resources\sprites\store" />
+      <recent name="C:\Users\alan2\Documentos\proyectos\progra\resources\sprites\enemy" />
       <recent name="C:\Users\alan2\Documentos\proyectos\progra\lib\SoundBinding\src" />
     </key>
   </component>
@@ -181,7 +187,8 @@
       <workItem from="1585000313866" duration="10960000" />
       <workItem from="1585078179000" duration="7848000" />
       <workItem from="1585113955343" duration="2934000" />
-      <workItem from="1585153078105" duration="3122000" />
+      <workItem from="1585153078105" duration="7107000" />
+      <workItem from="1585170665254" duration="3537000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <created>1582666700948</created>
@@ -253,7 +260,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585010760681</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Render improvement">
+      <created>1585157905270</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1585157905270</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,13 +275,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="First commit" />
     <MESSAGE value="Update uwu" />
     <MESSAGE value="Better sound system" />
     <MESSAGE value="Better sounds" />
     <MESSAGE value="Update" />
     <MESSAGE value="Sprite improved" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sprite improved" />
+    <MESSAGE value="Render improvement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Render improvement" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582678478600">
@@ -278,10 +295,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1193" y="324" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585008986599" />
-    <state x="519" y="118" key="CommitChangelistDialog2" timestamp="1585010756451">
+    <state x="519" y="118" key="CommitChangelistDialog2" timestamp="1585157891534">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="519" y="118" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1585010756451" />
+    <state x="519" y="118" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1585157891534" />
     <state width="458" height="466" key="DebuggerActiveHint" timestamp="1585085325173">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -302,38 +319,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="755" y="229" key="Github.UntrackedFilesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582668910896" />
-    <state width="1877" height="276" key="GridCell.Tab.0.bottom" timestamp="1585153984183">
+    <state width="1877" height="276" key="GridCell.Tab.0.bottom" timestamp="1585174263424">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585153984183" />
-    <state width="1877" height="276" key="GridCell.Tab.0.center" timestamp="1585153984183">
+    <state width="1877" height="276" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585174263424" />
+    <state width="1877" height="276" key="GridCell.Tab.0.center" timestamp="1585174263424">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585153984183" />
-    <state width="1877" height="276" key="GridCell.Tab.0.left" timestamp="1585153984183">
+    <state width="1877" height="276" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585174263424" />
+    <state width="1877" height="276" key="GridCell.Tab.0.left" timestamp="1585174263423">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585153984183" />
-    <state width="1877" height="276" key="GridCell.Tab.0.right" timestamp="1585153984183">
+    <state width="1877" height="276" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585174263423" />
+    <state width="1877" height="276" key="GridCell.Tab.0.right" timestamp="1585174263424">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585153984183" />
-    <state width="1877" height="346" key="GridCell.Tab.1.bottom" timestamp="1585149616861">
+    <state width="1877" height="276" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585174263424" />
+    <state width="1877" height="346" key="GridCell.Tab.1.bottom" timestamp="1585162865242">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="346" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585149616861" />
-    <state width="1877" height="346" key="GridCell.Tab.1.center" timestamp="1585149616861">
+    <state width="1877" height="346" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585162865242" />
+    <state width="1877" height="346" key="GridCell.Tab.1.center" timestamp="1585162865242">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="346" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585149616861" />
-    <state width="1877" height="346" key="GridCell.Tab.1.left" timestamp="1585149616861">
+    <state width="1877" height="346" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585162865242" />
+    <state width="1877" height="346" key="GridCell.Tab.1.left" timestamp="1585162865242">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="346" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585149616861" />
-    <state width="1877" height="346" key="GridCell.Tab.1.right" timestamp="1585149616861">
+    <state width="1877" height="346" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585162865242" />
+    <state width="1877" height="346" key="GridCell.Tab.1.right" timestamp="1585162865242">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="346" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585149616861" />
+    <state width="1877" height="346" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585162865242" />
     <state x="754" y="232" key="RollbackChangesDialog" timestamp="1585000656942">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -342,14 +359,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="163" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1582774625819" />
-    <state x="552" y="254" key="Vcs.Push.Dialog.v2" timestamp="1585010769299">
+    <state x="552" y="254" key="Vcs.Push.Dialog.v2" timestamp="1585158067626">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1585010769299" />
-    <state x="656" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1585153080450">
+    <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1585158067626" />
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1585170990214">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="656" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585153080450" />
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585170990214" />
     <state x="656" y="252" width="607" height="536" key="find.popup" timestamp="1585153306734">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -358,10 +375,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="692" y="312" key="git4idea.merge.GitPullDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585000673017" />
-    <state x="685" y="163" key="refactoring.ChangeSignatureDialog" timestamp="1584334241807">
+    <state x="685" y="163" key="refactoring.ChangeSignatureDialog" timestamp="1585162342778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="685" y="163" key="refactoring.ChangeSignatureDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584334241807" />
+    <state x="685" y="163" key="refactoring.ChangeSignatureDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585162342778" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1585001804057">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

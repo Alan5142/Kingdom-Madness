@@ -4,11 +4,13 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <utils/menu.h>
+#include <utils/sprite.h>
 
 const int X_POSITION = 40;
 
 start_screen_result_e start_screen(void)
 {
+    /*
     mvwaddstr(stdscr, 1, 0, "　　　　　　　　　　/￣ヽ\n"
                             "　　　　　　　　　/⌒⌒⌒ヽ／|\n"
                             "　　　　　　　⊂|　◎　　　　　∥\n"
@@ -33,11 +35,16 @@ start_screen_result_e start_screen(void)
                             "　　　　　　 〉　〈 `ｰ-ｰ-| 　　|-ｰ\"　\n"
                             "　　　　　 /　　::|　　　　（_　　 ＼\n"
                             "　　　　　(＿＿ﾉ　　　　　 ＼＿__）");
+                            */
 
+    draw_sprite(stdscr, 0, 0, "CASTLE.txt", NULL, NULL);
+
+    /*
     mvwaddstr(stdscr, 36, 0, " ──────▄▀▄─────▄▀▄\n"
                              "─────▄█░░▀▀▀▀▀░░█▄\n"
                              "─▄▄──█░░░░░░░░░░░█──▄▄\n"
                              "█▄▄█─█░░▀░░┬░░▀░░█─█▄▄█");
+                             */
 
     wrefresh(stdscr);
 

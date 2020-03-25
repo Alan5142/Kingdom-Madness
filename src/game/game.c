@@ -59,6 +59,12 @@ void start_game(void)
     pause_menu_t *menu = create_pause_menu(game);
     render_node_t *menu_node = NULL;
 
+    store_t *store = create_store(game, 2, 2);
+
+    render_node_t *store_node = add_child(render_graph->entry_point, (draw_callback_c) draw_store);
+    store_node->param = store;
+    store_node->require_redraw = false;
+
     draw_render_graph(render_graph);
     while (1)
     {
@@ -136,6 +142,7 @@ void start_game(void)
     }
 
     // clean resources
+    delete_store(store);
     delwin(face);
     delete_pause_menu(menu);
     delete_render_graph(render_graph);

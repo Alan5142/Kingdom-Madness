@@ -23,7 +23,7 @@ int main()
 
     char music_path[64];
 
-    sprintf(music_path, "intro/%d.ogg", rand() % 4 + 1);
+    sprintf(music_path, "intro/%d.ogg", rand() % 5 + 1);
     sound_open_file(music, music_path);
     set_loop(music, true);
     play_sound(music);
@@ -35,6 +35,8 @@ int main()
         start_game();
         clear();
         refresh();
+        sprintf(music_path, "intro/%d.ogg", rand() % 5 + 1);
+        sound_open_file(music, music_path);
         play_sound(music);
     }
 
