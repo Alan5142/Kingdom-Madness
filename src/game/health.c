@@ -6,6 +6,7 @@
 #include "utils/colors.h"
 #include <curses.h>
 #include <stdlib.h>
+#include <utils/render_graph.h>
 
 const uint8_t START_HEALTH = 8;
 const uint8_t MAX_HEALTH = 12;
@@ -25,13 +26,15 @@ void draw_health(health_t *health)
     wrefresh(health->window);
 }
 
-health_t *start_health(void)
+health_t *start_health(render_node_t * node)
 {
     health_t *health = malloc(sizeof(health_t));
     health->window = newwin(1, 14, 0, 0);
     health->health = START_HEALTH;
     health->max_health = START_HEALTH;
-    // draw_health(health);
+    node->draw_callback = (draw_callback_c) draw_health;
+    node->param = health;
+    health->health_node = node;
 
     return health;
 }

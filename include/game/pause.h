@@ -10,6 +10,8 @@
 #include <utils/menu.h>
 #include <stdbool.h>
 
+struct render_node_t;
+
 typedef struct
 {
     menu_t *menu;
@@ -17,6 +19,7 @@ typedef struct
     int16_t *current_choice;
     bool should_show;
     int option;
+    struct render_node_t* pause_node;
 } pause_menu_t;
 
 typedef enum
@@ -28,7 +31,7 @@ typedef enum
     MENU_NONE
 } menu_choice_e;
 
-pause_menu_t *create_pause_menu(WINDOW *parent);
+pause_menu_t *create_pause_menu(WINDOW *parent, struct render_node_t *node);
 
 menu_choice_e execute_pause_menu_action(pause_menu_t *menu);
 

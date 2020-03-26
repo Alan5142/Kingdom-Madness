@@ -4,16 +4,19 @@
 
 #include "game/pause.h"
 #include <stdlib.h>
+#include <utils/render_graph.h>
 
-pause_menu_t *create_pause_menu(WINDOW *parent)
+pause_menu_t *create_pause_menu(WINDOW *parent, render_node_t *node)
 {
     pause_menu_t *menu = malloc(sizeof(pause_menu_t));
     static const char *choices[] = {"【 Continuar 】", "【 Inventario】", "【  Guardar  】", "【   Salir   】"};
-
+    node->draw_callback = (draw_callback_c) draw_pause_menu;
+    node->param = menu;
     menu->should_show = false;
     menu->menu = create_menu(choices, 4, parent, 6, 17, getmaxy(stdscr) / 2 - 2, getmaxx(stdscr) / 2 - 8, COLOR_PAIR(5));
     menu->current_choice = &menu->menu->current_choice;
-    // draw_pause_menu(menu, MENU_NONE);
+    menu->pause_node = node;
+    node->require_redraw = false;
 
     return menu;
 }

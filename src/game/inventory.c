@@ -9,7 +9,7 @@
 
 void on_start_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 2 && x != 0 && y < 6)) || (y > 0 && y < 3 && x > 1 && x < 9))
+    if (character_to_draw == ' ' && ((y > 2 && x != 0 && y < 6) || (y > 0 && y < 3 && x > 1 && x < 9)))
     {
         wattron(window, COLOR_PAIR(POTION_LOW_COLOR_PAIR));
     }
@@ -17,7 +17,7 @@ void on_start_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int characte
 
 void on_end_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 2 && x != 0 && y < 6)) || (y > 0 && y < 3 && x > 1 && x < 9))
+    if (character_to_draw == ' ' && ((y > 2 && x != 0 && y < 6) || (y > 0 && y < 3 && x > 1 && x < 9)))
     {
         wattroff(window, COLOR_PAIR(POTION_LOW_COLOR_PAIR));
     }
@@ -25,7 +25,7 @@ void on_end_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_
 
 void on_start_draw_potion_medium(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 2 && x != 0 && y < 6)) || (y > 0 && y < 3 && x > 1 && x < 9))
+    if (character_to_draw == ' ' && ((y > 2 && x != 0 && y < 6) || (y > 0 && y < 3 && x > 1 && x < 9)))
     {
         wattron(window, COLOR_PAIR(POTION_MEDIUM_COLOR_PAIR));
     }
@@ -33,7 +33,7 @@ void on_start_draw_potion_medium(WINDOW *window, int16_t y, int16_t x, int chara
 
 void on_end_draw_potion_medium(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 2 && x != 0 && y < 6)) || (y > 0 && y < 3 && x > 1 && x < 9))
+    if (character_to_draw == ' ' && ((y > 2 && x != 0 && y < 6) || (y > 0 && y < 3 && x > 1 && x < 9)))
     {
         wattroff(window, COLOR_PAIR(POTION_MEDIUM_COLOR_PAIR));
     }
@@ -41,7 +41,7 @@ void on_end_draw_potion_medium(WINDOW *window, int16_t y, int16_t x, int charact
 
 void on_start_draw_armor_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 0 && y <= 3)) || (y == 4 && x > 1) | (y == 5 && x > 2))
+    if (character_to_draw == ' ' && ((y > 0 && y <= 3) || (y == 4 && x > 1) || (y == 5 && x > 2)))
     {
         wattron(window, COLOR_PAIR(ARMOR_LOW_COLOR_PAIR));
     }
@@ -49,7 +49,7 @@ void on_start_draw_armor_low(WINDOW *window, int16_t y, int16_t x, int character
 
 void on_end_draw_armor_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 0 && y <= 3)) || (y == 4 && x > 1) || (y == 5 && x > 2))
+    if (character_to_draw == ' ' && ((y > 0 && y <= 3) || (y == 4 && x > 1) || (y == 5 && x > 2)))
     {
         wattroff(window, COLOR_PAIR(ARMOR_LOW_COLOR_PAIR));
     }
@@ -57,7 +57,7 @@ void on_end_draw_armor_low(WINDOW *window, int16_t y, int16_t x, int character_t
 
 void on_start_draw_armor_medium(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 0 && y <= 3)) || (y == 4 && x > 1) || (y == 5 && x > 2))
+    if (character_to_draw == ' ' && ((y > 0 && y <= 3) || (y == 4 && x > 1) || (y == 5 && x > 2)))
     {
         wattron(window, COLOR_PAIR(ARMOR_MEDIUM_COLOR_PAIR));
     }
@@ -65,7 +65,7 @@ void on_start_draw_armor_medium(WINDOW *window, int16_t y, int16_t x, int charac
 
 void on_end_draw_armor_medium(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y > 0 && y <= 3)) || (y == 4 && x > 1) || (y == 5 && x > 2))
+    if (character_to_draw == ' ' && ((y > 0 && y <= 3) || (y == 4 && x > 1) || (y == 5 && x > 2)))
     {
         wattroff(window, COLOR_PAIR(ARMOR_MEDIUM_COLOR_PAIR));
     }
@@ -73,7 +73,7 @@ void on_end_draw_armor_medium(WINDOW *window, int16_t y, int16_t x, int characte
 
 void on_start_draw_power_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y == 1 || (y == 2 && x > 2))) || (y == 3 && x > 0) || (y > 3 && x > 3))
+    if (character_to_draw == ' ' && (((y == 1 || y == 2) && x > 2) || (y == 3 && x > 0) || (y > 3 && x > 3)))
     {
         wattron(window, COLOR_PAIR(POWER_LOW_COLOR_PAIR));
     }
@@ -81,7 +81,7 @@ void on_start_draw_power_low(WINDOW *window, int16_t y, int16_t x, int character
 
 void on_end_draw_power_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y == 1 || (y == 2 && x > 2))) || (y == 3 && x > 0) || (y > 3 && x > 3))
+    if (character_to_draw == ' ' && (((y == 1 || y == 2) && x > 2) || (y == 3 && x > 0) || (y > 3 && x > 3)))
     {
         wattroff(window, COLOR_PAIR(POWER_LOW_COLOR_PAIR));
     }
@@ -89,7 +89,7 @@ void on_end_draw_power_low(WINDOW *window, int16_t y, int16_t x, int character_t
 
 void on_start_draw_power_medium(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y == 1 || (y == 2 && x > 2))) || (y == 3 && x > 0) || (y > 3 && x > 3))
+    if (character_to_draw == ' ' && (((y == 1 || y == 2) && x > 2) || (y == 3 && x > 0) || (y > 3 && x > 3)))
     {
         wattron(window, COLOR_PAIR(POWER_MEDIUM_COLOR_PAIR));
     }
@@ -97,7 +97,7 @@ void on_start_draw_power_medium(WINDOW *window, int16_t y, int16_t x, int charac
 
 void on_end_draw_power_medium(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
-    if ((character_to_draw == ' ' && (y == 1 || (y == 2 && x > 2))) || (y == 3 && x > 0) || (y > 3 && x > 3))
+    if (character_to_draw == ' ' && (((y == 1 || y == 2) && x > 2) || (y == 3 && x > 0) || (y > 3 && x > 3)))
     {
         wattroff(window, COLOR_PAIR(POWER_MEDIUM_COLOR_PAIR));
     }
@@ -113,9 +113,6 @@ inventory_t *create_inventory(WINDOW *parent)
         for (int j = 0; j <= 2; j++)
         {
             inventory->items[i][j] = create_item(ITEM_NONE);
-            inventory->items[i][j].item = ITEM_ARMOR_MEDIUM;
-            inventory->items[i][j].quantity = 0;
-            inventory->items[i][j].item_effect = NULL;
         }
     }
     return inventory;

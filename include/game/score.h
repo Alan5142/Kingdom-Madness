@@ -9,14 +9,17 @@
 #include <stdint.h>
 #include <curses.h>
 
+struct render_node_t;
+
 typedef struct
 {
     WINDOW *window;
     uint32_t score;
     uint8_t money;
+    struct render_node_t* score_node;
 } score_t;
 
-score_t *start_score(void);
+score_t *start_score(struct render_node_t *node);
 
 void draw_score(score_t *health);
 
