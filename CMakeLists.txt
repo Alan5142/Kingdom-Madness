@@ -8,7 +8,7 @@ add_subdirectory(lib/SFML)
 add_subdirectory(lib/SoundBinding)
 
 add_definitions(-DPDC_WIDE=1)
-add_executable(progra main.c
+add_executable(progra WIN32 main.c
         src/start_screen.c
         src/game/game.c
         src/game/health.c
@@ -20,6 +20,7 @@ add_executable(progra main.c
         src/utils/sprite.c
         src/utils/render_graph.c
         src/game/store.c
+        src/game/game_data.c
         src/player/player.c)
 
 target_link_libraries(progra PDcurses winmm sound_binding)

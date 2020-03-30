@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <utils/sprite.h>
 #include <utils/colors.h>
+#include <utils/render_graph.h>
+#include <sound.h>
+#include <windows.h>
 
 void on_start_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -112,7 +115,8 @@ inventory_t *create_inventory(WINDOW *parent)
     {
         for (int j = 0; j <= 2; j++)
         {
-            inventory->items[i][j] = create_item(ITEM_NONE);
+            inventory->items[i][j] = create_item(ITEM_POTION_LOW);
+            inventory->items[i][j].quantity = 10;
         }
     }
     return inventory;
@@ -245,12 +249,28 @@ const char *get_item_display_name(item_resource_e item)
 
 void potion_low_effect(player_t *player)
 {
+    sound_t sound = create_sound();
+    sound_open_file(sound, "sfx/drink.ogg");
+    int milliseconds = get_sound_milliseconds_duration(sound);
+    set_loop(sound, false);
+    play_sound(sound);
+    Sleep(milliseconds);
+
     add_health(player->health, 2);
+    player->health->health_node->require_redraw = true;
 }
 
 void potion_medium_effect(player_t *player)
 {
+    sound_t sound = create_sound();
+    sound_open_file(sound, "sfx/drink.ogg");
+    int milliseconds = get_sound_milliseconds_duration(sound);
+    set_loop(sound, false);
+    play_sound(sound);
+    Sleep(milliseconds);
+
     add_health(player->health, 5);
+    player->health->health_node->require_redraw = true;
 }
 
 void armor_low(player_t *player)
@@ -304,4 +324,21 @@ item_t create_item(item_resource_e item)
             abort();
     }
     return result;
+}
+
+bool process_inventory_input(struct player_t *player, int key)
+{
+    if (key < '1' || key > '6')
+        return false;
+    int pressed_key = key - '1';
+    int row = pressed_key >= 3;
+    int column = row ? pressed_key - 3 : pressed_key;
+    item_t *item = &player->inventory->items[row][column];
+    item->item_effect(player);
+    item->quantity--;
+    if (item->quantity == 0) // eliminar objeto
+    {
+    }
+
+    return true;
 }

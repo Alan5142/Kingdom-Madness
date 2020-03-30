@@ -36,3 +36,13 @@ void set_loop(sound_t music_ptr, unsigned char loop)
 {
     static_cast<sf::Music*>(music_ptr)->setLoop(loop);
 }
+
+int get_sound_milliseconds_duration(sound_t sound)
+{
+    return static_cast<sf::Music*>(sound)->getDuration().asMilliseconds();
+}
+
+void set_volume(sound_t sound, float level)
+{
+    static_cast<sf::Music*>(sound)->setVolume(level);
+}

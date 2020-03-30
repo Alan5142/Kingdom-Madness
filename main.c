@@ -7,8 +7,14 @@
 #include <time.h>
 #include <stdbool.h>
 
-int main()
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+    // para que no genere la adevertencia de que no estan siendo utilizados
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+    (void)nShowCmd;
+
     initscr();
     resize_term(40, 100);
     srand((unsigned int)time(NULL));
@@ -26,6 +32,7 @@ int main()
     sprintf(music_path, "intro/%d.ogg", rand() % 5 + 1);
     sound_open_file(music, music_path);
     set_loop(music, true);
+    set_volume(music, 60);
     play_sound(music);
 
     init_color_pairs();
@@ -44,4 +51,5 @@ int main()
     delete_sound(music);
 
     endwin();
+    return 0;
 }

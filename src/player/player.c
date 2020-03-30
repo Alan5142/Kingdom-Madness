@@ -39,8 +39,7 @@ bool process_player_input(player_t *player, int key)
     bool require_redraw = true;
     if (player->inventory->shown)
     {
-
-        return true;
+        return false;
     }
     switch (key)
     {

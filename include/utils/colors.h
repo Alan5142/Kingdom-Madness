@@ -51,6 +51,10 @@ extern const uint16_t POWER_MEDIUM_BACKGROUND;
 extern const uint16_t POWER_MEDIUM_FOREGROUND;
 extern const uint16_t POWER_MEDIUM_COLOR_PAIR;
 
+extern const uint16_t CASTLE_BACKGROUND;
+extern const uint16_t CASTLE_FOREGROUND;
+extern const uint16_t CASTLE_COLOR_PAIR;
+
 void init_color_pairs(void);
 
 

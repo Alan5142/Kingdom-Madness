@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include "health.h"
 
-typedef enum
+typedef enum  item_resource_e
 {
     ITEM_POTION_LOW = 0,
     ITEM_POTION_MEDIUM,
@@ -45,6 +45,8 @@ void draw_inventory(inventory_t *inventory);
 void delete_inventory(inventory_t *inventory);
 
 item_t create_item(item_resource_e item);
+
+bool process_inventory_input(struct player_t *player, int key);
 
 const char *get_item_display_name(item_resource_e item);
 
