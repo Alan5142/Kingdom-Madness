@@ -6,6 +6,7 @@
 #define PROGRA_MENU_H
 
 #include <curses.h>
+#include <sound.h>
 
 typedef struct menu_t
 {
@@ -14,6 +15,7 @@ typedef struct menu_t
     int length;
     int16_t current_choice;
     cchar_t default_attribute;
+    sound_t cursor_sfx;
 } menu_t;
 
 typedef enum

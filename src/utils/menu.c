@@ -4,6 +4,10 @@
 #include "utils/menu.h"
 #include <stdlib.h>
 
+#define WIN32_LEAN_AND_MEAN
+
+#include <windows.h>
+
 menu_t *
 create_menu(const char **options,
             int size,
@@ -15,6 +19,11 @@ create_menu(const char **options,
             chtype default_attribute)
 {
     menu_t *menu = malloc(sizeof(menu_t));
+    menu->cursor_sfx = create_sound();
+
+    char buffer[32];
+    sprintf(buffer, "sfx/cursor/%d.ogg", rand() % 2 + 1);
+    sound_open_file(menu->cursor_sfx, buffer);
 
     menu->default_attribute = default_attribute;
     menu->length = size;
@@ -28,6 +37,7 @@ create_menu(const char **options,
 
 void delete_menu(menu_t *menu)
 {
+    delete_sound(menu->cursor_sfx);
     delwin(menu->window);
     free(menu);
 }
@@ -47,11 +57,15 @@ int16_t execute_action(menu_t *menu, menu_action_t action)
     switch (action)
     {
         case MENU_MOVE_UP:
+            stop_sound(menu->cursor_sfx);
+            play_sound(menu->cursor_sfx);
             menu->current_choice--;
             if (menu->current_choice == -1)
                 menu->current_choice = menu->length - 1;
             break;
         case MENU_MOVE_DOWN:
+            stop_sound(menu->cursor_sfx);
+            play_sound(menu->cursor_sfx);
             menu->current_choice++;
             if (menu->current_choice == menu->length)
                 menu->current_choice = 0;
