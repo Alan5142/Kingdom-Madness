@@ -5,7 +5,7 @@
 #include "game/game_state.h"
 #include <stdlib.h>
 #define WIN32_LEAN_AND_MEAN // <- para no incluir todo
-#include <windows.h>
+#include <shlwapi.h>
 
 bool get_save_path(char *buffer, uint8_t slot)
 {
@@ -20,6 +20,14 @@ bool get_save_path(char *buffer, uint8_t slot)
     {
         return false;
     }
+}
+
+bool get_load_path(char *buffer, uint8_t slot)
+{
+    char *app_data = getenv("APPDATA");
+    sprintf(buffer, "%s\\proy_progra\\%02dgame.save", app_data, slot);
+
+    return PathFileExists(buffer);
 }
 
 void save_bytes(FILE *file, const unsigned char *buffer, size_t length)
@@ -44,7 +52,7 @@ void save_game(game_state_t *state, uint8_t slot)
 {
     char path[256];
 
-    if (get_save_path(path, slot)) // Si lo creamos o ya existe
+    if (get_save_path(path, slot))
     {
         FILE *file = fopen(path, "w");
         state->saved_time = time(NULL);
@@ -63,12 +71,14 @@ void save_game(game_state_t *state, uint8_t slot)
     }
 }
 
-game_state_t load_game(uint8_t slot)
+game_state_t load_game(uint8_t slot, bool *success)
 {
     game_state_t saved_state;
     char path[256];
 
-    if (get_save_path(path, slot)) // Si lo creamos o ya existe
+    *success = get_load_path(path, slot);
+
+    if (*success)
     {
         FILE *file = fopen(path, "r");
 
@@ -79,10 +89,6 @@ game_state_t load_game(uint8_t slot)
         load_bytes(file, (unsigned char *) &saved_state.boss_defeated, sizeof(saved_state.boss_defeated));
 
         fclose(file);
-    }
-    else // ops, no debería pasar (:
-    {
-        abort();
     }
 
     return saved_state;

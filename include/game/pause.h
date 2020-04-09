@@ -16,7 +16,6 @@ typedef struct
 {
     menu_t *menu;
     WINDOW *window;
-    int16_t *current_choice;
     bool should_show;
     int option;
     struct render_node_t* pause_node;
