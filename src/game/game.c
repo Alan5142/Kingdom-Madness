@@ -1,18 +1,17 @@
 //
 // Created by alan2 on 25/02/2020.
 //
-#include "game/score.h"
 #include "game/health.h"
+#include "game/player/player.h"
+#include "game/score.h"
 #include "utils/colors.h"
 #include <curses.h>
+#include <game/game_state.h>
+#include <game/pause.h>
 #include <sound.h>
 #include <stdlib.h>
-#include <game/pause.h>
 #include <utils/render_graph.h>
 #include <utils/sprite.h>
-#include "game/player/player.h"
-#include <game/game_state.h>
-
 
 void draw_castle_begin(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -31,22 +30,45 @@ void draw_castle_end(WINDOW *window, int16_t y, int16_t x, int character_to_draw
     }
 }
 
+void draw_graveyard_start(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
+{
+    (void)y;
+    (void)x;
+    (void)character_to_draw;
+    wattron(window, COLOR_PAIR(CASTLE_COLOR_PAIR));
+}
+
+void draw_graveyard_end(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
+{
+    (void)y;
+    (void)x;
+    (void)character_to_draw;
+    wattroff(window, COLOR_PAIR(CASTLE_COLOR_PAIR));
+}
+
 void draw_game_screen(WINDOW *game)
 {
     wclear(game);
 
-    draw_sprite(game, 33, 70, "map/HOUSE.txt", NULL, NULL);
+    draw_sprite(game, 33, 30, "map/BRIDGE.txt", NULL, NULL);
 
+    draw_sprite(game, 20, 20, "map/STORE.txt", NULL, NULL);
+
+    draw_sprite(game, 20, 60, "map/CHAPEL.txt", NULL, NULL);
+
+    draw_sprite(game, 4, 50, "map/GRAVEYARD.txt", draw_graveyard_start, draw_graveyard_end);
+
+    draw_sprite(game, 33, 70, "map/HOUSE.txt", NULL, NULL);
 
     draw_sprite(game, 4, 2, "map/CASTLE.txt", draw_castle_begin, draw_castle_end);
 
     wrefresh(game);
 }
 
-void start_game(void)
+void start_game(int8_t slot)
 {
     render_graph_t *render_graph = create_new_graph();
-    sound_t music = create_sound();
+    sound_t music                = create_sound();
 
     char music_path[64];
 
@@ -64,12 +86,11 @@ void start_game(void)
 
     player_t *player = create_player(game, player_health);
 
-    render_node_t *game_screen_node = add_child(render_graph->entry_point, (draw_callback_c) draw_game_screen);
-    game_screen_node->param = game;
+    render_node_t *game_screen_node = add_child(render_graph->entry_point, (draw_callback_c)draw_game_screen);
+    game_screen_node->param         = game;
 
-    render_node_t *player_render_node = add_child(game_screen_node, (draw_callback_c) draw_player);
-    player_render_node->param = player;
-
+    render_node_t *player_render_node = add_child(game_screen_node, (draw_callback_c)draw_player);
+    player_render_node->param         = player;
 
     nodelay(game, true);
     keypad(game, true);
@@ -78,20 +99,27 @@ void start_game(void)
 
     pause_menu_t *menu = create_pause_menu(game, add_child(render_graph->entry_point, NULL));
 
-    take_damage(player, 5);
+    if (slot != -1)
+    {
+        game_state_t state;
 
-    game_state_t state;
-    state.health = player->health->health;
-    state.max_health = player->health->max_health;
+        bool success;
+        state = load_game(slot, &success);
+        if (success)
+        {
+            player->health->health     = state.health;
+            player->health->max_health = state.max_health;
+            get_inventory_from_game_state(player->inventory, &state);
+        }
+        else
+        {
+            state.max_health = player->health->max_health;
+            state.health = player->health->health;
+            fill_game_state_inventory_data(&state, player->inventory);
+            save_game(&state, slot);
+        }
 
-    fill_game_state_inventory_data(&state, player->inventory);
-
-    save_game(&state, 0);
-    state = load_game(0);
-
-    player->health->health = state.health;
-    player->health->max_health = state.max_health;
-    get_inventory_from_game_state(player->inventory, &state);
+    }
 
     while (1)
     {
@@ -100,7 +128,7 @@ void start_game(void)
         int key = wgetch(game);
         if (menu->should_show)
         {
-            menu->option = key;
+            menu->option         = key;
             menu_choice_e choice = execute_pause_menu_action(menu);
             if (choice == MENU_NONE)
             {
@@ -114,7 +142,7 @@ void start_game(void)
             if (key == 27)
             {
                 menu->pause_node->require_redraw = false;
-                menu->should_show = false;
+                menu->should_show                = false;
                 game_screen_node->require_redraw = true;
                 continue;
             }
@@ -122,13 +150,13 @@ void start_game(void)
             {
                 case MENU_RESUME:
                     menu->pause_node->require_redraw = false;
-                    menu->should_show = false;
+                    menu->should_show                = false;
                     game_screen_node->require_redraw = true;
                     break;
                 case MENU_INVENTORY:
-                    menu->should_show = false;
-                    game_screen_node->require_redraw = true;
-                    add_node_at_end(render_graph, (draw_callback_c) draw_player_inventory)->param = player;
+                    menu->should_show                                                            = false;
+                    game_screen_node->require_redraw                                             = true;
+                    add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory)->param = player;
                     break;
                 case MENU_SAVE:
                     // TODO guardar
@@ -149,10 +177,10 @@ void start_game(void)
             else
             {
                 menu->pause_node->require_redraw = true;
-                menu->option = 0;
+                menu->option                     = 0;
                 execute_pause_menu_action(menu);
-                menu->should_show = true;
-                *menu->current_choice = 0;
+                menu->should_show          = true;
+                menu->menu->current_choice = 0;
             }
         }
 
@@ -168,8 +196,8 @@ void start_game(void)
         }
         else
         {
-            player_render_node->require_redraw = process_player_input(player, key) ? true : player_render_node
-                    ->require_redraw;
+            player_render_node->require_redraw =
+                process_player_input(player, key) ? true : player_render_node->require_redraw;
         }
     }
 

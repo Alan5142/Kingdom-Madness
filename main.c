@@ -9,7 +9,7 @@
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-    // para que no genere la adevertencia de que no estan siendo utilizados
+    // para que no genere la advertencia de que no estan siendo utilizados
     (void)hInstance;
     (void)hPrevInstance;
     (void)lpCmdLine;
@@ -36,10 +36,25 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
     play_sound(music);
 
     init_color_pairs();
-    while (start_screen() != START_SCREEN_QUIT)
+    start_screen_result_e result;
+    while ((result = start_screen()) != START_SCREEN_QUIT)
     {
         stop_sound(music);
-        start_game();
+        switch(result)
+        {
+            case START_SCREEN_LOAD1:
+                start_game(1);
+                break;
+            case START_SCREEN_LOAD2:
+                start_game(2);
+                break;
+            case START_SCREEN_LOAD3:
+                start_game(3);
+                break;
+            default:
+                start_game(-1);
+                break;
+        }
         clear();
         refresh();
         sprintf(music_path, "intro/%d.ogg", rand() % 5 + 1);

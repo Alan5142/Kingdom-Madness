@@ -98,6 +98,8 @@ int16_t execute_action(menu_t *menu, menu_action_t action)
 
 void draw_menu(menu_t *menu)
 {
+    wclear(menu->window);
+    execute_action(menu, MENU_REDRAW);
     wrefresh(menu->window);
 }
 

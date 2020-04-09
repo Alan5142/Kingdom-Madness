@@ -38,6 +38,6 @@ void fill_game_state_inventory_data(game_state_t *state, inventory_t *inventory)
 
 void get_inventory_from_game_state(inventory_t *inventory, game_state_t *state);
 
-game_state_t load_game(uint8_t slot);
+game_state_t load_game(uint8_t slot, bool *success);
 
 #endif //PROGRA_GAME_DATA_H

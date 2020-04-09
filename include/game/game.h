@@ -8,6 +8,6 @@
 /**
  * Inicia el juego, esto es básicamente la pantalla donde el jugador se mueve
  */
-void start_game(void);
+void start_game(int8_t slot);
 
 #endif //PROGRA_GAME_H
