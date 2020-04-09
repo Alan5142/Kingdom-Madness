@@ -21,7 +21,7 @@ add_executable(progra WIN32 main.c
         src/utils/render_graph.c
         src/game/store.c
         src/game/game_data.c
-        src/player/player.c)
+        src/player/player.c include/game/store_menu.h src/game/store_menu.c)
 
 target_link_libraries(progra PDcurses winmm sound_binding)
 target_include_directories(progra PRIVATE include)
