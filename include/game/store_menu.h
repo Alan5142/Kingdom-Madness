@@ -12,11 +12,10 @@
 
 struct render_node_t;
 
-typedef struct
+typedef struct store_menu_t
 {
     menu_t *menu;
     WINDOW *window;
-    int16_t *current_choice;
     bool should_show;
     int option;
     struct render_node_t* store_menu_node;
@@ -36,7 +35,7 @@ typedef enum
 
 store_menu_t *create_store_menu(WINDOW *parent, struct render_node_t *node);
 
-store_choice_e execute_store_menu_buy(store_menu_t *menu);
+store_choice_e execute_store_menu(store_menu_t *menu);
 
 void draw_store_menu(store_menu_t *menu);
 

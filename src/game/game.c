@@ -8,6 +8,7 @@
 #include <curses.h>
 #include <game/game_state.h>
 #include <game/pause.h>
+#include <game/store_menu.h>
 #include <sound.h>
 #include <stdlib.h>
 #include <utils/render_graph.h>
@@ -92,6 +93,9 @@ void start_game(int8_t slot)
     render_node_t *player_render_node = add_child(game_screen_node, (draw_callback_c)draw_player);
     player_render_node->param         = player;
 
+    render_node_t *store_screen = add_child(game_screen_node, (draw_callback_c)draw_store);
+    store_t *store = create_store(game,  store_screen);
+
     nodelay(game, true);
     keypad(game, true);
 
@@ -126,6 +130,18 @@ void start_game(int8_t slot)
         draw_render_graph(render_graph);
         wrefresh(game);
         int key = wgetch(game);
+        if (store->should_show)
+        {
+            store->buy_menu->option = key;
+            execute_store_menu(store->buy_menu);
+            if (key == 27)
+            {
+                store->should_show = false;
+                store->buy_menu->should_show = false;
+                game_screen_node->require_redraw = true;
+            }
+            continue;
+        }
         if (menu->should_show)
         {
             menu->option         = key;
@@ -198,6 +214,16 @@ void start_game(int8_t slot)
         {
             player_render_node->require_redraw =
                 process_player_input(player, key) ? true : player_render_node->require_redraw;
+        }
+
+        if (key == 10)
+        {
+            if (player->location_x == 0 && player->location_y == 1)
+            {
+                store_screen->require_redraw = true;
+                store->should_show = true;
+                store->buy_menu->should_show = true;
+            }
         }
     }
 

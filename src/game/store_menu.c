@@ -13,8 +13,7 @@ store_menu_t *create_store_menu(WINDOW *parent, render_node_t *node)
     node->draw_callback = (draw_callback_c) draw_store_menu;
     node->param = menu;
     menu->should_show = false;
-    menu->menu = create_menu(choices, 6, parent, 6, 17, getmaxy(stdscr) / 2 - 2, getmaxx(stdscr) / 2 - 8, COLOR_PAIR(5));
-    menu->current_choice = &menu->menu->current_choice;
+    menu->menu = create_menu(choices, 6, parent, 8, 21, getmaxy(parent) / 2 - 2, getmaxx(parent) / 2 + 5, COLOR_PAIR(5));
     menu->store_menu_node = node;
     node->require_redraw = false;
 
@@ -23,6 +22,10 @@ store_menu_t *create_store_menu(WINDOW *parent, render_node_t *node)
 
 void draw_store_menu(store_menu_t *menu)
 {
+    if (menu->should_show == false)
+    {
+        return;
+    }
     set_menu_attribute(menu->menu, COLOR_PAIR(5));
 
     draw_menu(menu->menu);
@@ -34,7 +37,7 @@ void delete_store_menu(store_menu_t *menu)
     free(menu);
 }
 
-store_choice_e execute_store_menu_buy(store_menu_t *menu)
+store_choice_e execute_store_menu(store_menu_t *menu)
 {
     store_choice_e return_choice = STORE_NONE;
 
@@ -42,9 +45,11 @@ store_choice_e execute_store_menu_buy(store_menu_t *menu)
     {
         case KEY_UP:
             execute_action(menu->menu, MENU_MOVE_UP);
+            menu->store_menu_node->require_redraw = true;
             break;
         case KEY_DOWN:
             execute_action(menu->menu, MENU_MOVE_DOWN);
+            menu->store_menu_node->require_redraw = true;
             break;
         case 10:
             return_choice = execute_action(menu->menu, MENU_ENTER);

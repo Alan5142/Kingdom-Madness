@@ -11,16 +11,19 @@
 #include "inventory.h"
 
 struct player_t;
-struct menu_t;
+struct store_menu_t;
+struct render_node_t;
 
 typedef struct store_t
 {
     WINDOW *window;
-    struct menu_t *buy_menu;
+    struct store_menu_t *buy_menu;
     bool should_show;
+    struct render_node_t *node;
+
 } store_t;
 
-store_t *create_store(WINDOW *parent, uint16_t x, uint16_t y);
+store_t *create_store(WINDOW* parent, struct render_node_t* node);
 
 void draw_store(store_t *store);
 

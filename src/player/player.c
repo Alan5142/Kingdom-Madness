@@ -5,17 +5,30 @@
 #include <stdlib.h>
 #include "game/health.h"
 
+typedef struct {
+    int16_t y;
+    int16_t x;
+}coordinates_t;
+
+coordinates_t player_coordinates [3][2]= {
+        {{9, 7},{9,56}},
+        {{26,25},{26,66}},
+        {{36,49},{38,80}}
+};
+
 player_t *create_player(WINDOW *parent, health_t *health)
 {
     player_t *player = malloc(sizeof(player_t));
     player->owning_window = parent;
     player->health = health;
-    player->x = getmaxx(parent) / 2;
-    player->y = getmaxy(parent) / 2;
+    player->x = player_coordinates[2][1].x;
+    player->y = player_coordinates[2][1].y;
     player->previous_x = player->x;
     player->previous_y = player->y;
     player->inventory = create_inventory(parent);
     player->armor_multiplier = 1.f;
+    player->location_x = 1;
+    player->location_y = 2;
     return player;
 }
 
@@ -41,41 +54,36 @@ bool process_player_input(player_t *player, int key)
     {
         return false;
     }
+    player->previous_y = player->y;
+    player->previous_x = player->x;
     switch (key)
     {
         case KEY_UP:
-            player->previous_y = player->y;
-            player->previous_x = player->x;
-            player->y--;
-            if (player->y == -1)
-                player->y = 0;
+            player->location_y--;
+            if (player->location_y == -1)
+                player->location_y = 0;
             break;
         case KEY_DOWN:
-            player->previous_y = player->y;
-            player->previous_x = player->x;
-            player->y++;
-            if (player->y == getmaxy(player->owning_window))
-                player->y = getmaxy(player->owning_window) - 1;
+            player->location_y++;
+            if (player->location_y == 3)
+                player->location_y = 2;
             break;
         case KEY_RIGHT:
-            player->previous_y = player->y;
-            player->previous_x = player->x;
-            player->x++;
-            if (player->x == getmaxx(player->owning_window))
-                player->x = getmaxx(player->owning_window) - 1;
+            player->location_x++;
+            if (player->location_x == 2)
+                player->location_x = 1;
             break;
         case KEY_LEFT:
-            player->previous_y = player->y;
-            player->previous_x = player->x;
-            player->x--;
-            if (player->x == -1)
-                player->x = 0;
+            player->location_x--;
+            if (player->location_x == -1)
+                player->location_x = 0;
             break;
         default:
             require_redraw = false;
             break;
     }
-
+    player->x = player_coordinates[player->location_y][player->location_x].x;
+    player->y = player_coordinates[player->location_y][player->location_x].y;
     return require_redraw;
 }
 
