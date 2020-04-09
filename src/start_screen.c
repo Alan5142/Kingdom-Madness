@@ -1,7 +1,5 @@
 #include "start_screen.h"
 #include <curses.h>
-#include <string.h>
-#include <ctype.h>
 #include <stdbool.h>
 #include <utils/menu.h>
 #include <utils/sprite.h>

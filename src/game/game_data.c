@@ -72,9 +72,8 @@ game_state_t load_game(uint8_t slot)
     {
         FILE *file = fopen(path, "r");
 
-
-        load_bytes(file, (unsigned char *)&saved_state.health, sizeof(saved_state.health));
-        load_bytes(file, (unsigned char *)&saved_state.max_health, sizeof(saved_state.max_health));
+        load_bytes(file, &saved_state.health, sizeof(saved_state.health));
+        load_bytes(file, &saved_state.max_health, sizeof(saved_state.max_health));
         load_bytes(file, (unsigned char *) &saved_state.items, sizeof(saved_state.items[0][0]) * 2 * 3);
         load_bytes(file, (unsigned char *) &saved_state.saved_time, sizeof(saved_state.saved_time));
         load_bytes(file, (unsigned char *) &saved_state.boss_defeated, sizeof(saved_state.boss_defeated));

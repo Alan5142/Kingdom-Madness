@@ -25,7 +25,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
     cbreak();
 
     refresh();
-    void *music = create_sound();
+    sound_t music = create_sound();
 
     char music_path[64];
 
