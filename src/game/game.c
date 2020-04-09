@@ -8,7 +8,6 @@
 #include <sound.h>
 #include <stdlib.h>
 #include <game/pause.h>
-#include <game/store_menu.h>
 #include <utils/render_graph.h>
 #include <utils/sprite.h>
 #include "game/player/player.h"
