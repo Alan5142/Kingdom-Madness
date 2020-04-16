@@ -18,12 +18,12 @@ typedef struct battle_t
     struct battle_menu_t *battle_menu;
     bool should_show;
     struct render_node_t *node;
-
+    char *enemy_sprite;
 } battle_t;
 
 battle_t *create_battle_screen(WINDOW* parent, struct render_node_t* node);
 
-void draw_battle_screen(battle_t *battle_screen, char *enemy_sprite);
+void draw_battle_screen(battle_t *battle_screen);
 
 void delete_battle_screen(battle_t *battle_screen);
 

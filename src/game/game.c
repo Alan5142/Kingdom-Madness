@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <utils/render_graph.h>
 #include <utils/sprite.h>
+#include <game/battle.h>
+#include <game/battle_menu.h>
 
 void draw_castle_begin(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -95,6 +97,9 @@ void start_game(int8_t slot)
 
     render_node_t *store_screen = add_child(game_screen_node, (draw_callback_c)draw_store);
     store_t *store = create_store(game,  store_screen);
+
+    render_node_t *battle_screen =add_child(game_screen_node, (draw_callback_c)draw_battle_screen);
+    battle_t *battle = create_battle_screen(game, battle_screen);
 
     nodelay(game, true);
     keypad(game, true);
@@ -223,6 +228,12 @@ void start_game(int8_t slot)
                 store_screen->require_redraw = true;
                 store->should_show = true;
                 store->buy_menu->should_show = true;
+            }
+            else if (player->location_x == 0 && player->location_y == 0)
+            {
+                battle_screen->require_redraw = true;
+                battle->should_show = true;
+                battle->battle_menu->should_show = true;
             }
         }
     }

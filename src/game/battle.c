@@ -12,7 +12,7 @@
 battle_t *create_battle_screen(WINDOW* parent, render_node_t* node)
 {
     battle_t *battle_screen = malloc(sizeof(battle_t));
-    battle_screen->window = subwin(parent, getmaxy(parent) - 5, getmaxx(parent) - 4, 3, 2);
+    battle_screen->window = subwin(parent, getmaxy(parent), getmaxx(parent), 1, 1);
     battle_screen->should_show = false;
     node->param = battle_screen;
     battle_screen->node = node;
@@ -22,7 +22,7 @@ battle_t *create_battle_screen(WINDOW* parent, render_node_t* node)
     return battle_screen;
 }
 
-void draw_battle_screen(battle_t *battle_screen, char *enemy_sprite)
+void draw_battle_screen(battle_t *battle_screen)
 {
     if (battle_screen->should_show == false)
     {
