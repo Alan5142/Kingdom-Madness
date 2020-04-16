@@ -165,8 +165,11 @@ void start_game(int8_t slot)
                     break;
                 case BATTLE_NONE:
                     break;
+                case BATTLE_DEFENSE:
+                    break;
+                case BATTLE_ITEM:
+                    break;
             }
-
             continue;
         }
         if (menu->should_show)
