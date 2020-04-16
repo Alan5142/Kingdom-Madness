@@ -12,7 +12,7 @@ struct player_t;
 struct battle_menu_t;
 struct render_node_t;
 
-typedef struct store_t
+typedef struct battle_t
 {
     WINDOW *window;
     struct battle_menu_t *battle_menu;
