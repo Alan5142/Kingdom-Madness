@@ -7,6 +7,7 @@
 
 #include <curses.h>
 #include <stdbool.h>
+#include <game/enemy.h>
 
 struct player_t;
 struct battle_menu_t;
@@ -18,7 +19,7 @@ typedef struct battle_t
     struct battle_menu_t *battle_menu;
     bool should_show;
     struct render_node_t *node;
-    char *enemy_sprite;
+    enemy_t enemy;
 } battle_t;
 
 battle_t *create_battle_screen(WINDOW* parent, struct render_node_t* node);

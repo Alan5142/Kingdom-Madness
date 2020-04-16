@@ -13,7 +13,7 @@ battle_menu_t *create_battle_menu(WINDOW *parent, render_node_t *node)
     node->draw_callback = (draw_callback_c) draw_battle_menu;
     node->param = menu;
     menu->should_show = false;
-    menu->menu = create_menu(choices, 5, parent, 7, 15, getmaxy(parent) - 8, 1, COLOR_PAIR(5));
+    menu->menu = create_menu(choices, 5, parent, 7, 15, getmaxy(parent) - 7, 1, COLOR_PAIR(5));
     menu->battle_menu_node = node;
     node->require_redraw = false;
 

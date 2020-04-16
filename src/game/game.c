@@ -15,6 +15,7 @@
 #include <utils/sprite.h>
 #include <game/battle.h>
 #include <game/battle_menu.h>
+#include <game/enemy.h>
 
 void draw_castle_begin(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -147,6 +148,27 @@ void start_game(int8_t slot)
             }
             continue;
         }
+        if (battle->should_show)
+        {
+            battle->battle_menu->option = key;
+            battle_choice_e choice = execute_battle_menu(battle->battle_menu);
+            switch (choice)
+            {
+                case BATTLE_EXIT:
+                    battle->should_show = false;
+                    battle->battle_menu->should_show = false;
+                    game_screen_node->require_redraw = true;
+                    break;
+                case BATTLE_ATTACK:
+                    break;
+                case BATTLE_MAGIC:
+                    break;
+                case BATTLE_NONE:
+                    break;
+            }
+
+            continue;
+        }
         if (menu->should_show)
         {
             menu->option         = key;
@@ -234,6 +256,8 @@ void start_game(int8_t slot)
                 battle_screen->require_redraw = true;
                 battle->should_show = true;
                 battle->battle_menu->should_show = true;
+                battle->enemy = create_enemy(player->location_x, player->location_y);
+
             }
         }
     }
