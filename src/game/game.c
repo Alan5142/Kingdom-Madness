@@ -254,7 +254,7 @@ void start_game(int8_t slot)
                 store->should_show = true;
                 store->buy_menu->should_show = true;
             }
-            else if (player->location_x == 0 && player->location_y == 0)
+            else if (player->location_x != 1 || player->location_y != 2)
             {
                 battle_screen->require_redraw = true;
                 battle->should_show = true;
