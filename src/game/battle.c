@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <utils/sprite.h>
 #include <utils/render_graph.h>
+#include <game/battle_menu.h>
 
 battle_t *create_battle_screen(WINDOW* parent, render_node_t* node)
 {
@@ -15,8 +16,8 @@ battle_t *create_battle_screen(WINDOW* parent, render_node_t* node)
     battle_screen->should_show = false;
     node->param = battle_screen;
     battle_screen->node = node;
-    //battle_screen->battle_menu = create_store_menu(store->window, add_child(node, (draw_callback_c)draw_store_menu));
-    //store->buy_menu->should_show = false;
+    battle_screen->battle_menu = create_battle_menu(battle_screen->window, add_child(node, (draw_callback_c)draw_battle_menu));
+    battle_screen->battle_menu->should_show = false;
 
     return battle_screen;
 }
@@ -32,11 +33,11 @@ void draw_battle_screen(battle_t *battle_screen, char *enemy_sprite)
     box(battle_screen->window, 0,0);
     //draw_sprite(battle_screen->window, 1, 28, enemy_sprite, NULL, NULL);
     wrefresh(battle_screen->window);
-    //battle_screen->battle_menu->option = 0;
+    battle_screen->battle_menu->option = 0;
 }
 
 void delete_battle_screen(battle_t *battle_screen)
 {
-    //delete_store_menu(store->buy_menu);
+    delete_battle_menu(battle_screen->battle_menu);
     free(battle_screen);
 }
