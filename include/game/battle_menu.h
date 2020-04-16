@@ -23,9 +23,11 @@ typedef struct battle_menu_t
 
 typedef enum
 {
-    BATTLE_EXIT = 0,
-    BATTLE_ATTACK,
+    BATTLE_ATTACK = 0,
     BATTLE_MAGIC,
+    BATTLE_DEFENSE,
+    BATTLE_ITEM,
+    BATTLE_EXIT,
     BATTLE_NONE
 } battle_choice_e;
 

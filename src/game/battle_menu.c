@@ -9,7 +9,7 @@
 battle_menu_t *create_battle_menu(WINDOW *parent, render_node_t *node)
 {
     battle_menu_t *menu = malloc(sizeof(battle_menu_t));
-    static const char *choices[] = {"【 ATTACK  】", "【  MAGIC  】", "【 DEFENSE 】", "【   RUN   】", "【  ITEM   】"};
+    static const char *choices[] = {"【 ATTACK  】", "【  MAGIC  】", "【 DEFENSE 】", "【  ITEM   】", "【   RUN   】"};
     node->draw_callback = (draw_callback_c) draw_battle_menu;
     node->param = menu;
     menu->should_show = false;

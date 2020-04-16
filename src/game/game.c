@@ -6,6 +6,9 @@
 #include "game/score.h"
 #include "utils/colors.h"
 #include <curses.h>
+#include <game/battle.h>
+#include <game/battle_menu.h>
+#include <game/enemy.h>
 #include <game/game_state.h>
 #include <game/pause.h>
 #include <game/store_menu.h>
@@ -13,9 +16,6 @@
 #include <stdlib.h>
 #include <utils/render_graph.h>
 #include <utils/sprite.h>
-#include <game/battle.h>
-#include <game/battle_menu.h>
-#include <game/enemy.h>
 
 void draw_castle_begin(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -97,10 +97,10 @@ void start_game(int8_t slot)
     player_render_node->param         = player;
 
     render_node_t *store_screen = add_child(game_screen_node, (draw_callback_c)draw_store);
-    store_t *store = create_store(game,  store_screen);
+    store_t *store              = create_store(game, store_screen);
 
-    render_node_t *battle_screen =add_child(game_screen_node, (draw_callback_c)draw_battle_screen);
-    battle_t *battle = create_battle_screen(game, battle_screen);
+    render_node_t *battle_screen = add_child(game_screen_node, (draw_callback_c)draw_battle_screen);
+    battle_t *battle             = create_battle_screen(game, battle_screen);
 
     nodelay(game, true);
     keypad(game, true);
@@ -124,11 +124,10 @@ void start_game(int8_t slot)
         else
         {
             state.max_health = player->health->max_health;
-            state.health = player->health->health;
+            state.health     = player->health->health;
             fill_game_state_inventory_data(&state, player->inventory);
             save_game(&state, slot);
         }
-
     }
 
     while (1)
@@ -142,8 +141,8 @@ void start_game(int8_t slot)
             execute_store_menu(store->buy_menu);
             if (key == 27)
             {
-                store->should_show = false;
-                store->buy_menu->should_show = false;
+                store->should_show               = false;
+                store->buy_menu->should_show     = false;
                 game_screen_node->require_redraw = true;
             }
             continue;
@@ -151,11 +150,11 @@ void start_game(int8_t slot)
         if (battle->should_show)
         {
             battle->battle_menu->option = key;
-            battle_choice_e choice = execute_battle_menu(battle->battle_menu);
+            battle_choice_e choice      = execute_battle_menu(battle->battle_menu);
             switch (choice)
             {
                 case BATTLE_EXIT:
-                    battle->should_show = false;
+                    battle->should_show              = false;
                     battle->battle_menu->should_show = false;
                     game_screen_node->require_redraw = true;
                     break;
@@ -164,6 +163,8 @@ void start_game(int8_t slot)
                 case BATTLE_MAGIC:
                     break;
                 case BATTLE_NONE:
+                    break;
+                default:
                     break;
             }
 
@@ -248,16 +249,15 @@ void start_game(int8_t slot)
             if (player->location_x == 0 && player->location_y == 1)
             {
                 store_screen->require_redraw = true;
-                store->should_show = true;
+                store->should_show           = true;
                 store->buy_menu->should_show = true;
             }
-            else if (player->location_x == 0 && player->location_y == 0)
+            else if ((player->location_x != 1 || player->location_y != 2))
             {
-                battle_screen->require_redraw = true;
-                battle->should_show = true;
+                battle_screen->require_redraw    = true;
+                battle->should_show              = true;
                 battle->battle_menu->should_show = true;
-                battle->enemy = create_enemy(player->location_x, player->location_y);
-
+                battle->enemy                    = create_enemy(player->location_x, player->location_y);
             }
         }
     }
