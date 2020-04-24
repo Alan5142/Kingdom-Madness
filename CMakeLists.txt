@@ -31,6 +31,7 @@ target_include_directories(progra PRIVATE include)
 
 if (MSVC)
     target_compile_options(progra PRIVATE /W4 /WX /wd4005 /wd4244 -D_CRT_SECURE_NO_WARNINGS)
+    target_link_options(progra PRIVATE /subsystem:windows /ENTRY:mainCRTStartup)
 else ()
     target_compile_options(progra PRIVATE -Wall -Wextra -pedantic -Werror)
 endif ()
@@ -40,3 +41,4 @@ add_custom_target(copy_resources
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/lib/SFML/extlibs/bin/x64/openal32.dll ${CMAKE_BINARY_DIR})
 
 add_dependencies(progra copy_resources)
+set_target_properties(progra PROPERTIES OUTPUT_NAME "Kingdom Madness")

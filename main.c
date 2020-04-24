@@ -7,14 +7,8 @@
 #include <time.h>
 #include <stdbool.h>
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int main()
 {
-    // para que no genere la advertencia de que no estan siendo utilizados
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nShowCmd;
-
     initscr();
     resize_term(40, 100);
     srand((unsigned int)time(NULL));

@@ -5,6 +5,7 @@
 #include <game/enemy.h>
 #include <assert.h>
 #include <utils/sprite.h>
+#include <stdlib.h>
 
 enemy_t create_enemy(int pos_x, int pos_y)
 {

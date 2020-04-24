@@ -74,6 +74,7 @@ void save_game(game_state_t *state, uint8_t slot)
 game_state_t load_game(uint8_t slot, bool *success)
 {
     game_state_t saved_state;
+    memset(&saved_state, 0, sizeof(game_state_t));
     char path[256];
 
     *success = get_load_path(path, slot);

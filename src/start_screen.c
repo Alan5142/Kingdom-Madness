@@ -12,6 +12,7 @@ void draw_start_screen(WINDOW *win)
 {
     wclear(win);
     draw_sprite(win, 0, 0, "CASTLE.txt", NULL, NULL);
+    draw_sprite(win, 0, 10, "TITLE.txt", NULL, NULL);
     wrefresh(win);
 }
 
