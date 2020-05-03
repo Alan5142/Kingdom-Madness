@@ -115,8 +115,8 @@ inventory_t *create_inventory(WINDOW *parent)
     {
         for (int j = 0; j <= 2; j++)
         {
-            inventory->items[i][j] = create_item(ITEM_POTION_LOW);
-            inventory->items[i][j].quantity = 10;
+            inventory->items[i][j] = create_item(ITEM_NONE);
+            inventory->items[i][j].quantity = 0;
         }
     }
     return inventory;

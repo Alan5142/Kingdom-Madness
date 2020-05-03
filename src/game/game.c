@@ -15,7 +15,9 @@
 #include <sound.h>
 #include <stdlib.h>
 #include <utils/render_graph.h>
+#include <utils/standby_window.h>
 #include <utils/sprite.h>
+#include <time.h>
 
 void draw_castle_begin(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -71,6 +73,7 @@ void draw_game_screen(WINDOW *game)
 
 void start_game(int8_t slot)
 {
+    srand(time(NULL));
     render_graph_t *render_graph = create_new_graph();
     sound_t music                = create_sound();
 
@@ -138,7 +141,41 @@ void start_game(int8_t slot)
         if (store->should_show)
         {
             store->buy_menu->option = key;
-            execute_store_menu(store->buy_menu);
+            store_choice_e choice = execute_store_menu(store->buy_menu);
+            switch (choice)
+            {
+
+                case STORE_EXIT:
+                    store->should_show               = false;
+                    store->buy_menu->should_show     = false;
+                    game_screen_node->require_redraw = true;
+                    break;
+                case STORE_BUY_POTION_LOW:
+                    if(score->money < 50)
+                    {
+                        static const char *text[] = {"No cuentas con dinero suficiente.     ","(Presione alguna tecla para continuar)"};
+                        standby_window_t * stdby_w = create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        draw_standby_window(stdby_w);
+                        while(!getch());
+                        delete_standby_window(stdby_w);
+                        store_screen->require_redraw = true;
+                        store->should_show           = true;
+                        store->buy_menu->should_show = true;
+                    }
+                    break;
+                case STORE_BUY_POTION_MEDIUM:
+                    break;
+                case STORE_BUY_ARMOR_LOW:
+                    break;
+                case STORE_BUY_ARMOR_MEDIUM:
+                    break;
+                case STORE_BUY_POWER_LOW:
+                    break;
+                case STORE_BUY_POWER_MEDIUM:
+                    break;
+                case STORE_NONE:
+                    break;
+            }
             if (key == 27)
             {
                 store->should_show               = false;
@@ -149,25 +186,38 @@ void start_game(int8_t slot)
         }
         if (battle->should_show)
         {
-            battle->battle_menu->option = key;
-            battle_choice_e choice      = execute_battle_menu(battle->battle_menu);
-            switch (choice)
+            if (battle->turn)
             {
-                case BATTLE_EXIT:
-                    battle->should_show              = false;
-                    battle->battle_menu->should_show = false;
-                    game_screen_node->require_redraw = true;
-                    break;
-                case BATTLE_ATTACK:
-                    break;
-                case BATTLE_MAGIC:
-                    break;
-                case BATTLE_NONE:
-                    break;
-                default:
-                    break;
+                battle->battle_menu->option = key;
+                battle_choice_e choice      = execute_battle_menu(battle->battle_menu);
+                switch (choice)
+                {
+                    case BATTLE_EXIT:
+                        battle->should_show              = false;
+                        battle->battle_menu->should_show = false;
+                        game_screen_node->require_redraw = true;
+                        break;
+                    case BATTLE_ATTACK:
+                        battle->enemy.health -= (int)(10*(rand() % 51 + 80)/100);
+                        battle->turn = false;
+                        break;
+                    case BATTLE_DEFENSE:
+                        battle->turn = false;
+                        break;
+                    case BATTLE_MAGIC:
+                        battle->turn = false;
+                        break;
+                    case BATTLE_NONE:
+                        break;
+                    default:
+                        break;
+                }
             }
-
+            else
+            {
+                player_health->health -= (int)(battle->enemy.power*(rand() % 51 + 80)/100);
+                battle->turn = true;
+            }
             continue;
         }
         if (menu->should_show)
@@ -258,6 +308,7 @@ void start_game(int8_t slot)
                 battle->should_show              = true;
                 battle->battle_menu->should_show = true;
                 battle->enemy                    = create_enemy(player->location_x, player->location_y);
+                battle->turn = false;
             }
         }
     }

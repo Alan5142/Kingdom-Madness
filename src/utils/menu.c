@@ -6,8 +6,6 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#include <windows.h>
-
 menu_t *
 create_menu(const char **options,
             int size,

@@ -23,13 +23,13 @@ typedef struct store_menu_t
 
 typedef enum
 {
-    STORE_EXIT = 0,
-    STORE_BUY_POTION_LOW,
+    STORE_BUY_POTION_LOW = 0,
     STORE_BUY_POTION_MEDIUM,
     STORE_BUY_ARMOR_LOW,
     STORE_BUY_ARMOR_MEDIUM,
     STORE_BUY_POWER_LOW,
     STORE_BUY_POWER_MEDIUM,
+    STORE_EXIT,
     STORE_NONE
 } store_choice_e;
 

@@ -20,6 +20,7 @@ typedef struct battle_t
     bool should_show;
     struct render_node_t *node;
     enemy_t enemy;
+    bool turn;
 } battle_t;
 
 battle_t *create_battle_screen(WINDOW* parent, struct render_node_t* node);
