@@ -15,7 +15,7 @@ typedef struct
 {
     WINDOW *window;
     uint32_t score;
-    uint8_t money;
+    uint16_t money;
     struct render_node_t* score_node;
 } score_t;
 

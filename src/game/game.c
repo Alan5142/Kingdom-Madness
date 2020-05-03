@@ -162,16 +162,107 @@ void start_game(int8_t slot)
                         store->should_show           = true;
                         store->buy_menu->should_show = true;
                     }
+                    else
+                    {
+                        score->money -= 50;
+                        add_item(player->inventory, ITEM_POTION_LOW);
+                        score->score_node->require_redraw = true;
+                    }
                     break;
                 case STORE_BUY_POTION_MEDIUM:
+                    if(score->money < 100)
+                    {
+                        static const char *text[] = {"No cuentas con dinero suficiente.     ","(Presione alguna tecla para continuar)"};
+                        standby_window_t * stdby_w = create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        draw_standby_window(stdby_w);
+                        while(!getch());
+                        delete_standby_window(stdby_w);
+                        store_screen->require_redraw = true;
+                        store->should_show           = true;
+                        store->buy_menu->should_show = true;
+                    }
+                    else
+                    {
+                        score->money -= 100;
+                        add_item(player->inventory, ITEM_POTION_MEDIUM);
+                        score->score_node->require_redraw = true;
+                    }
                     break;
                 case STORE_BUY_ARMOR_LOW:
+                    if(score->money < 40)
+                    {
+                        static const char *text[] = {"No cuentas con dinero suficiente.     ","(Presione alguna tecla para continuar)"};
+                        standby_window_t * stdby_w = create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        draw_standby_window(stdby_w);
+                        while(!getch());
+                        delete_standby_window(stdby_w);
+                        store_screen->require_redraw = true;
+                        store->should_show           = true;
+                        store->buy_menu->should_show = true;
+                    }
+                    else
+                    {
+                        score->money -= 40;
+                        add_item(player->inventory, ITEM_ARMOR_LOW);
+                        score->score_node->require_redraw = true;
+                    }
                     break;
                 case STORE_BUY_ARMOR_MEDIUM:
+                    if(score->money < 80)
+                    {
+                        static const char *text[] = {"No cuentas con dinero suficiente.     ","(Presione alguna tecla para continuar)"};
+                        standby_window_t * stdby_w = create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        draw_standby_window(stdby_w);
+                        while(!getch());
+                        delete_standby_window(stdby_w);
+                        store_screen->require_redraw = true;
+                        store->should_show           = true;
+                        store->buy_menu->should_show = true;
+                    }
+                    else
+                    {
+                        score->money -= 80;
+                        add_item(player->inventory, ITEM_ARMOR_MEDIUM);
+                        score->score_node->require_redraw = true;
+                    }
                     break;
                 case STORE_BUY_POWER_LOW:
+                    if(score->money < 40)
+                    {
+                        static const char *text[] = {"No cuentas con dinero suficiente.     ","(Presione alguna tecla para continuar)"};
+                        standby_window_t * stdby_w = create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        draw_standby_window(stdby_w);
+                        while(!getch());
+                        delete_standby_window(stdby_w);
+                        store_screen->require_redraw = true;
+                        store->should_show           = true;
+                        store->buy_menu->should_show = true;
+                    }
+                    else
+                    {
+                        score->money -= 40;
+                        add_item(player->inventory, ITEM_POWER_LOW);
+                        score->score_node->require_redraw = true;
+                    }
                     break;
                 case STORE_BUY_POWER_MEDIUM:
+                    if(score->money < 90)
+                    {
+                        static const char *text[] = {"No cuentas con dinero suficiente.     ","(Presione alguna tecla para continuar)"};
+                        standby_window_t * stdby_w = create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        draw_standby_window(stdby_w);
+                        while(!getch());
+                        delete_standby_window(stdby_w);
+                        store_screen->require_redraw = true;
+                        store->should_show           = true;
+                        store->buy_menu->should_show = true;
+                    }
+                    else
+                    {
+                        score->money -= 90;
+                        add_item(player->inventory, ITEM_POWER_MEDIUM);
+                        score->score_node->require_redraw = true;
+                    }
                     break;
                 case STORE_NONE:
                     break;
@@ -198,7 +289,7 @@ void start_game(int8_t slot)
                         game_screen_node->require_redraw = true;
                         break;
                     case BATTLE_ATTACK:
-                        battle->enemy.health -= (int)(10*(rand() % 51 + 80)/100);
+                        battle->enemy.health -= (int)(player->damage_multiplier*10*(rand() % 51 + 80)/100);
                         battle->turn = false;
                         break;
                     case BATTLE_DEFENSE:
@@ -215,7 +306,7 @@ void start_game(int8_t slot)
             }
             else
             {
-                player_health->health -= (int)(battle->enemy.power*(rand() % 51 + 80)/100);
+                player_health->health -= (int)(player->armor_multiplier*battle->enemy.power*(rand() % 51 + 80)/100);
                 battle->turn = true;
             }
             continue;

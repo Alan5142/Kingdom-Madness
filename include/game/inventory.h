@@ -50,4 +50,6 @@ bool process_inventory_input(struct player_t *player, int key);
 
 const char *get_item_display_name(item_resource_e item);
 
+void add_item(inventory_t *inventory, item_resource_e item);
+
 #endif //PROGRA_INVENTORY_H

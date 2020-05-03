@@ -326,6 +326,33 @@ item_t create_item(item_resource_e item)
     return result;
 }
 
+void add_item(inventory_t *inventory, item_resource_e item)
+{
+    for (int i = 0; i <= 1; i++)
+    {
+        for (int j = 0; j <= 2; j++)
+        {
+            if(inventory->items[i][j].item == item)
+            {
+                inventory->items[i][j].quantity += 1;
+                return;
+            }
+        }
+    }
+    for (int i = 0; i <= 1; i++)
+    {
+        for (int j = 0; j <= 2; j++)
+        {
+            if(inventory->items[i][j].item == ITEM_NONE)
+            {
+                inventory->items[i][j] = create_item(item);
+                inventory->items[i][j].quantity = 1;
+                return;
+            }
+        }
+    }
+}
+
 bool process_inventory_input(struct player_t *player, int key)
 {
     if (key < '1' || key > '6')
