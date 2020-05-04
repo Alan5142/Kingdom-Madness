@@ -328,6 +328,14 @@ item_t create_item(item_resource_e item)
 
 void add_item(inventory_t *inventory, item_resource_e item)
 {
+    sound_t sound = create_sound();
+    char rand_n[64];
+    sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+    sound_open_file(sound, rand_n);
+    int milliseconds = get_sound_milliseconds_duration(sound);
+    set_loop(sound, false);
+    play_sound(sound);
+    Sleep(milliseconds);
     for (int i = 0; i <= 1; i++)
     {
         for (int j = 0; j <= 2; j++)

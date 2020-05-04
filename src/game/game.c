@@ -14,10 +14,11 @@
 #include <game/store_menu.h>
 #include <sound.h>
 #include <stdlib.h>
-#include <utils/render_graph.h>
-#include <utils/standby_window.h>
-#include <utils/sprite.h>
+#include <synchapi.h>
 #include <time.h>
+#include <utils/render_graph.h>
+#include <utils/sprite.h>
+#include <utils/standby_window.h>
 
 void draw_castle_begin(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -277,10 +278,12 @@ void start_game(int8_t slot)
         }
         if (battle->should_show)
         {
-            if (battle->turn)
+            if (battle->turn == true)
             {
                 battle->battle_menu->option = key;
                 battle_choice_e choice      = execute_battle_menu(battle->battle_menu);
+                sound_t character_attack = create_sound();
+                char player_attack[64];
                 switch (choice)
                 {
                     case BATTLE_EXIT:
@@ -289,6 +292,12 @@ void start_game(int8_t slot)
                         game_screen_node->require_redraw = true;
                         break;
                     case BATTLE_ATTACK:
+                        sprintf(player_attack, "sfx/ataques/player_%d.ogg", 1);
+                        sound_open_file(character_attack, player_attack);
+                        int milliseconds = get_sound_milliseconds_duration(character_attack);
+                        set_loop(character_attack, false);
+                        play_sound(character_attack);
+                        Sleep(milliseconds);
                         battle->enemy.health -= (int)(player->damage_multiplier*10*(rand() % 51 + 80)/100);
                         battle->turn = false;
                         break;
@@ -302,10 +311,20 @@ void start_game(int8_t slot)
                         break;
                     default:
                         break;
+                    case BATTLE_ITEM:
+                        break;
                 }
             }
             else
             {
+                sound_t enemy_attack = create_sound();
+                char rand_n[64];
+                sprintf(rand_n, "sfx/ataques/enemy_%d.ogg", 1);
+                sound_open_file(enemy_attack, rand_n);
+                int milliseconds = get_sound_milliseconds_duration(enemy_attack);
+                set_loop(enemy_attack, false);
+                play_sound(enemy_attack);
+                Sleep(milliseconds);
                 player_health->health -= (int)(player->armor_multiplier*battle->enemy.power*(rand() % 51 + 80)/100);
                 battle->turn = true;
             }

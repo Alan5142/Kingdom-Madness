@@ -26,6 +26,7 @@ player_t *create_player(WINDOW *parent, health_t *health)
     player->previous_x = player->x;
     player->previous_y = player->y;
     player->inventory = create_inventory(parent);
+    player->damage_multiplier = 1.f;
     player->armor_multiplier = 1.f;
     player->location_x = 1;
     player->location_y = 2;
