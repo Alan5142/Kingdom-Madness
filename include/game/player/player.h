@@ -12,6 +12,7 @@
 #include <game/inventory.h>
 #include <game/store.h>
 
+struct game_state_t;
 
 /**
  * Contiene la información del jugador
@@ -95,7 +96,7 @@ void draw_player(player_t *player);
  * @param key tecla presionada
  * @return si el jugador necesita volver a dibujares
  */
-bool process_player_input(player_t *player, int key);
+bool process_player_input(player_t *player, int key, struct game_state_t *state);
 
 /**
  * Limpia los recursos del jugador

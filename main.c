@@ -1,11 +1,11 @@
+#include "start_screen.h"
 #include <curses.h>
 #include <game/game.h>
-#include <utils/colors.h>
-#include "start_screen.h"
-#include <windows.h>
 #include <sound.h>
-#include <time.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
+#include <utils/colors.h>
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
     while ((result = start_screen()) != START_SCREEN_QUIT)
     {
         stop_sound(music);
-        switch(result)
+        switch (result)
         {
             case START_SCREEN_LOAD1:
                 start_game(1);
@@ -55,7 +55,6 @@ int main()
         sound_open_file(music, music_path);
         play_sound(music);
     }
-
 
     delete_sound(music);
 
