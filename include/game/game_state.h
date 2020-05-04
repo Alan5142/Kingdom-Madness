@@ -20,10 +20,10 @@ typedef struct game_state_t
 {
     struct
     {
-        int boss1: 1;
-        int boss2: 1;
-        int boss3: 1;
-        int boss4: 1;
+        unsigned int boss1: 1;
+        unsigned int boss2: 1;
+        unsigned int boss3: 1;
+        unsigned int boss4: 1;
     } boss_defeated;
     uint8_t health;
     uint8_t max_health;
