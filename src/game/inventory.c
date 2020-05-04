@@ -374,6 +374,31 @@ bool process_inventory_input(struct player_t *player, int key)
     item->quantity--;
     if (item->quantity == 0) // eliminar objeto
     {
+        item_t items[6];
+        for(int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                items[3*i+j] = player->inventory->items[i][j];
+            }
+        }
+        for(int i = pressed_key; i < 6; i++)
+        {
+            if(i == 5)
+            {
+                items[i] = create_item(ITEM_NONE);
+            }
+            else{
+                items[i] = items[i+1];
+            }
+        }
+        for(int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                player->inventory->items[i][j] = items[3*i+j];
+            }
+        }
     }
 
     return true;
