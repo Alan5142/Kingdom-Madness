@@ -282,7 +282,7 @@ void start_game(int8_t slot)
             {
                 battle->battle_menu->option = key;
                 battle_choice_e choice      = execute_battle_menu(battle->battle_menu);
-                sound_t character_attack = create_sound();
+
                 char player_attack[64];
                 switch (choice)
                 {
@@ -292,14 +292,19 @@ void start_game(int8_t slot)
                         game_screen_node->require_redraw = true;
                         break;
                     case BATTLE_ATTACK:
+                    {
+                        sound_t character_attack = create_sound();
                         sprintf(player_attack, "sfx/ataques/player_%d.ogg", 1);
                         sound_open_file(character_attack, player_attack);
                         int milliseconds = get_sound_milliseconds_duration(character_attack);
                         set_loop(character_attack, false);
                         play_sound(character_attack);
+                        flash();
                         Sleep(milliseconds);
                         battle->enemy.health -= (int)(player->damage_multiplier*10*(rand() % 51 + 80)/100);
                         battle->turn = false;
+                        delete_sound(character_attack);
+                    }
                         break;
                     case BATTLE_DEFENSE:
                         battle->turn = false;
@@ -324,9 +329,11 @@ void start_game(int8_t slot)
                 int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 set_loop(enemy_attack, false);
                 play_sound(enemy_attack);
+                flash();
                 Sleep(milliseconds);
                 player_health->health -= (int)(player->armor_multiplier*battle->enemy.power*(rand() % 51 + 80)/100);
                 battle->turn = true;
+                delete_sound(enemy_attack);
             }
             continue;
         }
