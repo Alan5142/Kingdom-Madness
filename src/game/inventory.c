@@ -370,6 +370,8 @@ bool process_inventory_input(struct player_t *player, int key)
     int row = pressed_key >= 3;
     int column = row ? pressed_key - 3 : pressed_key;
     item_t *item = &player->inventory->items[row][column];
+    if (item->item == ITEM_NONE)
+        return false;
     item->item_effect(player);
     item->quantity--;
     if (item->quantity == 0) // eliminar objeto

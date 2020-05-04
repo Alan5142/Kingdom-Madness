@@ -154,10 +154,18 @@ void start_game(int8_t slot)
     }
     else
     {
-        state.health = player->health->health;
+        state.health     = player->health->health;
         state.max_health = player->health->max_health;
         fill_game_state_inventory_data(&state, player->inventory);
     }
+
+    // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
+#ifndef NDEBUG
+    state.boss_defeated.boss1 = 1;
+    state.boss_defeated.boss2 = 1;
+    state.boss_defeated.boss3 = 1;
+    state.boss_defeated.boss4 = 1;
+#endif
 
     while (1)
     {
