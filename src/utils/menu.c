@@ -60,6 +60,7 @@ int16_t execute_action(menu_t *menu, menu_action_t action)
             menu->current_choice--;
             if (menu->current_choice == -1)
                 menu->current_choice = menu->length - 1;
+            return -2;
             break;
         case MENU_MOVE_DOWN:
             stop_sound(menu->cursor_sfx);
@@ -67,6 +68,7 @@ int16_t execute_action(menu_t *menu, menu_action_t action)
             menu->current_choice++;
             if (menu->current_choice == menu->length)
                 menu->current_choice = 0;
+            return -2;
             break;
         case MENU_ENTER:
             return menu->current_choice;

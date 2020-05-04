@@ -359,6 +359,7 @@ void add_item(inventory_t *inventory, item_resource_e item)
             }
         }
     }
+    delete_sound(sound);
 }
 
 bool process_inventory_input(struct player_t *player, int key)

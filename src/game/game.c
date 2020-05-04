@@ -78,6 +78,8 @@ void start_game(int8_t slot)
     render_graph_t *render_graph = create_new_graph();
     sound_t music                = create_sound();
 
+    bool first_pass = true;
+
     char music_path[64];
 
     sprintf(music_path, "game/%d.ogg", rand() % 2 + 1);
@@ -287,9 +289,17 @@ void start_game(int8_t slot)
                 switch (choice)
                 {
                     case BATTLE_EXIT:
+                    {
+                        int mon = score->money - 20;
+                        if (mon < 0)
+                        {
+                            score->money = 0;
+                        }
                         battle->should_show              = false;
                         battle->battle_menu->should_show = false;
                         game_screen_node->require_redraw = true;
+                        first_pass = true;
+                    }
                         break;
                     case BATTLE_ATTACK:
                     {
@@ -313,6 +323,63 @@ void start_game(int8_t slot)
                         battle->turn = false;
                         break;
                     case BATTLE_NONE:
+                    {
+                        if(first_pass)
+                        {
+                            static const char *text[]={"¡HAS SIDO EMBOSCADO!                            "};
+                            standby_window_t *stdby_w = create_standby_window(
+                                text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                            draw_standby_window(stdby_w);
+                            first_pass = false;
+                        }
+                        else if(battle->battle_menu->option == KEY_UP || battle->battle_menu->option == KEY_DOWN)
+                        {
+                            int current               = battle->battle_menu->menu->current_choice;
+                            switch (current)
+                            {
+                                case 0:
+                                {
+                                    static const char *text[]={"Un ataque de daño medio, ¡Úsalo cuando quieras! "};
+                                    standby_window_t *stdby_w = create_standby_window(
+                                        text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                                    draw_standby_window(stdby_w);
+                                }
+                                    break;
+                                case 1:
+                                {
+                                    static const char *text[]={"¡Un fuerte ataaque mágico!, pero necesita MP    "};
+                                    standby_window_t *stdby_w = create_standby_window(
+                                        text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                                    draw_standby_window(stdby_w);
+                                }
+                                    break;
+                                case 2:
+                                {
+                                    static const char *text[]={"¡Cúbrete para recibir menos daño y recuperar MP!"};
+                                    standby_window_t *stdby_w = create_standby_window(
+                                        text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                                    draw_standby_window(stdby_w);
+                                }
+                                    break;
+                                case 3:
+                                {
+                                    static const char *text[]={"Accede a tu inventario y usa uno de tus objetos "};
+                                    standby_window_t *stdby_w = create_standby_window(
+                                        text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                                    draw_standby_window(stdby_w);
+                                }
+                                    break;
+                                case 4:
+                                {
+                                    static const char *text[]={"Es mejor aquí corrió que aquí murió...          "};
+                                    standby_window_t *stdby_w = create_standby_window(
+                                        text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                                    draw_standby_window(stdby_w);
+                                }
+                                    break;
+                            }
+                        }
+                    }
                         break;
                     default:
                         break;
@@ -331,7 +398,9 @@ void start_game(int8_t slot)
                 play_sound(enemy_attack);
                 flash();
                 Sleep(milliseconds);
-                player_health->health -= (int)(player->armor_multiplier*battle->enemy.power*(rand() % 51 + 80)/100);
+                add_health(player_health, -(int)(player->armor_multiplier*battle->enemy.power*(rand() % 51 + 80)/100)) ;
+                score->score_node->require_redraw = true;
+                player_health->health_node->require_redraw = true;
                 battle->turn = true;
                 delete_sound(enemy_attack);
             }

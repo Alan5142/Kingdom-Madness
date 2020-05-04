@@ -15,11 +15,11 @@ void draw_health(health_t *health)
 {
     resize_window(health->window, 1, health->max_health);
 
-    for (int i = 0; i < health->max_health; ++i)
+    for (int i = 0; i < health->max_health; i+=10)
     {
         const uint16_t color = i < health->health ? HEART_POINT_COLOR_PAIR : HEART_LOST_COLOR_PAIR;
         wattron(health->window, COLOR_PAIR(color));
-        mvwaddstr(health->window, 0, i, "♥");
+        mvwaddstr(health->window, 0, (int)i/10, "♥");
         wattroff(health->window, COLOR_PAIR(color));
     }
 
