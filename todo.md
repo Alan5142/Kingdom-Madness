@@ -1,0 +1,7 @@
+- [ ] Arreglar sonidos
+- [x] Mapa
+- [ ] Defensa
+- [ ] Mecánica de magia
+- [ ] Usar item en batalla
+- [ ] Derrota
+- [ ] Derrotar enemigo
