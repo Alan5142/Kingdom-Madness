@@ -11,7 +11,7 @@ score_t *start_score(render_node_t *node)
 {
     score_t *score = malloc(sizeof(score_t));
     score->score = 0;
-    score->money = 0;
+    score->money = 200;
     score->window = newwin(3, 21, 0, getmaxx(stdscr) - 21);
     node->draw_callback = (draw_callback_c) draw_score;
     node->param = score;
