@@ -17,6 +17,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
         enemy.power = 15;
         enemy.reward = 1000;
         enemy.sprite = "enemy/DEVIL.txt";
+        enemy.enemy_number = 3;
     }
     else if(pos_x == 1 && pos_y == 0)
     {
@@ -25,6 +26,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
         enemy.power = 10;
         enemy.reward = 500;
         enemy.sprite = "enemy/REAPER.txt";
+        enemy.enemy_number = 2;
     }
     else if(pos_x == 1 && pos_y == 1)
     {
@@ -33,6 +35,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
         enemy.power = 7;
         enemy.reward = 100;
         enemy.sprite = "enemy/GHOST.txt";
+        enemy.enemy_number = 1;
     }
     else if(pos_x == 0 && pos_y == 2)
     {
@@ -41,6 +44,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
         enemy.power = 5;
         enemy.reward = 50;
         enemy.sprite = "enemy/DRAGON.txt";
+        enemy.enemy_number = 0;
     }
     else
     {

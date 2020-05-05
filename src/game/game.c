@@ -108,11 +108,13 @@ void start_game(int8_t slot)
 
     health_t *player_health = start_health(add_child(render_graph->entry_point, NULL));
 
+    magic_t *magic = create_magic(add_child(render_graph->entry_point, NULL));
+
     score_t *score = start_score(add_next(player_health->health_node, NULL));
 
     WINDOW *game = newwin(getmaxy(stdscr) - 1, getmaxx(stdscr), 1, 0);
 
-    player_t *player = create_player(game, player_health);
+    player_t *player = create_player(game, player_health, magic);
 
     render_node_t *game_screen_node = add_child(render_graph->entry_point, (draw_callback_c)draw_game_screen);
     game_screen_node->param         = game;
@@ -161,7 +163,7 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#ifndef NDEBUG
+#if !defined(NDEBUG) && 0
     state.boss_defeated.boss1 = 1;
     state.boss_defeated.boss2 = 1;
     state.boss_defeated.boss3 = 1;
@@ -333,8 +335,24 @@ void start_game(int8_t slot)
         {
             if (battle->turn == true)
             {
-                battle->battle_menu->option = key;
-                battle_choice_e choice      = execute_battle_menu(battle->battle_menu);
+                // jugador muerto :(
+                if (player->health->health <= 0)
+                {
+                    static const char *text[] = {"El mundo será consumido en la oscuridad.     ",
+                                                 "(Presione alguna tecla para continuar)"};
+
+                    standby_window_t *stdby_w =
+                        create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                    draw_standby_window(stdby_w);
+                    while (!getch())
+                        ;
+                    delete_standby_window(stdby_w);
+                    break;
+                }
+
+                battle->battle_menu->option       = key;
+                battle_choice_e choice            = execute_battle_menu(battle->battle_menu);
+                magic->magic_node->require_redraw = true;
 
                 char player_attack[64];
                 switch (choice)
@@ -368,18 +386,18 @@ void start_game(int8_t slot)
                     break;
                     case BATTLE_DEFENSE:
                         battle->turn = false;
-                        player->magic_points += 10;
-                        player->magic_points = min(100, player->magic_points);
+                        player->magic->magic += 10;
+                        player->magic->magic = min(100, player->magic->magic);
                         break;
                     case BATTLE_MAGIC:
-                        if (player->magic_points >= 0)
+                        if ((player->magic->magic - 20) >= 0)
                         {
-                            player->magic_points -= 20;
-                            player->magic_points = max(0, player->magic_points);
+                            player->magic->magic -= 20;
+                            player->magic->magic = max(0, player->magic->magic);
                             battle->enemy.health -= (int)(player->damage_multiplier * 15 * (rand() % 51 + 80) / 100);
+                            battle->turn = false;
                             // TODO play magic sound
                         }
-                        battle->turn = false;
                         break;
                     case BATTLE_NONE:
                     {
@@ -448,6 +466,54 @@ void start_game(int8_t slot)
             }
             else
             {
+                // BOOM muerto
+                if (battle->enemy.health <= 0)
+                {
+                    standby_window_t *stdby_w;
+                    if (battle->enemy.enemy_number == 3)
+                    {
+                        static const char *text[] = {"El mundo ha sido salvado...     ",
+                                                     "(Presione alguna tecla para continuar)"};
+                        stdby_w =
+                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        state.boss_defeated.boss4 = 1;
+                    }
+                    else
+                    {
+                        static const char *text[] = {"Has ganado, pero aún quedan batallas.     ",
+                                                     "(Presione alguna tecla para continuar)"};
+                        stdby_w =
+                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                        switch (battle->enemy.enemy_number)
+                        {
+                            case 0:
+                                state.boss_defeated.boss1 = 1;
+                                break;
+                            case 1:
+                                state.boss_defeated.boss2 = 1;
+                                break;
+                            case 2:
+                                state.boss_defeated.boss3 = 1;
+                                break;
+                        }
+                    }
+
+                    draw_standby_window(stdby_w);
+                    while (!getch())
+                        ;
+                    delete_standby_window(stdby_w);
+                    battle->should_show                        = false;
+                    render_graph->entry_point->require_redraw  = true;
+                    game_screen_node->require_redraw           = true;
+                    magic->magic_node->require_redraw          = true;
+                    player->health->health                     = player->health->max_health;
+                    player->magic->magic                       = 100;
+                    player_health->health_node->require_redraw = true;
+                    score->money += battle->enemy.reward;
+                    score->score_node->require_redraw = true;
+                    score->score += battle->enemy.reward * 5;
+                    continue;
+                }
                 sound_t enemy_attack = create_sound();
                 add_sound_to_manager(enemy_attack);
 
@@ -549,7 +615,7 @@ void start_game(int8_t slot)
             }
             else if ((player->location_x != 1 || player->location_y != 2))
             {
-                player->magic_points             = 100;
+                player->magic->magic             = 100;
                 battle_screen->require_redraw    = true;
                 battle->should_show              = true;
                 battle->battle_menu->should_show = true;

@@ -26,6 +26,7 @@ void delete_standby_window(standby_window_t *window)
 {
     wclear(window->window);
     wrefresh(window->window);
+    free(window);
 }
 
 void draw_standby_window(standby_window_t *window)

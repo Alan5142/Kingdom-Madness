@@ -15,6 +15,7 @@ typedef struct enemy_t
     int max_health;
     int power;
     int reward;
+    int8_t enemy_number;
 }enemy_t;
 
 enemy_t create_enemy(int pos_x, int pos_y);

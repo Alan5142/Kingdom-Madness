@@ -14,7 +14,7 @@ typedef struct
 
 coordinates_t player_coordinates[3][2] = {{{9, 7}, {9, 56}}, {{26, 25}, {26, 66}}, {{36, 49}, {38, 80}}};
 
-player_t *create_player(WINDOW *parent, health_t *health)
+player_t *create_player(WINDOW *parent, health_t *health, magic_t *magic)
 {
     player_t *player          = malloc(sizeof(player_t));
     player->owning_window     = parent;
@@ -28,6 +28,7 @@ player_t *create_player(WINDOW *parent, health_t *health)
     player->armor_multiplier  = 1.f;
     player->location_x        = 1;
     player->location_y        = 2;
+    player->magic = magic;
     return player;
 }
 
@@ -35,6 +36,7 @@ void delete_player(player_t *player)
 {
     delete_inventory(player->inventory);
     delete_health(player->health);
+    delete_magic(player->magic);
     free(player);
 }
 
