@@ -39,7 +39,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
     }
     else if(pos_x == 0 && pos_y == 2)
     {
-        enemy.health = 100;
+        enemy.health = 150;
         enemy.max_health = 300;
         enemy.power = 5;
         enemy.reward = 50;

@@ -12,6 +12,7 @@
 #include <game/enemy.h>
 #include <game/game_state.h>
 #include <game/pause.h>
+#include <game/save_game.h>
 #include <game/store_menu.h>
 #include <sound.h>
 #include <stdlib.h>
@@ -133,7 +134,8 @@ void start_game(int8_t slot)
 
     wbkgd(game, COLOR_PAIR(GAME_COLOR_PAIR));
 
-    pause_menu_t *menu = create_pause_menu(game, add_child(render_graph->entry_point, NULL));
+    pause_menu_t *menu               = create_pause_menu(game, add_child(render_graph->entry_point, NULL));
+    save_game_menu_t *save_game_menu = create_save_menu(game, add_child(render_graph->entry_point, NULL));
 
     game_state_t state;
     memset(&state, 0, sizeof(game_state_t));
@@ -143,12 +145,16 @@ void start_game(int8_t slot)
         state = load_game(slot, &success);
         if (success)
         {
+            score->score               = state.score;
+            score->money               = state.money;
             player->health->health     = state.health;
             player->health->max_health = state.max_health;
             get_inventory_from_game_state(player->inventory, &state);
         }
         else
         {
+            state.money      = score->money;
+            state.score      = score->score;
             state.max_health = player->health->max_health;
             state.health     = player->health->health;
             fill_game_state_inventory_data(&state, player->inventory);
@@ -390,9 +396,9 @@ void start_game(int8_t slot)
                         player->magic->magic = min(100, player->magic->magic);
                         break;
                     case BATTLE_MAGIC:
-                        if ((player->magic->magic - 20) >= 0)
+                        if ((player->magic->magic - 30) >= 0)
                         {
-                            player->magic->magic -= 20;
+                            player->magic->magic -= 30;
                             player->magic->magic = max(0, player->magic->magic);
                             battle->enemy.health -= (int)(player->damage_multiplier * 15 * (rand() % 51 + 80) / 100);
                             battle->turn = false;
@@ -531,6 +537,53 @@ void start_game(int8_t slot)
             }
             continue;
         }
+
+        if (save_game_menu->should_show)
+        {
+            save_game_menu->option = key;
+            save_choice_e choice   = execute_save_menu_action(save_game_menu);
+            bool saved             = true;
+            switch (choice)
+            {
+                case SLOT_1:
+                    state.score = score->score;
+                    state.money = score->money;
+                    save_game(&state, 1);
+                    break;
+                case SLOT_2:
+                    state.score = score->score;
+                    state.money = score->money;
+                    save_game(&state, 2);
+                    break;
+                case SLOT_3:
+                    state.score = score->score;
+                    state.money = score->money;
+                    save_game(&state, 3);
+                    break;
+                default:
+                    saved = false;
+                    break;
+            }
+            if (saved)
+            {
+                static const char *text[] = {"Guardado correctamente                ",
+                                             "(Presione alguna tecla para continuar)"};
+                standby_window_t *stdby_w =
+                    create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                draw_standby_window(stdby_w);
+                while (!getch())
+                    ;
+                delete_standby_window(stdby_w);
+            }
+            if (key == 27 || saved)
+            {
+                save_game_menu->should_show      = false;
+                game_screen_node->require_redraw = true;
+                continue;
+            }
+            save_game_menu->render_node->require_redraw = true;
+        }
+
         if (menu->should_show)
         {
             menu->option         = key;
@@ -564,7 +617,10 @@ void start_game(int8_t slot)
                     add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory)->param = player;
                     break;
                 case MENU_SAVE:
-                    // TODO guardar
+                    save_game_menu->should_show                 = true;
+                    menu->should_show                           = false;
+                    game_screen_node->require_redraw            = true;
+                    save_game_menu->render_node->require_redraw = true;
                     break;
                 default:
                     break;

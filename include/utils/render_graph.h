@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <game/magic.h>
+#include <game/save_game.h>
+
 
 
 typedef void (*draw_callback_c)(void *);

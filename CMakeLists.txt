@@ -30,6 +30,7 @@ add_executable(progra WIN32 main.c
         src/utils/standby_window.c
         src/utils/sound_manager.c
         src/game/magic.c
+        src/game/save_game.c
         )
 
 target_link_libraries(progra PDcurses winmm sound_binding shlwapi)
