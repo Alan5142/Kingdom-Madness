@@ -61,8 +61,12 @@ typedef struct player_t
      * Multiplicador de daño, entre mayor sea más daño hace
      */
     float damage_multiplier;
+
     int16_t location_x;
+
     int16_t location_y;
+
+    int8_t magic_points;
 } player_t;
 
 

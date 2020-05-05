@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <utils/render_graph.h>
+#include <utils/sound_manager.h>
 #include <utils/sprite.h>
 #include <utils/standby_window.h>
 
@@ -169,6 +170,7 @@ void start_game(int8_t slot)
 
     while (1)
     {
+        destroy_finished_sounds();
         draw_render_graph(render_graph);
         wrefresh(game);
         int key = wgetch(game);
@@ -353,22 +355,30 @@ void start_game(int8_t slot)
                     case BATTLE_ATTACK:
                     {
                         sound_t character_attack = create_sound();
+                        add_sound_to_manager(character_attack);
+
                         sprintf(player_attack, "sfx/ataques/player_%d.ogg", 1);
                         sound_open_file(character_attack, player_attack);
-                        int milliseconds = get_sound_milliseconds_duration(character_attack);
                         set_loop(character_attack, false);
                         play_sound(character_attack);
                         flash();
-                        Sleep(milliseconds);
                         battle->enemy.health -= (int)(player->damage_multiplier * 10 * (rand() % 51 + 80) / 100);
                         battle->turn = false;
-                        delete_sound(character_attack);
                     }
                     break;
                     case BATTLE_DEFENSE:
                         battle->turn = false;
+                        player->magic_points += 10;
+                        player->magic_points = min(100, player->magic_points);
                         break;
                     case BATTLE_MAGIC:
+                        if (player->magic_points >= 0)
+                        {
+                            player->magic_points -= 20;
+                            player->magic_points = max(0, player->magic_points);
+                            battle->enemy.health -= (int)(player->damage_multiplier * 15 * (rand() % 51 + 80) / 100);
+                            // TODO play magic sound
+                        }
                         battle->turn = false;
                         break;
                     case BATTLE_NONE:
@@ -439,20 +449,19 @@ void start_game(int8_t slot)
             else
             {
                 sound_t enemy_attack = create_sound();
+                add_sound_to_manager(enemy_attack);
+
                 char rand_n[64];
                 sprintf(rand_n, "sfx/ataques/enemy_%d.ogg", 1);
                 sound_open_file(enemy_attack, rand_n);
-                int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 set_loop(enemy_attack, false);
                 play_sound(enemy_attack);
                 flash();
-                Sleep(milliseconds);
                 add_health(player_health,
                            -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100));
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
-                delete_sound(enemy_attack);
             }
             continue;
         }
@@ -540,6 +549,7 @@ void start_game(int8_t slot)
             }
             else if ((player->location_x != 1 || player->location_y != 2))
             {
+                player->magic_points             = 100;
                 battle_screen->require_redraw    = true;
                 battle->should_show              = true;
                 battle->battle_menu->should_show = true;
@@ -550,6 +560,7 @@ void start_game(int8_t slot)
     }
 
     // clean resources
+    destroy_finished_sounds();
     delete_pause_menu(menu);
     delete_render_graph(render_graph);
     delete_player(player);

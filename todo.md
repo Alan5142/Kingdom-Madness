@@ -1,4 +1,4 @@
-- [ ] Arreglar sonidos
+- [x] Arreglar sonidos
 - [x] Mapa
 - [ ] Defensa
 - [ ] Mecánica de magia

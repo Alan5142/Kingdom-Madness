@@ -46,3 +46,8 @@ void set_volume(sound_t sound, float level)
 {
     static_cast<sf::Music*>(sound)->setVolume(level);
 }
+
+sound_state_e sound_finished(sound_t sound)
+{
+    return static_cast<sound_state_e>(static_cast<sf::Music *>(sound)->getStatus());
+}

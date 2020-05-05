@@ -3,11 +3,12 @@
 //
 #include "game/inventory.h"
 #include "game/player/player.h"
+#include <sound.h>
 #include <stdlib.h>
-#include <utils/sprite.h>
 #include <utils/colors.h>
 #include <utils/render_graph.h>
-#include <sound.h>
+#include <utils/sound_manager.h>
+#include <utils/sprite.h>
 #include <windows.h>
 
 void on_start_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
@@ -332,10 +333,9 @@ void add_item(inventory_t *inventory, item_resource_e item)
     char rand_n[64];
     sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
     sound_open_file(sound, rand_n);
-    int milliseconds = get_sound_milliseconds_duration(sound);
     set_loop(sound, false);
     play_sound(sound);
-    Sleep(milliseconds);
+    add_sound_to_manager(sound);
     for (int i = 0; i <= 1; i++)
     {
         for (int j = 0; j <= 2; j++)
@@ -359,7 +359,6 @@ void add_item(inventory_t *inventory, item_resource_e item)
             }
         }
     }
-    delete_sound(sound);
 }
 
 bool process_inventory_input(struct player_t *player, int key)

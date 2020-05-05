@@ -24,7 +24,12 @@ add_executable(progra WIN32 main.c
         src/player/player.c
         src/game/store_menu.c
         src/load_game.c
-        include/game/battle.h src/game/battle.c include/game/battle_menu.h src/game/battle_menu.c include/game/enemy.h src/game/enemy.c include/utils/standby_window.h src/utils/standby_window.c)
+        src/game/battle.c
+        src/game/battle_menu.c
+        src/game/enemy.c
+        src/utils/standby_window.c
+        src/utils/sound_manager.c
+        )
 
 target_link_libraries(progra PDcurses winmm sound_binding shlwapi)
 target_include_directories(progra PRIVATE include)

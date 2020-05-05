@@ -57,7 +57,7 @@ bool can_move_to_position(uint16_t pos_x, uint16_t pos_y, game_state_t *state)
     {
         return state->boss_defeated.boss2;
     }
-    else if (pos_x == 0 && pos_y == 1)
+    else if ((pos_x == 0 && pos_y == 1) || (pos_x == 1 && pos_y == 1))
     {
         return state->boss_defeated.boss1;
     }
