@@ -29,10 +29,10 @@ void delete_standby_window(standby_window_t *window)
     free(window);
 }
 
-void draw_standby_window(standby_window_t *window)
+void draw_standby_window(standby_window_t *window, int color)
 {
     wclear(window->window);
-    wattron(window->window, COLOR_PAIR(5));
+    wattron(window->window, COLOR_PAIR(color));
     box(window->window, 0, 0);
     for (int i = 0; i < window->length; i++)
     {

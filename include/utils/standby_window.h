@@ -24,7 +24,7 @@ standby_window_t *create_standby_window(const char **text_list,
                                         uint16_t y,
                                         uint16_t x);
 
-void draw_standby_window(standby_window_t *menu);
+void draw_standby_window(standby_window_t *menu, int color);
 
 void delete_standby_window(standby_window_t *menu);
 

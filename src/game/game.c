@@ -201,7 +201,7 @@ void start_game(int8_t slot)
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                        draw_standby_window(stdby_w);
+                        draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
                         delete_standby_window(stdby_w);
@@ -223,7 +223,7 @@ void start_game(int8_t slot)
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                        draw_standby_window(stdby_w);
+                        draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
                         delete_standby_window(stdby_w);
@@ -245,7 +245,7 @@ void start_game(int8_t slot)
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                        draw_standby_window(stdby_w);
+                        draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
                         delete_standby_window(stdby_w);
@@ -267,7 +267,7 @@ void start_game(int8_t slot)
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                        draw_standby_window(stdby_w);
+                        draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
                         delete_standby_window(stdby_w);
@@ -289,7 +289,7 @@ void start_game(int8_t slot)
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                        draw_standby_window(stdby_w);
+                        draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
                         delete_standby_window(stdby_w);
@@ -311,7 +311,7 @@ void start_game(int8_t slot)
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                        draw_standby_window(stdby_w);
+                        draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
                         delete_standby_window(stdby_w);
@@ -344,12 +344,25 @@ void start_game(int8_t slot)
                 // jugador muerto :(
                 if (player->health->health <= 0)
                 {
-                    static const char *text[] = {"El mundo será consumido en la oscuridad.     ",
-                                                 "(Presione alguna tecla para continuar)"};
+                    static const char *text[] = { " ██╗██╗  ██╗ █████╗ ███████╗    ███████╗██╗██████╗  ██████╗                     ",
+                                                  " ██║██║  ██║██╔══██╗██╔════╝    ██╔════╝██║██╔══██╗██╔═══██╗                    ",
+                                                  " ██║███████║███████║███████╗    ███████╗██║██║  ██║██║   ██║                    ",
+                                                  " ╚═╝██╔══██║██╔══██║╚════██║    ╚════██║██║██║  ██║██║   ██║                    ",
+                                                  " ██╗██║  ██║██║  ██║███████║    ███████║██║██████╔╝╚██████╔╝                    ",
+                                                  " ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                     ",
+                                                  "                                                                                ",
+                                                  " ██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗ █████╗ ██████╗  ██████╗ ██╗ ",
+                                                  " ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔═══██╗██║ ",
+                                                  " ██║  ██║█████╗  ██████╔╝██████╔╝██║   ██║   ██║   ███████║██║  ██║██║   ██║██║ ",
+                                                  " ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   ██╔══██║██║  ██║██║   ██║╚═╝ ",
+                                                  " ██████╔╝███████╗██║  ██║██║  ██║╚██████╔╝   ██║   ██║  ██║██████╔╝╚██████╔╝██╗ ",
+                                                  " ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝ ",
+                                                  "El mundo será consumido en la oscuridad...                                      ",
+                                                  "(Presione alguna tecla para continuar)                                          "};
 
                     standby_window_t *stdby_w =
-                        create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                    draw_standby_window(stdby_w);
+                        create_standby_window(text, 15, game, 17, 82, getmaxy(game)/2-8, getmaxx(game)/2-42);
+                    draw_standby_window(stdby_w, 0x0D);
                     while (!getch())
                         ;
                     delete_standby_window(stdby_w);
@@ -366,18 +379,25 @@ void start_game(int8_t slot)
                 {
                     case BATTLE_EXIT:
                     {
-                        int mon = score->money - 20;
-                        if (mon < 0)
+                        if (score->money < 20)
                         {
-                            score->money = 0;
+                            static const char *text[] = {"¡NO TIENES SUFICIENTE DINERO!                   "};
+                            standby_window_t *stdby_w =
+                                create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                            draw_standby_window(stdby_w, 0x0D);
                         }
-                        battle->should_show              = false;
-                        battle->battle_menu->should_show = false;
-                        game_screen_node->require_redraw = true;
-                        first_pass                       = true;
-                        sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
-                        sound_open_file(music, music_path);
-                        play_sound(music);
+                        else
+                        {
+                            score->money                      = score->money - 20;
+                            battle->should_show               = false;
+                            battle->battle_menu->should_show  = false;
+                            game_screen_node->require_redraw  = true;
+                            score->score_node->require_redraw = true;
+                            first_pass                        = true;
+                            sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
+                            sound_open_file(music, music_path);
+                            play_sound(music);
+                        }
                     }
                     break;
                     case BATTLE_ATTACK:
@@ -448,7 +468,7 @@ void start_game(int8_t slot)
                             static const char *text[] = {"¡NO TIENES SUFICIENTE MANA!                     "};
                             standby_window_t *stdby_w =
                                 create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                            draw_standby_window(stdby_w);
+                            draw_standby_window(stdby_w, 0x0D);
                         }
                     }
                         break;
@@ -468,7 +488,7 @@ void start_game(int8_t slot)
                                     static const char *text[] = {"Un ataque de daño medio, ¡Úsalo cuando quieras! "};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                                    draw_standby_window(stdby_w);
+                                    draw_standby_window(stdby_w, 5);
                                 }
                                 break;
                                 case 1:
@@ -476,7 +496,7 @@ void start_game(int8_t slot)
                                     static const char *text[] = {"¡Un fuerte ataaque mágico!, pero necesita MP    "};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                                    draw_standby_window(stdby_w);
+                                    draw_standby_window(stdby_w, 5);
                                 }
                                 break;
                                 case 2:
@@ -484,7 +504,7 @@ void start_game(int8_t slot)
                                     static const char *text[] = {"¡Cúbrete para recibir menos daño y recuperar MP!"};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                                    draw_standby_window(stdby_w);
+                                    draw_standby_window(stdby_w, 5);
                                 }
                                 break;
                                 case 3:
@@ -492,7 +512,7 @@ void start_game(int8_t slot)
                                     static const char *text[] = {"Accede a tu inventario y usa uno de tus objetos "};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                                    draw_standby_window(stdby_w);
+                                    draw_standby_window(stdby_w, 5);
                                 }
                                 break;
                                 case 4:
@@ -500,7 +520,7 @@ void start_game(int8_t slot)
                                     static const char *text[] = {"Es mejor aquí corrió que aquí murió...          "};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                                    draw_standby_window(stdby_w);
+                                    draw_standby_window(stdby_w, 5);
                                 }
                                 break;
                             }
@@ -515,14 +535,14 @@ void start_game(int8_t slot)
                     static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
                     standby_window_t *stdby_w =
                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                    draw_standby_window(stdby_w);
+                    draw_standby_window(stdby_w, 0x0D);
                 }
                 if (choice == BATTLE_DEFENSE)
                 {
                     static const char *text[] = {"¡BIEN DEFENDIDO!                                "};
                     standby_window_t *stdby_w =
                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                    draw_standby_window(stdby_w);
+                    draw_standby_window(stdby_w, 5);
                 }
             }
             else
@@ -533,7 +553,7 @@ void start_game(int8_t slot)
                     static const char *text[] = {"¡HAS SIDO EMBOSCADO!                            "};
                     standby_window_t *stdby_w =
                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                    draw_standby_window(stdby_w);
+                    draw_standby_window(stdby_w, 5);
                     first_pass = false;
                 }
                 if (battle->enemy.health <= 0)
@@ -567,7 +587,7 @@ void start_game(int8_t slot)
                         }
                     }
 
-                    draw_standby_window(stdby_w);
+                    draw_standby_window(stdby_w, 5);
                     while (!getch())
                         ;
                     delete_standby_window(stdby_w);
@@ -603,7 +623,7 @@ void start_game(int8_t slot)
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =
                     create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                draw_standby_window(stdby_w);
+                draw_standby_window(stdby_w, 5);
                 player->armor_multiplier = 1.f;
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
@@ -644,7 +664,7 @@ void start_game(int8_t slot)
                                              "(Presione alguna tecla para continuar)"};
                 standby_window_t *stdby_w =
                     create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
-                draw_standby_window(stdby_w);
+                draw_standby_window(stdby_w, 5);
                 while (!getch())
                     ;
                 delete_standby_window(stdby_w);
@@ -719,21 +739,9 @@ void start_game(int8_t slot)
             }
         }
 
-        // se muestra el inventario, procesar para este ;)
-        if (player->inventory->shown)
-        {
-            if (process_inventory_input(player, key))
-            {
-                hide_player_inventory(player);
-                delete_last(render_graph);
-                game_screen_node->require_redraw = true;
-            }
-        }
-        else
-        {
-            player_render_node->require_redraw =
-                process_player_input(player, key, &state) ? true : player_render_node->require_redraw;
-        }
+
+        player_render_node->require_redraw =
+            process_player_input(player, key, &state) ? true : player_render_node->require_redraw;
 
         if (key == 10)
         {
@@ -745,7 +753,9 @@ void start_game(int8_t slot)
             }
             else if ((player->location_x != 1 || player->location_y != 2))
             {
-                sprintf(music_path, "combate/%d.ogg", rand() % 2 + 1);
+                sprintf(music_path,
+                        (player->location_x == 0 && player->location_y == 0) ? "combate_final/%d.ogg": "combate/%d.ogg",
+                        rand() % 2 + 1);
                 sound_open_file(music, music_path);
                 play_sound(music);
                 player->magic->magic             = 100;
