@@ -651,6 +651,7 @@ void start_game(int8_t slot)
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
+                player->magic->magic += 5;
             }
             continue;
         }
