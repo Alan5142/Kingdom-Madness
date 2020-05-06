@@ -106,7 +106,9 @@ render_node_t *add_node_at_end(render_graph_t *render_graph, draw_callback_c cal
         return add_child(render_graph->entry_point, callback);
     }
     while (node->next) node = node->next;
-    return add_next(node, callback);
+    render_node_t *new_node = add_next(node, callback);
+    new_node->parent = render_graph->entry_point;
+    return new_node;
 }
 
 void delete_node(render_node_t *node)

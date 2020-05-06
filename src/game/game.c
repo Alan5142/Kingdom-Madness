@@ -392,6 +392,7 @@ void start_game(int8_t slot)
                             battle->should_show               = false;
                             battle->battle_menu->should_show  = false;
                             game_screen_node->require_redraw  = true;
+                            player_render_node->require_redraw = true;
                             score->score_node->require_redraw = true;
                             first_pass                        = true;
                             sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
@@ -475,7 +476,8 @@ void start_game(int8_t slot)
                     case BATTLE_ITEM:
                         game_screen_node->require_redraw                                             = true;
                         battle_screen->require_redraw = true;
-                        render_node_t* inventory_battle = add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory)->param = player;
+                        render_node_t* inventory_battle = add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory);
+                        inventory_battle->param = player;
                         inventory_battle->require_redraw = true;
                         draw_render_graph(render_graph);
                         wrefresh(game);
@@ -490,11 +492,11 @@ void start_game(int8_t slot)
                             battle->turn = false;
                             Sleep(500);
                         }
-                        delete_last(render_graph);
+                        delete_node(inventory_battle);
                         game_screen_node->require_redraw = true;
                         battle_screen->require_redraw = true;
-                        draw_render_graph(render_graph);
-                        wrefresh(game);
+                        player->inventory->shown = false;
+                        // draw_render_graph(render_graph);
                         break;
                     case BATTLE_NONE:
                     {

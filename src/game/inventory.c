@@ -120,6 +120,8 @@ inventory_t *create_inventory(WINDOW *parent)
             inventory->items[i][j].quantity = 0;
         }
     }
+    inventory->items[0][0] = create_item(ITEM_POTION_LOW);
+    inventory->items[0][0].quantity = 1;
     return inventory;
 }
 
@@ -257,7 +259,7 @@ void potion_low_effect(player_t *player)
     play_sound(sound);
     Sleep(milliseconds);
 
-    add_health(player->health, 2);
+    add_health(player->health, 15);
     player->health->health_node->require_redraw = true;
 }
 
@@ -270,7 +272,7 @@ void potion_medium_effect(player_t *player)
     play_sound(sound);
     Sleep(milliseconds);
 
-    add_health(player->health, 5);
+    add_health(player->health, 50);
     player->health->health_node->require_redraw = true;
 }
 
