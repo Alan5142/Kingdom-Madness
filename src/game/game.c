@@ -101,7 +101,7 @@ void start_game(int8_t slot)
 
     char music_path[64];
 
-    sprintf(music_path, "game/%d.ogg", rand() % 2 + 1);
+    sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
     sound_open_file(music, music_path);
     set_loop(music, true);
     play_sound(music);
@@ -359,8 +359,9 @@ void start_game(int8_t slot)
                 battle->battle_menu->option       = key;
                 battle_choice_e choice            = execute_battle_menu(battle->battle_menu);
                 magic->magic_node->require_redraw = true;
+                bool success_magic = false;
 
-                char player_attack[64];
+                char player_move[64];
                 switch (choice)
                 {
                     case BATTLE_EXIT:
@@ -381,8 +382,8 @@ void start_game(int8_t slot)
                         sound_t character_attack = create_sound();
                         add_sound_to_manager(character_attack);
 
-                        sprintf(player_attack, "sfx/ataques/player_%d.ogg", 1);
-                        sound_open_file(character_attack, player_attack);
+                        sprintf(player_move, "sfx/ataques/player_%d.ogg", 1);
+                        sound_open_file(character_attack, player_move);
                         set_loop(character_attack, false);
                         play_sound(character_attack);
                         int milliseconds = get_sound_milliseconds_duration(character_attack);
@@ -390,25 +391,67 @@ void start_game(int8_t slot)
                         Sleep(milliseconds);
                         battle->enemy.health -= (int)(player->damage_multiplier * 10 * (rand() % 51 + 80) / 100);
                         battle->turn = false;
+                        Sleep(500);
                     }
                     break;
                     case BATTLE_DEFENSE:
+                    {
+                        sound_t character_deffense = create_sound();
+                        add_sound_to_manager(character_deffense);
+
+                        sprintf(player_move, "sfx/defensas/%d.ogg", 1);
+                        sound_open_file(character_deffense, player_move);
+                        set_loop(character_deffense, false);
+                        play_sound(character_deffense);
+                        int milliseconds = get_sound_milliseconds_duration(character_deffense);
+                        flash();
+                        Sleep(500);
+                        flash();
+                        Sleep(milliseconds-500);
                         battle->turn = false;
+                        player->armor_multiplier = .5;
                         player->magic->magic += 10;
                         player->magic->magic = min(100, player->magic->magic);
+                        Sleep(500);
+                    }
                         break;
                     case BATTLE_MAGIC:
+                    {
                         if ((player->magic->magic - 30) >= 0)
                         {
                             player->magic->magic -= 30;
                             player->magic->magic = max(0, player->magic->magic);
                             battle->enemy.health -= (int)(player->damage_multiplier * 15 * (rand() % 51 + 80) / 100);
                             battle->turn = false;
-                            // TODO play magic sound
+                            sound_t character_magic= create_sound();
+                            add_sound_to_manager(character_magic);
+
+                            sprintf(player_move, "sfx/magia/%d.ogg", rand() % 2 + 1);
+                            sound_open_file(character_magic, player_move);
+                            set_loop(character_magic, false);
+                            play_sound(character_magic);
+                            int milliseconds = get_sound_milliseconds_duration(character_magic);
+                            for (int i = 0; i < milliseconds/100; i++)
+                            {
+                                flash();
+                                Sleep(milliseconds/100);
+                            }
+                            success_magic = true;
+                            Sleep(500);
                         }
+                        else
+                        {
+
+                            static const char *text[] = {"¡NO TIENES SUFICIENTE MANA!                     "};
+                            standby_window_t *stdby_w =
+                                create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                            draw_standby_window(stdby_w);
+                        }
+                    }
                         break;
                     case BATTLE_ITEM:
                         battle->turn = false;
+                        Sleep(500);
                         break;
                     case BATTLE_NONE:
                     {
@@ -464,7 +507,7 @@ void start_game(int8_t slot)
                     default:
                         break;
                 }
-                if (choice == BATTLE_ITEM || choice == BATTLE_ATTACK || choice == BATTLE_MAGIC)
+                if (choice == BATTLE_ITEM || choice == BATTLE_ATTACK || (choice == BATTLE_MAGIC && success_magic))
                 {
                     static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
                     standby_window_t *stdby_w =
@@ -548,12 +591,14 @@ void start_game(int8_t slot)
                 int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 flash();
                 Sleep(milliseconds);
+                int q = -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
                 add_health(player_health,
-                           -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100));
+                           q);
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =
                     create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                 draw_standby_window(stdby_w);
+                player->armor_multiplier = 1.f;
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
