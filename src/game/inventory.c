@@ -278,7 +278,7 @@ void potion_medium_effect(player_t *player)
 
 void armor_low(player_t *player)
 {
-    player->armor_multiplier = 0.8f;
+    player->armor_multiplier = 0.7f;
 }
 
 void armor_medium(player_t *player)

@@ -169,7 +169,7 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG)
+#if !defined(NDEBUG) && 0
     state.boss_defeated.boss1 = 1;
     state.boss_defeated.boss2 = 1;
     state.boss_defeated.boss3 = 1;
@@ -651,6 +651,7 @@ void start_game(int8_t slot)
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
                 player->magic->magic += 5;
+                player->magic->magic = min(100, player->magic->magic);
             }
             continue;
         }
@@ -699,6 +700,7 @@ void start_game(int8_t slot)
                 continue;
             }
             save_game_menu->render_node->require_redraw = true;
+            continue;
         }
 
         if (menu->should_show)
