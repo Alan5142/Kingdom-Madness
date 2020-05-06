@@ -349,7 +349,7 @@ void start_game(int8_t slot)
                                                   " ██╗███████║███████║███████╗    ███████╗██║██║  ██║██║   ██║                    ",
                                                   " ██║██╔══██║██╔══██║╚════██║    ╚════██║██║██║  ██║██║   ██║                    ",
                                                   " ██║██║  ██║██║  ██║███████║    ███████║██║██████╔╝╚██████╔╝                    ",
-                                                  " ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                     ",
+                                                  " ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                        ",
                                                   "                                                                                ",
                                                   " ██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗ █████╗ ██████╗  ██████╗ ██╗ ",
                                                   " ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔═══██╗██║ ",
@@ -372,7 +372,7 @@ void start_game(int8_t slot)
                 battle->battle_menu->option       = key;
                 battle_choice_e choice            = execute_battle_menu(battle->battle_menu);
                 magic->magic_node->require_redraw = true;
-                bool success_magic = false;
+                bool success_action = false;
 
                 char player_move[64];
                 switch (choice)
@@ -459,7 +459,7 @@ void start_game(int8_t slot)
                                 flash();
                                 Sleep(milliseconds/100);
                             }
-                            success_magic = true;
+                            success_action = true;
                             Sleep(500);
                         }
                         else
@@ -473,8 +473,28 @@ void start_game(int8_t slot)
                     }
                         break;
                     case BATTLE_ITEM:
-                        battle->turn = false;
-                        Sleep(500);
+                        game_screen_node->require_redraw                                             = true;
+                        battle_screen->require_redraw = true;
+                        render_node_t* inventory_battle = add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory)->param = player;
+                        inventory_battle->require_redraw = true;
+                        draw_render_graph(render_graph);
+                        wrefresh(game);
+                        int menu_in = wgetch(game);
+                        while (!process_inventory_input(player, menu_in) && menu_in != 27)
+                        {
+                            menu_in = wgetch(game);
+                        }
+                        if(menu_in != 27)
+                        {
+                            success_action = true;
+                            battle->turn = false;
+                            Sleep(500);
+                        }
+                        delete_last(render_graph);
+                        game_screen_node->require_redraw = true;
+                        battle_screen->require_redraw = true;
+                        draw_render_graph(render_graph);
+                        wrefresh(game);
                         break;
                     case BATTLE_NONE:
                     {
@@ -530,7 +550,7 @@ void start_game(int8_t slot)
                     default:
                         break;
                 }
-                if (choice == BATTLE_ITEM || choice == BATTLE_ATTACK || (choice == BATTLE_MAGIC && success_magic))
+                if ( (success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) || choice == BATTLE_ATTACK)
                 {
                     static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
                     standby_window_t *stdby_w =
