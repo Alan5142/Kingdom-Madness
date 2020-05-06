@@ -12,8 +12,8 @@ enemy_t create_enemy(int pos_x, int pos_y)
     enemy_t enemy;
     if (pos_x == 0 && pos_y == 0)
     {
-        enemy.health = 700;
-        enemy.max_health = 1000;
+        enemy.health = 1000;
+        enemy.max_health = 1500;
         enemy.power = 17;
         enemy.reward = 1000;
         enemy.sprite = "enemy/DEVIL.txt";
@@ -33,7 +33,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
         enemy.health = 200;
         enemy.max_health = 600;
         enemy.power = 9;
-        enemy.reward = 100;
+        enemy.reward = 130;
         enemy.sprite = "enemy/GHOST.txt";
         enemy.enemy_number = 1;
     }
@@ -42,7 +42,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
         enemy.health = 150;
         enemy.max_health = 300;
         enemy.power = 7;
-        enemy.reward = 50;
+        enemy.reward = 70;
         enemy.sprite = "enemy/DRAGON.txt";
         enemy.enemy_number = 0;
     }

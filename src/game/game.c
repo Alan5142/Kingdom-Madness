@@ -345,24 +345,25 @@ void start_game(int8_t slot)
                 // jugador muerto :(
                 if (player->health->health <= 0)
                 {
-                    static const char *text[] = { " ██╗██╗  ██╗ █████╗ ███████╗    ███████╗██╗██████╗  ██████╗                     ",
-                                                  " ╚═╝██║  ██║██╔══██╗██╔════╝    ██╔════╝██║██╔══██╗██╔═══██╗                    ",
-                                                  " ██╗███████║███████║███████╗    ███████╗██║██║  ██║██║   ██║                    ",
-                                                  " ██║██╔══██║██╔══██║╚════██║    ╚════██║██║██║  ██║██║   ██║                    ",
-                                                  " ██║██║  ██║██║  ██║███████║    ███████║██║██████╔╝╚██████╔╝                    ",
-                                                  " ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                        ",
-                                                  "                                                                                ",
-                                                  " ██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗ █████╗ ██████╗  ██████╗ ██╗ ",
-                                                  " ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔═══██╗██║ ",
-                                                  " ██║  ██║█████╗  ██████╔╝██████╔╝██║   ██║   ██║   ███████║██║  ██║██║   ██║██║ ",
-                                                  " ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   ██╔══██║██║  ██║██║   ██║╚═╝ ",
-                                                  " ██████╔╝███████╗██║  ██║██║  ██║╚██████╔╝   ██║   ██║  ██║██████╔╝╚██████╔╝██╗ ",
-                                                  " ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝ ",
-                                                  "El mundo será consumido en la oscuridad...                                      ",
-                                                  "(Presione alguna tecla para continuar)                                          "};
+                    static const char *text[] = {
+                        " ██╗██╗  ██╗ █████╗ ███████╗    ███████╗██╗██████╗  ██████╗                     ",
+                        " ╚═╝██║  ██║██╔══██╗██╔════╝    ██╔════╝██║██╔══██╗██╔═══██╗                    ",
+                        " ██╗███████║███████║███████╗    ███████╗██║██║  ██║██║   ██║                    ",
+                        " ██║██╔══██║██╔══██║╚════██║    ╚════██║██║██║  ██║██║   ██║                    ",
+                        " ██║██║  ██║██║  ██║███████║    ███████║██║██████╔╝╚██████╔╝                    ",
+                        " ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                        ",
+                        "                                                                                ",
+                        " ██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗ █████╗ ██████╗  ██████╗ ██╗ ",
+                        " ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔═══██╗██║ ",
+                        " ██║  ██║█████╗  ██████╔╝██████╔╝██║   ██║   ██║   ███████║██║  ██║██║   ██║██║ ",
+                        " ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   ██╔══██║██║  ██║██║   ██║╚═╝ ",
+                        " ██████╔╝███████╗██║  ██║██║  ██║╚██████╔╝   ██║   ██║  ██║██████╔╝╚██████╔╝██╗ ",
+                        " ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝ ",
+                        "El mundo será consumido en la oscuridad...                                      ",
+                        "(Presione alguna tecla para continuar)                                          "};
 
                     standby_window_t *stdby_w =
-                        create_standby_window(text, 15, game, 17, 82, getmaxy(game)/2-8, getmaxx(game)/2-42);
+                        create_standby_window(text, 15, game, 17, 82, getmaxy(game) / 2 - 8, getmaxx(game) / 2 - 42);
                     draw_standby_window(stdby_w, 0x0D);
                     while (!getch())
                         ;
@@ -373,7 +374,7 @@ void start_game(int8_t slot)
                 battle->battle_menu->option       = key;
                 battle_choice_e choice            = execute_battle_menu(battle->battle_menu);
                 magic->magic_node->require_redraw = true;
-                bool success_action = false;
+                bool success_action               = false;
 
                 char player_move[64];
                 switch (choice)
@@ -389,13 +390,13 @@ void start_game(int8_t slot)
                         }
                         else
                         {
-                            score->money                      = score->money - 20;
-                            battle->should_show               = false;
-                            battle->battle_menu->should_show  = false;
-                            game_screen_node->require_redraw  = true;
+                            score->money                       = score->money - 20;
+                            battle->should_show                = false;
+                            battle->battle_menu->should_show   = false;
+                            game_screen_node->require_redraw   = true;
                             player_render_node->require_redraw = true;
-                            score->score_node->require_redraw = true;
-                            first_pass                        = true;
+                            score->score_node->require_redraw  = true;
+                            first_pass                         = true;
                             sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
                             sound_open_file(music, music_path);
                             play_sound(music);
@@ -440,7 +441,7 @@ void start_game(int8_t slot)
                         player->magic->magic = min(100, player->magic->magic);
                         Sleep(1000);
                     }
-                        break;
+                    break;
                     case BATTLE_MAGIC:
                     {
                         if ((player->magic->magic - 40) >= 0)
@@ -457,10 +458,10 @@ void start_game(int8_t slot)
                             set_loop(character_magic, false);
                             play_sound(character_magic);
                             int milliseconds = get_sound_milliseconds_duration(character_magic);
-                            for (int i = 0; i < milliseconds/100; i++)
+                            for (int i = 0; i < milliseconds / 100; i++)
                             {
                                 flash();
-                                Sleep(milliseconds/100);
+                                Sleep(milliseconds / 100);
                             }
                             success_action = true;
                             Sleep(1000);
@@ -474,12 +475,13 @@ void start_game(int8_t slot)
                             draw_standby_window(stdby_w, 0x0D);
                         }
                     }
-                        break;
+                    break;
                     case BATTLE_ITEM:
-                        game_screen_node->require_redraw                                             = true;
-                        battle_screen->require_redraw = true;
-                        render_node_t* inventory_battle = add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory);
-                        inventory_battle->param = player;
+                        game_screen_node->require_redraw = true;
+                        battle_screen->require_redraw    = true;
+                        render_node_t *inventory_battle =
+                            add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory);
+                        inventory_battle->param          = player;
                         inventory_battle->require_redraw = true;
                         draw_render_graph(render_graph);
                         wrefresh(game);
@@ -488,7 +490,7 @@ void start_game(int8_t slot)
                         {
                             menu_in = wgetch(game);
                         }
-                        if(menu_in != 27)
+                        if (menu_in != 27)
                         {
                             success_action = true;
                             battle->turn = false;
@@ -551,11 +553,11 @@ void start_game(int8_t slot)
                             }
                         }
                     }
-                        break;
+                    break;
                     default:
                         break;
                 }
-                if ( (success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) || choice == BATTLE_ATTACK)
+                if ((success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) || choice == BATTLE_ATTACK)
                 {
                     static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
                     standby_window_t *stdby_w =
@@ -674,6 +676,7 @@ void start_game(int8_t slot)
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
                 player->magic->magic += 5;
+                player->magic->magic = min(100, player->magic->magic);
             }
             continue;
         }
@@ -722,6 +725,7 @@ void start_game(int8_t slot)
                 continue;
             }
             save_game_menu->render_node->require_redraw = true;
+            continue;
         }
 
         if (menu->should_show)
@@ -785,7 +789,7 @@ void start_game(int8_t slot)
             }
         }
 
-        if(!player->inventory->shown)
+        if (!player->inventory->shown)
         {
             player_render_node->require_redraw =
                 process_player_input(player, key, &state) ? true : player_render_node->require_redraw;
@@ -801,9 +805,14 @@ void start_game(int8_t slot)
             }
             else if ((player->location_x != 1 || player->location_y != 2))
             {
-                sprintf(music_path,
-                        (player->location_x == 0 && player->location_y == 0) ? "combate_final/%d.ogg": "combate/%d.ogg",
-                        rand() % 2 + 1);
+                if (player->location_x == 0 && player->location_y == 0)
+                {
+                    sprintf(music_path, "combate_final/%d.ogg", rand() % 4 + 1);
+                }
+                else
+                {
+                    sprintf(music_path, "combate/%d.ogg", rand() % 3 + 1);
+                }
                 sound_open_file(music, music_path);
                 play_sound(music);
                 player->magic->magic             = 100;
