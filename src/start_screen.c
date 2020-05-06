@@ -29,7 +29,7 @@ start_screen_result_e start_screen(void)
     // draw_sprite(stdscr, 0, 0, "CASTLE.txt", NULL, NULL);
     // wrefresh(stdscr);
 
-    static const char *start_screen_choices[] = {"【 Ｊｕｇａｒ 】", "【Ｃａｒｇａｒ】", "【 Ｓａｌｉｒ 】"};
+    static const char *start_screen_choices[] = {"【   JUGAR    】", "【   CARGAR   】", "【   SALIR    】"};
     menu_t *menu = create_menu(start_screen_choices, 3, stdscr, 5, 18, 15, X_POSITION, COLOR_PAIR(5));
     // draw_menu(menu);
 

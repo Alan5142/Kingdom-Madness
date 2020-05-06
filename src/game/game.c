@@ -101,7 +101,7 @@ void start_game(int8_t slot)
 
     char music_path[64];
 
-    sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
+    sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
     sound_open_file(music, music_path);
     set_loop(music, true);
     play_sound(music);
@@ -397,9 +397,11 @@ void start_game(int8_t slot)
                             player_render_node->require_redraw = true;
                             score->score_node->require_redraw  = true;
                             first_pass                         = true;
-                            sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
+                            sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
                             sound_open_file(music, music_path);
                             play_sound(music);
+                            player->health->health = player->health->max_health;
+                            player->magic->magic   = 100;
                         }
                     }
                     break;
@@ -415,7 +417,8 @@ void start_game(int8_t slot)
                         int milliseconds = get_sound_milliseconds_duration(character_attack);
                         flash();
                         Sleep(milliseconds);
-                        battle->enemy.health -= (int)(player->damage_multiplier * player->base_damage * 10 * (rand() % 51 + 80) / 100);
+                        battle->enemy.health -=
+                            (int)(player->damage_multiplier * player->base_damage * 10 * (rand() % 51 + 80) / 100);
                         battle->turn = false;
                         Sleep(1000);
                     }
@@ -433,9 +436,9 @@ void start_game(int8_t slot)
                         flash();
                         Sleep(500);
                         flash();
-                        Sleep(milliseconds-500);
+                        Sleep(milliseconds - 500);
                         battle->turn = false;
-                        defended = true;
+                        defended     = true;
                         player->armor_multiplier *= .5;
                         player->magic->magic += 10;
                         player->magic->magic = min(100, player->magic->magic);
@@ -448,9 +451,10 @@ void start_game(int8_t slot)
                         {
                             player->magic->magic -= 40;
                             player->magic->magic = max(0, player->magic->magic);
-                            battle->enemy.health -= (int)(player->damage_multiplier * player->base_damage * 15 * (rand() % 51 + 80) / 100);
-                            battle->turn = false;
-                            sound_t character_magic= create_sound();
+                            battle->enemy.health -=
+                                (int)(player->damage_multiplier * player->base_damage * 15 * (rand() % 51 + 80) / 100);
+                            battle->turn            = false;
+                            sound_t character_magic = create_sound();
                             add_sound_to_manager(character_magic);
 
                             sprintf(player_move, "sfx/magia/%d.ogg", rand() % 2 + 1);
@@ -493,13 +497,13 @@ void start_game(int8_t slot)
                         if (menu_in != 27)
                         {
                             success_action = true;
-                            battle->turn = false;
+                            battle->turn   = false;
                             Sleep(1000);
                         }
                         delete_node(inventory_battle);
                         game_screen_node->require_redraw = true;
-                        battle_screen->require_redraw = true;
-                        player->inventory->shown = false;
+                        battle_screen->require_redraw    = true;
+                        player->inventory->shown         = false;
                         draw_render_graph(render_graph);
                         Sleep(1500);
                         break;
@@ -618,7 +622,7 @@ void start_game(int8_t slot)
                     while (!getch())
                         ;
                     delete_standby_window(stdby_w);
-                    sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
+                    sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
                     sound_open_file(music, music_path);
                     play_sound(music);
                     battle->should_show                        = false;
@@ -645,8 +649,7 @@ void start_game(int8_t slot)
                 flash();
                 Sleep(milliseconds);
                 int damage = -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
-                add_health(player_health,
-                           damage);
+                add_health(player_health, damage);
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =
                     create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
@@ -656,7 +659,7 @@ void start_game(int8_t slot)
                     player->armor_multiplier *= 2;
                     defended = false;
                 }
-                if(player->shield_counter == 0)
+                if (player->shield_counter == 0)
                 {
                     player->armor_multiplier = 1.f;
                 }
@@ -664,7 +667,7 @@ void start_game(int8_t slot)
                 {
                     player->shield_counter--;
                 }
-                if(player->power_counter == 0)
+                if (player->power_counter == 0)
                 {
                     player->power_counter = 1.f;
                 }
@@ -807,11 +810,11 @@ void start_game(int8_t slot)
             {
                 if (player->location_x == 0 && player->location_y == 0)
                 {
-                    sprintf(music_path, "combate_final/%d.ogg", rand() % 4 + 1);
+                    sprintf(music_path, "combate_final/%d.ogg", rand() % 5 + 1);
                 }
                 else
                 {
-                    sprintf(music_path, "combate/%d.ogg", rand() % 3 + 1);
+                    sprintf(music_path, "combate/%d.ogg", rand() % 5 + 1);
                 }
                 sound_open_file(music, music_path);
                 play_sound(music);
