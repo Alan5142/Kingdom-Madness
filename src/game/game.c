@@ -339,6 +339,7 @@ void start_game(int8_t slot)
         }
         if (battle->should_show)
         {
+            bool defended = false;
             if (battle->turn == true)
             {
                 // jugador muerto :(
@@ -413,9 +414,9 @@ void start_game(int8_t slot)
                         int milliseconds = get_sound_milliseconds_duration(character_attack);
                         flash();
                         Sleep(milliseconds);
-                        battle->enemy.health -= (int)(player->damage_multiplier * 10 * (rand() % 51 + 80) / 100);
+                        battle->enemy.health -= (int)(player->damage_multiplier * player->base_damage * 10 * (rand() % 51 + 80) / 100);
                         battle->turn = false;
-                        Sleep(500);
+                        Sleep(1000);
                     }
                     break;
                     case BATTLE_DEFENSE:
@@ -433,19 +434,20 @@ void start_game(int8_t slot)
                         flash();
                         Sleep(milliseconds-500);
                         battle->turn = false;
-                        player->armor_multiplier = .5;
+                        defended = true;
+                        player->armor_multiplier *= .5;
                         player->magic->magic += 10;
                         player->magic->magic = min(100, player->magic->magic);
-                        Sleep(500);
+                        Sleep(1000);
                     }
                         break;
                     case BATTLE_MAGIC:
                     {
-                        if ((player->magic->magic - 30) >= 0)
+                        if ((player->magic->magic - 40) >= 0)
                         {
-                            player->magic->magic -= 30;
+                            player->magic->magic -= 40;
                             player->magic->magic = max(0, player->magic->magic);
-                            battle->enemy.health -= (int)(player->damage_multiplier * 15 * (rand() % 51 + 80) / 100);
+                            battle->enemy.health -= (int)(player->damage_multiplier * player->base_damage * 15 * (rand() % 51 + 80) / 100);
                             battle->turn = false;
                             sound_t character_magic= create_sound();
                             add_sound_to_manager(character_magic);
@@ -461,7 +463,7 @@ void start_game(int8_t slot)
                                 Sleep(milliseconds/100);
                             }
                             success_action = true;
-                            Sleep(500);
+                            Sleep(1000);
                         }
                         else
                         {
@@ -490,13 +492,14 @@ void start_game(int8_t slot)
                         {
                             success_action = true;
                             battle->turn = false;
-                            Sleep(500);
+                            Sleep(1000);
                         }
                         delete_node(inventory_battle);
                         game_screen_node->require_redraw = true;
                         battle_screen->require_redraw = true;
                         player->inventory->shown = false;
-                        // draw_render_graph(render_graph);
+                        draw_render_graph(render_graph);
+                        Sleep(1500);
                         break;
                     case BATTLE_NONE:
                     {
@@ -569,7 +572,6 @@ void start_game(int8_t slot)
             }
             else
             {
-                // BOOM muerto
                 if (first_pass)
                 {
                     static const char *text[] = {"¡HAS SIDO EMBOSCADO!                            "};
@@ -578,6 +580,7 @@ void start_game(int8_t slot)
                     draw_standby_window(stdby_w, 5);
                     first_pass = false;
                 }
+                // BOOM muerto
                 if (battle->enemy.health <= 0)
                 {
                     standby_window_t *stdby_w;
@@ -639,14 +642,34 @@ void start_game(int8_t slot)
                 int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 flash();
                 Sleep(milliseconds);
-                int q = -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
+                int damage = -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
                 add_health(player_health,
-                           q);
+                           damage);
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =
                     create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                 draw_standby_window(stdby_w, 5);
-                player->armor_multiplier = 1.f;
+                if (defended)
+                {
+                    player->armor_multiplier *= 2;
+                    defended = false;
+                }
+                if(player->shield_counter == 0)
+                {
+                    player->armor_multiplier = 1.f;
+                }
+                else
+                {
+                    player->shield_counter--;
+                }
+                if(player->power_counter == 0)
+                {
+                    player->power_counter = 1.f;
+                }
+                else
+                {
+                    player->power_counter--;
+                }
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;

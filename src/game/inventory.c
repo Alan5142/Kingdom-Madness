@@ -253,12 +253,10 @@ const char *get_item_display_name(item_resource_e item)
 void potion_low_effect(player_t *player)
 {
     sound_t sound = create_sound();
+    add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/drink.ogg");
-    int milliseconds = get_sound_milliseconds_duration(sound);
     set_loop(sound, false);
     play_sound(sound);
-    Sleep(milliseconds);
-
     add_health(player->health, 15);
     player->health->health_node->require_redraw = true;
 }
@@ -266,34 +264,57 @@ void potion_low_effect(player_t *player)
 void potion_medium_effect(player_t *player)
 {
     sound_t sound = create_sound();
+    add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/drink.ogg");
-    int milliseconds = get_sound_milliseconds_duration(sound);
     set_loop(sound, false);
     play_sound(sound);
-    Sleep(milliseconds);
 
-    add_health(player->health, 50);
+    add_health(player->health, 40);
     player->health->health_node->require_redraw = true;
 }
 
 void armor_low(player_t *player)
 {
+    sound_t sound = create_sound();
+    add_sound_to_manager(sound);
+    sound_open_file(sound, "sfx/armor.ogg");
+    set_loop(sound, false);
+    play_sound(sound);
+    player->shield_counter = 3;
     player->armor_multiplier = 0.8f;
 }
 
 void armor_medium(player_t *player)
 {
+    sound_t sound = create_sound();
+    add_sound_to_manager(sound);
+    sound_open_file(sound, "sfx/armor.ogg");
+    set_loop(sound, false);
+    play_sound(sound);
+    player->shield_counter = 4;
     player->armor_multiplier = 0.5f;
 }
 
 void power_low(player_t *player)
 {
-    player->damage_multiplier = 1.2f;
+    sound_t sound = create_sound();
+    add_sound_to_manager(sound);
+    sound_open_file(sound, "sfx/power.ogg");
+    set_loop(sound, false);
+    play_sound(sound);
+    player->power_counter = 2;
+    player->damage_multiplier = 1.5f;
 }
 
 void power_medium(player_t *player)
 {
-    player->damage_multiplier = 1.2f;
+    sound_t sound = create_sound();
+    add_sound_to_manager(sound);
+    sound_open_file(sound, "sfx/power.ogg");
+    set_loop(sound, false);
+    play_sound(sound);
+    player->power_counter = 3;
+    player->damage_multiplier = 1.8f;
 }
 
 item_t create_item(item_resource_e item)
@@ -377,9 +398,9 @@ bool process_inventory_input(struct player_t *player, int key)
     item->quantity--;
     if (item->quantity == 0) // eliminar objeto
     {
-        for(int i = 0; i < 2; i++)
+        for(int i = row; i < 2; i++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = column; j < 3; j++)
             {
                 if(j == 2)
                 {

@@ -63,6 +63,14 @@ typedef struct player_t
      */
     float damage_multiplier;
 
+    float base_damage;
+
+    float base_armor;
+
+    uint8_t shield_counter;
+
+    uint8_t power_counter;
+
     int16_t location_x;
 
     int16_t location_y;

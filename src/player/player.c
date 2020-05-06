@@ -26,6 +26,10 @@ player_t *create_player(WINDOW *parent, health_t *health, magic_t *magic)
     player->inventory         = create_inventory(parent);
     player->damage_multiplier = 1.f;
     player->armor_multiplier  = 1.f;
+    player->base_damage = 1.f;
+    player->base_armor  = 1.f;
+    player->shield_counter = 0;
+    player->power_counter = 0;
     player->location_x        = 1;
     player->location_y        = 2;
     player->magic = magic;
