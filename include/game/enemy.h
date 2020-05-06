@@ -20,6 +20,8 @@ typedef struct enemy_t
 
 enemy_t create_enemy(int pos_x, int pos_y);
 
+void delete_enemy(enemy_t *enemy);
+
 void draw_enemy(WINDOW *parent, enemy_t *enemy);
 
 #endif //PROGRA_ENEMY_H

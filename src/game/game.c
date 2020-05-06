@@ -395,6 +395,7 @@ void start_game(int8_t slot)
                             player_render_node->require_redraw = true;
                             score->score_node->require_redraw = true;
                             first_pass                        = true;
+                            delete_enemy(&battle->enemy);
                             sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
                             sound_open_file(music, music_path);
                             play_sound(music);
