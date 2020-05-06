@@ -169,7 +169,7 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG) && 0
+#if !defined(NDEBUG)
     state.boss_defeated.boss1 = 1;
     state.boss_defeated.boss2 = 1;
     state.boss_defeated.boss3 = 1;
@@ -385,7 +385,9 @@ void start_game(int8_t slot)
                         sound_open_file(character_attack, player_attack);
                         set_loop(character_attack, false);
                         play_sound(character_attack);
+                        int milliseconds = get_sound_milliseconds_duration(character_attack);
                         flash();
+                        Sleep(milliseconds);
                         battle->enemy.health -= (int)(player->damage_multiplier * 10 * (rand() % 51 + 80) / 100);
                         battle->turn = false;
                     }
@@ -405,17 +407,12 @@ void start_game(int8_t slot)
                             // TODO play magic sound
                         }
                         break;
+                    case BATTLE_ITEM:
+                        battle->turn = false;
+                        break;
                     case BATTLE_NONE:
                     {
-                        if (first_pass)
-                        {
-                            static const char *text[] = {"¡HAS SIDO EMBOSCADO!                            "};
-                            standby_window_t *stdby_w =
-                                create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                            draw_standby_window(stdby_w);
-                            first_pass = false;
-                        }
-                        else if (battle->battle_menu->option == KEY_UP || battle->battle_menu->option == KEY_DOWN)
+                        if (battle->battle_menu->option == KEY_UP || battle->battle_menu->option == KEY_DOWN)
                         {
                             int current = battle->battle_menu->menu->current_choice;
                             switch (current)
@@ -463,16 +460,36 @@ void start_game(int8_t slot)
                             }
                         }
                     }
-                    break;
+                        break;
                     default:
                         break;
-                    case BATTLE_ITEM:
-                        break;
+                }
+                if (choice == BATTLE_ITEM || choice == BATTLE_ATTACK || choice == BATTLE_MAGIC)
+                {
+                    static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
+                    standby_window_t *stdby_w =
+                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                    draw_standby_window(stdby_w);
+                }
+                if (choice == BATTLE_DEFENSE)
+                {
+                    static const char *text[] = {"¡BIEN DEFENDIDO!                                "};
+                    standby_window_t *stdby_w =
+                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                    draw_standby_window(stdby_w);
                 }
             }
             else
             {
                 // BOOM muerto
+                if (first_pass)
+                {
+                    static const char *text[] = {"¡HAS SIDO EMBOSCADO!                            "};
+                    standby_window_t *stdby_w =
+                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                    draw_standby_window(stdby_w);
+                    first_pass = false;
+                }
                 if (battle->enemy.health <= 0)
                 {
                     standby_window_t *stdby_w;
@@ -528,9 +545,15 @@ void start_game(int8_t slot)
                 sound_open_file(enemy_attack, rand_n);
                 set_loop(enemy_attack, false);
                 play_sound(enemy_attack);
+                int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 flash();
+                Sleep(milliseconds);
                 add_health(player_health,
                            -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100));
+                static const char *text[] = {"¡TU TURNO!                                      "};
+                standby_window_t *stdby_w =
+                    create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                draw_standby_window(stdby_w);
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
