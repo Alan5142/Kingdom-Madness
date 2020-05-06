@@ -58,8 +58,3 @@ void draw_enemy(WINDOW *parent, enemy_t *enemy)
 {
     draw_sprite(parent, 2, getmaxx(parent) - 62, enemy->sprite, NULL, NULL);
 }
-
-void delete_enemy(enemy_t* enemy)
-{
-    free(enemy);
-}
