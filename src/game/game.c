@@ -375,6 +375,9 @@ void start_game(int8_t slot)
                         battle->battle_menu->should_show = false;
                         game_screen_node->require_redraw = true;
                         first_pass                       = true;
+                        sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
+                        sound_open_file(music, music_path);
+                        play_sound(music);
                     }
                     break;
                     case BATTLE_ATTACK:
@@ -568,6 +571,9 @@ void start_game(int8_t slot)
                     while (!getch())
                         ;
                     delete_standby_window(stdby_w);
+                    sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
+                    sound_open_file(music, music_path);
+                    play_sound(music);
                     battle->should_show                        = false;
                     render_graph->entry_point->require_redraw  = true;
                     game_screen_node->require_redraw           = true;
@@ -739,6 +745,9 @@ void start_game(int8_t slot)
             }
             else if ((player->location_x != 1 || player->location_y != 2))
             {
+                sprintf(music_path, "combate/%d.ogg", rand() % 2 + 1);
+                sound_open_file(music, music_path);
+                play_sound(music);
                 player->magic->magic             = 100;
                 battle_screen->require_redraw    = true;
                 battle->should_show              = true;
