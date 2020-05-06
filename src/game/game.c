@@ -169,7 +169,7 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG) && 0
+#if !defined(NDEBUG)
     state.boss_defeated.boss1 = 1;
     state.boss_defeated.boss2 = 1;
     state.boss_defeated.boss3 = 1;
@@ -344,24 +344,25 @@ void start_game(int8_t slot)
                 // jugador muerto :(
                 if (player->health->health <= 0)
                 {
-                    static const char *text[] = { " ██╗██╗  ██╗ █████╗ ███████╗    ███████╗██╗██████╗  ██████╗                     ",
-                                                  " ╚═╝██║  ██║██╔══██╗██╔════╝    ██╔════╝██║██╔══██╗██╔═══██╗                    ",
-                                                  " ██╗███████║███████║███████╗    ███████╗██║██║  ██║██║   ██║                    ",
-                                                  " ██║██╔══██║██╔══██║╚════██║    ╚════██║██║██║  ██║██║   ██║                    ",
-                                                  " ██║██║  ██║██║  ██║███████║    ███████║██║██████╔╝╚██████╔╝                    ",
-                                                  " ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                        ",
-                                                  "                                                                                ",
-                                                  " ██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗ █████╗ ██████╗  ██████╗ ██╗ ",
-                                                  " ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔═══██╗██║ ",
-                                                  " ██║  ██║█████╗  ██████╔╝██████╔╝██║   ██║   ██║   ███████║██║  ██║██║   ██║██║ ",
-                                                  " ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   ██╔══██║██║  ██║██║   ██║╚═╝ ",
-                                                  " ██████╔╝███████╗██║  ██║██║  ██║╚██████╔╝   ██║   ██║  ██║██████╔╝╚██████╔╝██╗ ",
-                                                  " ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝ ",
-                                                  "El mundo será consumido en la oscuridad...                                      ",
-                                                  "(Presione alguna tecla para continuar)                                          "};
+                    static const char *text[] = {
+                        " ██╗██╗  ██╗ █████╗ ███████╗    ███████╗██╗██████╗  ██████╗                     ",
+                        " ╚═╝██║  ██║██╔══██╗██╔════╝    ██╔════╝██║██╔══██╗██╔═══██╗                    ",
+                        " ██╗███████║███████║███████╗    ███████╗██║██║  ██║██║   ██║                    ",
+                        " ██║██╔══██║██╔══██║╚════██║    ╚════██║██║██║  ██║██║   ██║                    ",
+                        " ██║██║  ██║██║  ██║███████║    ███████║██║██████╔╝╚██████╔╝                    ",
+                        " ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝╚═════╝  ╚═════╝                        ",
+                        "                                                                                ",
+                        " ██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗ █████╗ ██████╗  ██████╗ ██╗ ",
+                        " ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔═══██╗██║ ",
+                        " ██║  ██║█████╗  ██████╔╝██████╔╝██║   ██║   ██║   ███████║██║  ██║██║   ██║██║ ",
+                        " ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   ██╔══██║██║  ██║██║   ██║╚═╝ ",
+                        " ██████╔╝███████╗██║  ██║██║  ██║╚██████╔╝   ██║   ██║  ██║██████╔╝╚██████╔╝██╗ ",
+                        " ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝ ",
+                        "El mundo será consumido en la oscuridad...                                      ",
+                        "(Presione alguna tecla para continuar)                                          "};
 
                     standby_window_t *stdby_w =
-                        create_standby_window(text, 15, game, 17, 82, getmaxy(game)/2-8, getmaxx(game)/2-42);
+                        create_standby_window(text, 15, game, 17, 82, getmaxy(game) / 2 - 8, getmaxx(game) / 2 - 42);
                     draw_standby_window(stdby_w, 0x0D);
                     while (!getch())
                         ;
@@ -372,7 +373,7 @@ void start_game(int8_t slot)
                 battle->battle_menu->option       = key;
                 battle_choice_e choice            = execute_battle_menu(battle->battle_menu);
                 magic->magic_node->require_redraw = true;
-                bool success_action = false;
+                bool success_action               = false;
 
                 char player_move[64];
                 switch (choice)
@@ -388,13 +389,13 @@ void start_game(int8_t slot)
                         }
                         else
                         {
-                            score->money                      = score->money - 20;
-                            battle->should_show               = false;
-                            battle->battle_menu->should_show  = false;
-                            game_screen_node->require_redraw  = true;
+                            score->money                       = score->money - 20;
+                            battle->should_show                = false;
+                            battle->battle_menu->should_show   = false;
+                            game_screen_node->require_redraw   = true;
                             player_render_node->require_redraw = true;
-                            score->score_node->require_redraw = true;
-                            first_pass                        = true;
+                            score->score_node->require_redraw  = true;
+                            first_pass                         = true;
                             sprintf(music_path, "game/%d.ogg", rand() % 5 + 1);
                             sound_open_file(music, music_path);
                             play_sound(music);
@@ -431,14 +432,14 @@ void start_game(int8_t slot)
                         flash();
                         Sleep(500);
                         flash();
-                        Sleep(milliseconds-500);
-                        battle->turn = false;
+                        Sleep(milliseconds - 500);
+                        battle->turn             = false;
                         player->armor_multiplier = .5;
                         player->magic->magic += 10;
                         player->magic->magic = min(100, player->magic->magic);
                         Sleep(500);
                     }
-                        break;
+                    break;
                     case BATTLE_MAGIC:
                     {
                         if ((player->magic->magic - 30) >= 0)
@@ -446,8 +447,8 @@ void start_game(int8_t slot)
                             player->magic->magic -= 30;
                             player->magic->magic = max(0, player->magic->magic);
                             battle->enemy.health -= (int)(player->damage_multiplier * 15 * (rand() % 51 + 80) / 100);
-                            battle->turn = false;
-                            sound_t character_magic= create_sound();
+                            battle->turn            = false;
+                            sound_t character_magic = create_sound();
                             add_sound_to_manager(character_magic);
 
                             sprintf(player_move, "sfx/magia/%d.ogg", rand() % 2 + 1);
@@ -455,10 +456,10 @@ void start_game(int8_t slot)
                             set_loop(character_magic, false);
                             play_sound(character_magic);
                             int milliseconds = get_sound_milliseconds_duration(character_magic);
-                            for (int i = 0; i < milliseconds/100; i++)
+                            for (int i = 0; i < milliseconds / 100; i++)
                             {
                                 flash();
-                                Sleep(milliseconds/100);
+                                Sleep(milliseconds / 100);
                             }
                             success_action = true;
                             Sleep(500);
@@ -472,12 +473,13 @@ void start_game(int8_t slot)
                             draw_standby_window(stdby_w, 0x0D);
                         }
                     }
-                        break;
+                    break;
                     case BATTLE_ITEM:
-                        game_screen_node->require_redraw                                             = true;
-                        battle_screen->require_redraw = true;
-                        render_node_t* inventory_battle = add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory);
-                        inventory_battle->param = player;
+                        game_screen_node->require_redraw = true;
+                        battle_screen->require_redraw    = true;
+                        render_node_t *inventory_battle =
+                            add_node_at_end(render_graph, (draw_callback_c)draw_player_inventory);
+                        inventory_battle->param          = player;
                         inventory_battle->require_redraw = true;
                         draw_render_graph(render_graph);
                         wrefresh(game);
@@ -486,16 +488,16 @@ void start_game(int8_t slot)
                         {
                             menu_in = wgetch(game);
                         }
-                        if(menu_in != 27)
+                        if (menu_in != 27)
                         {
                             success_action = true;
-                            battle->turn = false;
+                            battle->turn   = false;
                             Sleep(500);
                         }
                         delete_node(inventory_battle);
                         game_screen_node->require_redraw = true;
-                        battle_screen->require_redraw = true;
-                        player->inventory->shown = false;
+                        battle_screen->require_redraw    = true;
+                        player->inventory->shown         = false;
                         // draw_render_graph(render_graph);
                         break;
                     case BATTLE_NONE:
@@ -548,11 +550,11 @@ void start_game(int8_t slot)
                             }
                         }
                     }
-                        break;
+                    break;
                     default:
                         break;
                 }
-                if ( (success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) || choice == BATTLE_ATTACK)
+                if ((success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) || choice == BATTLE_ATTACK)
                 {
                     static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
                     standby_window_t *stdby_w =
@@ -640,13 +642,12 @@ void start_game(int8_t slot)
                 flash();
                 Sleep(milliseconds);
                 int q = -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
-                add_health(player_health,
-                           q);
+                add_health(player_health, q);
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =
                     create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                 draw_standby_window(stdby_w, 5);
-                player->armor_multiplier = 1.f;
+                player->armor_multiplier                   = 1.f;
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
@@ -764,7 +765,7 @@ void start_game(int8_t slot)
             }
         }
 
-        if(!player->inventory->shown)
+        if (!player->inventory->shown)
         {
             player_render_node->require_redraw =
                 process_player_input(player, key, &state) ? true : player_render_node->require_redraw;
@@ -780,9 +781,14 @@ void start_game(int8_t slot)
             }
             else if ((player->location_x != 1 || player->location_y != 2))
             {
-                sprintf(music_path,
-                        (player->location_x == 0 && player->location_y == 0) ? "combate_final/%d.ogg": "combate/%d.ogg",
-                        rand() % 2 + 1);
+                if (player->location_x == 0 && player->location_y == 0)
+                {
+                    sprintf(music_path, "combate_final/%d.ogg", rand() % 4 + 1);
+                }
+                else
+                {
+                    sprintf(music_path, "combate/%d.ogg", rand() % 3 + 1);
+                }
                 sound_open_file(music, music_path);
                 play_sound(music);
                 player->magic->magic             = 100;
