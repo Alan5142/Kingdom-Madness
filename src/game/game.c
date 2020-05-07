@@ -186,18 +186,18 @@ void start_game(int8_t slot)
         int key = wgetch(game);
         if(state.boss_defeated.boss1 == 1)
         {
-            player->base_armor = .9;
-            player->base_damage = 1.1;
+            player->base_armor = .9f;
+            player->base_damage = 1.1f;
         }
         if(state.boss_defeated.boss2 == 1)
         {
-            player->base_armor = .7;
-            player->base_damage = 1.3;
+            player->base_armor = .7f;
+            player->base_damage = 1.3f;
         }
         if(state.boss_defeated.boss3 == 1)
         {
-            player->base_armor = .6;
-            player->base_damage = 1.4;
+            player->base_armor = .6f;
+            player->base_damage = 1.4f;
         }
         if (store->should_show)
         {
