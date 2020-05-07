@@ -479,12 +479,12 @@ void start_game(int8_t slot)
                     break;
                     case BATTLE_MAGIC:
                     {
-                        if ((player->magic->magic - 40) >= 0)
+                        if ((player->magic->magic - 30) >= 0)
                         {
-                            player->magic->magic -= 40;
+                            player->magic->magic -= 30;
                             player->magic->magic = max(0, player->magic->magic);
                             *monster_health -=
-                                (int)(player->damage_multiplier * player->base_damage * 15 * (rand() % 51 + 80) / 100);
+                                (int)(player->damage_multiplier * player->base_damage * 17 * (rand() % 51 + 80) / 100);
                             battle->turn            = false;
                             sound_t character_magic = create_sound();
                             add_sound_to_manager(character_magic);
@@ -700,6 +700,7 @@ void start_game(int8_t slot)
                     player->armor_multiplier *= 2;
                     defended = false;
                 }
+
                 if (player->shield_counter == 0)
                 {
                     player->armor_multiplier = 1.f;
@@ -708,6 +709,7 @@ void start_game(int8_t slot)
                 {
                     player->shield_counter--;
                 }
+
                 if (player->power_counter == 0)
                 {
                     player->damage_multiplier = 1.f;
