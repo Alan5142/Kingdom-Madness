@@ -775,16 +775,19 @@ void start_game(int8_t slot)
                 case SLOT_1:
                     state.score = score->score;
                     state.money = score->money;
+                    fill_game_state_inventory_data(&state, player->inventory);
                     save_game(&state, 1);
                     break;
                 case SLOT_2:
                     state.score = score->score;
                     state.money = score->money;
+                    fill_game_state_inventory_data(&state, player->inventory);
                     save_game(&state, 2);
                     break;
                 case SLOT_3:
                     state.score = score->score;
                     state.money = score->money;
+                    fill_game_state_inventory_data(&state, player->inventory);
                     save_game(&state, 3);
                     break;
                 default:
