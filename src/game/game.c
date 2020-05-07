@@ -171,7 +171,7 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG)
+#if !defined(NDEBUG)&&0
     state.boss_defeated.boss1 = 1;
     state.boss_defeated.boss2 = 1;
     state.boss_defeated.boss3 = 1;
@@ -210,6 +210,9 @@ void start_game(int8_t slot)
                     store->should_show               = false;
                     store->buy_menu->should_show     = false;
                     game_screen_node->require_redraw = true;
+                    sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
+                    sound_open_file(music, music_path);
+                    play_sound(music);
                     break;
                 case STORE_BUY_POTION_LOW:
                     if (score->money < 50)
@@ -348,6 +351,9 @@ void start_game(int8_t slot)
             }
             if (key == 27)
             {
+                sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
+                sound_open_file(music, music_path);
+                play_sound(music);
                 store->should_show               = false;
                 store->buy_menu->should_show     = false;
                 game_screen_node->require_redraw = true;
@@ -377,6 +383,10 @@ void start_game(int8_t slot)
                 // jugador muerto :(
                 if (player->health->health <= 0)
                 {
+                    sprintf(music_path, "derrota/%d.ogg", rand() % 2 + 1);
+                    set_loop(music, false);
+                    sound_open_file(music, music_path);
+                    play_sound(music);
                     static const char *text[] = {
                         " ██╗██╗  ██╗ █████╗ ███████╗    ███████╗██╗██████╗  ██████╗                     ",
                         " ╚═╝██║  ██║██╔══██╗██╔════╝    ██╔════╝██║██╔══██╗██╔═══██╗                    ",
@@ -399,6 +409,7 @@ void start_game(int8_t slot)
                     draw_standby_window(stdby_w, 0x0D);
                     while (!getch())
                         ;
+                    set_loop(music, true);
                     delete_standby_window(stdby_w);
                     break;
                 }
@@ -662,14 +673,26 @@ void start_game(int8_t slot)
                     standby_window_t *stdby_w;
                     if (battle->enemy.enemy_number == 3)
                     {
-                        static const char *text[] = {"El mundo ha sido salvado...     ",
-                                                     "(Presione alguna tecla para continuar)"};
+                        sprintf(music_path, "victoria_final/%d.ogg", rand() % 1 + 1);
+                        sound_open_file(music, music_path);
+                        play_sound(music);
+                        static const char *text[] = {" ██╗██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗ █████╗ ██╗ ",
+                                                     " ╚═╝██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗██║██╔══██╗██║ ",
+                                                     " ██╗██║   ██║██║██║        ██║   ██║   ██║██████╔╝██║███████║██║ ",
+                                                     " ██║╚██╗ ██╔╝██║██║        ██║   ██║   ██║██╔══██╗██║██╔══██║╚═╝ ",
+                                                     " ██║ ╚████╔╝ ██║╚██████╗   ██║   ╚██████╔╝██║  ██║██║██║  ██║██╗ ",
+                                                     " ╚═╝  ╚═══╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝ ",
+                                                     "El mundo ha sido salvado...                                      ",
+                                                     "(Presione alguna tecla para continuar)                           "};
                         stdby_w =
-                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            create_standby_window(text, 8, game, 10, 67, getmaxy(game) / 2 - 5, getmaxx(game) / 2 - 34);
                         state.boss_defeated.boss4 = 1;
                     }
                     else
                     {
+                        sprintf(music_path, "victoria/%d.ogg", rand() % 2 + 1);
+                        sound_open_file(music, music_path);
+                        play_sound(music);
                         static const char *text[] = {
                             " ██╗██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗ █████╗ ██╗ ",
                             " ╚═╝██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗██║██╔══██╗██║ ",
@@ -886,6 +909,9 @@ void start_game(int8_t slot)
         {
             if (player->location_x == 0 && player->location_y == 1)
             {
+                sprintf(music_path, "tienda/%d.ogg", rand() % 2 + 1);
+                sound_open_file(music, music_path);
+                play_sound(music);
                 store_screen->require_redraw = true;
                 store->should_show           = true;
                 store->buy_menu->should_show = true;
