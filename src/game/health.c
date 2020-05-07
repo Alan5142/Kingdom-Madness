@@ -9,7 +9,6 @@
 #include <utils/render_graph.h>
 
 const uint8_t START_HEALTH = 80;
-const uint8_t MAX_HEALTH = 120;
 
 void draw_health(health_t *health)
 {

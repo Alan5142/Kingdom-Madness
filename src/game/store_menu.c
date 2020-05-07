@@ -9,11 +9,11 @@
 store_menu_t *create_store_menu(WINDOW *parent, render_node_t *node)
 {
     store_menu_t *menu = malloc(sizeof(store_menu_t));
-    static const char *choices[] = {"【   POTION LOW ¤50   】", "【 POTION MEDIUM ¤100 】", "【   ARMOR LOW ¤40    】", "【  ARMOR MEDIUM ¤80  】", "【   POWER LOW ¤40    】", "【  POWER MEDIUM ¤90  】", "【        EXIT        】"};
+    static const char *choices[] = {"【   POTION LOW ¤50   】", "【 POTION MEDIUM ¤100 】", "【   ARMOR LOW ¤40    】", "【  ARMOR MEDIUM ¤80  】", "【   POWER LOW ¤40    】", "【  POWER MEDIUM ¤90  】", "", "【        EXIT        】"};
     node->draw_callback = (draw_callback_c) draw_store_menu;
     node->param = menu;
     menu->should_show = false;
-    menu->menu = create_menu(choices, 7, parent, 9, 26, getmaxy(parent) / 2 - 2, getmaxx(parent) / 2 + 5, COLOR_PAIR(5));
+    menu->menu = create_menu(choices, 8, parent, 10, 26, getmaxy(parent) / 2 - 2, getmaxx(parent) / 2 + 5, COLOR_PAIR(5));
     menu->store_menu_node = node;
     node->require_redraw = false;
 

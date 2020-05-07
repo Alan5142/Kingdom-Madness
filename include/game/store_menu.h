@@ -29,6 +29,7 @@ typedef enum
     STORE_BUY_ARMOR_MEDIUM,
     STORE_BUY_POWER_LOW,
     STORE_BUY_POWER_MEDIUM,
+    STORE_BUY_HP,
     STORE_EXIT,
     STORE_NONE
 } store_choice_e;
