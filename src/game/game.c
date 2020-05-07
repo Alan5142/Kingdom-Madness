@@ -178,6 +178,8 @@ void start_game(int8_t slot)
     state.boss_defeated.boss4 = 1;
 #endif
 
+    player_health->health = player_health->max_health;
+
     while (1)
     {
         destroy_finished_sounds();
@@ -1006,6 +1008,7 @@ void start_game(int8_t slot)
                 battle->enemy                    = create_enemy(player->location_x, player->location_y);
                 battle->turn                     = false;
                 defended = false;
+                player_health->health = player_health->max_health;
             }
         }
     }
