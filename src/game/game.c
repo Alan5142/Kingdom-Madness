@@ -191,13 +191,13 @@ void start_game(int8_t slot)
         }
         if(state.boss_defeated.boss2 == 1)
         {
-            player->base_armor = .7f;
-            player->base_damage = 1.3f;
+            player->base_armor = .6f;
+            player->base_damage = 1.4f;
         }
         if(state.boss_defeated.boss3 == 1)
         {
-            player->base_armor = .6f;
-            player->base_damage = 1.4f;
+            player->base_armor = .4f;
+            player->base_damage = 1.6f;
         }
         if (store->should_show)
         {
@@ -598,7 +598,7 @@ void start_game(int8_t slot)
                             }
                             else
                             {
-                                *monster_health -= (int)(player->damage_multiplier * player->base_damage * 20 *
+                                *monster_health -= (int)(player->damage_multiplier * player->base_damage * 18 *
                                                          (rand() % 51 + 80) / 100);
                                 battle->turn   = false;
                                 success_action = true;
@@ -659,7 +659,7 @@ void start_game(int8_t slot)
                                 break;
                                 case 1:
                                 {
-                                    static const char *text[] = {"¡Un fuerte ataque mágico!, pero necesita MP    "};
+                                    static const char *text[] = {"¡Un fuerte ataque mágico!, pero necesita MP     "};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                                     draw_standby_window(stdby_w, 5);
