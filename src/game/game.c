@@ -182,6 +182,21 @@ void start_game(int8_t slot)
         draw_render_graph(render_graph);
         wrefresh(game);
         int key = wgetch(game);
+        if(state.boss_defeated.boss1 == 1)
+        {
+            player->base_armor = .9;
+            player->base_damage = 1.1;
+        }
+        if(state.boss_defeated.boss2 == 1)
+        {
+            player->base_armor = .7;
+            player->base_damage = 1.3;
+        }
+        if(state.boss_defeated.boss3 == 1)
+        {
+            player->base_armor = .6;
+            player->base_damage = 1.4;
+        }
         if (store->should_show)
         {
             store->buy_menu->option = key;
@@ -340,6 +355,22 @@ void start_game(int8_t slot)
         if (battle->should_show)
         {
             bool defended = false;
+            int *monster_health = 0;
+            switch (battle->enemy.enemy_number)
+            {
+                case 0:
+                    monster_health =(state.boss_defeated.boss1 == 1) ? &battle->enemy.max_health : &battle->enemy.health;
+                    break;
+                case 1:
+                    monster_health =(state.boss_defeated.boss2 == 1) ? &battle->enemy.max_health : &battle->enemy.health;
+                    break;
+                case 2:
+                    monster_health =(state.boss_defeated.boss3 == 1) ? &battle->enemy.max_health : &battle->enemy.health;
+                    break;
+                case 3:
+                    monster_health =(state.boss_defeated.boss4 == 1) ? &battle->enemy.max_health : &battle->enemy.health;
+                    break;
+            }
             if (battle->turn == true)
             {
                 // jugador muerto :(
@@ -417,7 +448,7 @@ void start_game(int8_t slot)
                         int milliseconds = get_sound_milliseconds_duration(character_attack);
                         flash();
                         Sleep(milliseconds);
-                        battle->enemy.health -=
+                        *monster_health -=
                             (int)(player->damage_multiplier * player->base_damage * 10 * (rand() % 51 + 80) / 100);
                         battle->turn = false;
                         Sleep(1000);
@@ -451,7 +482,7 @@ void start_game(int8_t slot)
                         {
                             player->magic->magic -= 40;
                             player->magic->magic = max(0, player->magic->magic);
-                            battle->enemy.health -=
+                            *monster_health -=
                                 (int)(player->damage_multiplier * player->base_damage * 15 * (rand() % 51 + 80) / 100);
                             battle->turn            = false;
                             sound_t character_magic = create_sound();
@@ -561,19 +592,23 @@ void start_game(int8_t slot)
                     default:
                         break;
                 }
-                if ((success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) || choice == BATTLE_ATTACK)
+                if (*monster_health > 0)
                 {
-                    static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
-                    standby_window_t *stdby_w =
-                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                    draw_standby_window(stdby_w, 0x0D);
-                }
-                if (choice == BATTLE_DEFENSE)
-                {
-                    static const char *text[] = {"¡BIEN DEFENDIDO!                                "};
-                    standby_window_t *stdby_w =
-                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                    draw_standby_window(stdby_w, 5);
+                    if ((success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) ||
+                        choice == BATTLE_ATTACK)
+                    {
+                        static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
+                        standby_window_t *stdby_w =
+                            create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                        draw_standby_window(stdby_w, 0x0D);
+                    }
+                    if (choice == BATTLE_DEFENSE)
+                    {
+                        static const char *text[] = {"¡BIEN DEFENDIDO!                                "};
+                        standby_window_t *stdby_w =
+                            create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                        draw_standby_window(stdby_w, 5);
+                    }
                 }
             }
             else
@@ -587,7 +622,7 @@ void start_game(int8_t slot)
                     first_pass = false;
                 }
                 // BOOM muerto
-                if (battle->enemy.health <= 0)
+                if (*monster_health <= 0)
                 {
                     standby_window_t *stdby_w;
                     if (battle->enemy.enemy_number == 3)
@@ -600,10 +635,16 @@ void start_game(int8_t slot)
                     }
                     else
                     {
-                        static const char *text[] = {"Has ganado, pero aún quedan batallas.     ",
-                                                     "(Presione alguna tecla para continuar)"};
+                        static const char *text[] = {" ██╗██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗ █████╗ ██╗ ",
+                                                     " ╚═╝██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗██║██╔══██╗██║ ",
+                                                     " ██╗██║   ██║██║██║        ██║   ██║   ██║██████╔╝██║███████║██║ ",
+                                                     " ██║╚██╗ ██╔╝██║██║        ██║   ██║   ██║██╔══██╗██║██╔══██║╚═╝ ",
+                                                     " ██║ ╚████╔╝ ██║╚██████╗   ██║   ╚██████╔╝██║  ██║██║██║  ██║██╗ ",
+                                                     " ╚═╝  ╚═══╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝ ",
+                                                     "Has ganado, pero aún quedan batallas...                          ",
+                                                     "(Presione alguna tecla para continuar)                           "};
                         stdby_w =
-                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            create_standby_window(text, 8, game, 10, 67, getmaxy(game) / 2 - 5, getmaxx(game) / 2 - 34);
                         switch (battle->enemy.enemy_number)
                         {
                             case 0:
@@ -618,9 +659,8 @@ void start_game(int8_t slot)
                         }
                     }
 
-                    draw_standby_window(stdby_w, 5);
-                    while (!getch())
-                        ;
+                    draw_standby_window(stdby_w, 0x0E);
+                    while (!getch());
                     delete_standby_window(stdby_w);
                     sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
                     sound_open_file(music, music_path);
@@ -648,7 +688,7 @@ void start_game(int8_t slot)
                 int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 flash();
                 Sleep(milliseconds);
-                int damage = -(int)(player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
+                int damage = -(int)(player->base_armor * player->armor_multiplier * battle->enemy.power * (rand() % 51 + 80) / 100);
                 add_health(player_health, damage);
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =
