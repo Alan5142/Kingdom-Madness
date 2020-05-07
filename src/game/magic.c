@@ -8,7 +8,7 @@ magic_t *create_magic(render_node_t * render_node)
     magic_t *magic = malloc(sizeof(magic_t));
     magic->window = newwin(1, 6, 0, getmaxx(stdscr) / 2 - 3);
     magic->magic_node = render_node;
-    magic->magic = 100;
+    magic->magic = 75;
     render_node->draw_callback = (draw_callback_c) draw_magic;
     render_node->param = magic;
 

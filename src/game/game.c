@@ -565,9 +565,9 @@ void start_game(int8_t slot)
                     break;
                     case BATTLE_MAGIC:
                     {
-                        if ((player->magic->magic - 35) >= 0)
+                        if ((player->magic->magic - 25) >= 0)
                         {
-                            player->magic->magic -= 35;
+                            player->magic->magic -= 25;
                             player->magic->magic = max(0, player->magic->magic);
                             sound_t character_magic = create_sound();
                             add_sound_to_manager(character_magic);
@@ -598,7 +598,7 @@ void start_game(int8_t slot)
                             }
                             else
                             {
-                                *monster_health -= (int)(player->damage_multiplier * player->base_damage * 18 *
+                                *monster_health -= (int)(player->damage_multiplier * player->base_damage * 17 *
                                                          (rand() % 51 + 80) / 100);
                                 battle->turn   = false;
                                 success_action = true;
@@ -840,7 +840,7 @@ void start_game(int8_t slot)
                 score->score_node->require_redraw          = true;
                 player_health->health_node->require_redraw = true;
                 battle->turn                               = true;
-                player->magic->magic += 5;
+                player->magic->magic += 3;
                 player->magic->magic = min(100, player->magic->magic);
             }
             continue;
@@ -999,7 +999,7 @@ void start_game(int8_t slot)
                 }
                 sound_open_file(music, music_path);
                 play_sound(music);
-                player->magic->magic             = 100;
+                player->magic->magic             = 75;
                 battle_screen->require_redraw    = true;
                 battle->should_show              = true;
                 battle->battle_menu->should_show = true;
