@@ -450,7 +450,7 @@ void start_game(int8_t slot)
                         flash();
                         Sleep(milliseconds);
                         int dmg;
-                        if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 10)
+                        if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 90)
                         {
                             static const char *text[] = {"¡EL ENEMIGO SE HA DEFENDIDO!                    "};
                             standby_window_t *stdby_w =
@@ -513,7 +513,7 @@ void start_game(int8_t slot)
                                 flash();
                                 Sleep(milliseconds / 100);
                             }
-                            if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 10)
+                            if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 90)
                             {
                                 static const char *text[] = {"¡EL ENEMIGO SE HA DEFENDIDO!                    "};
                                 standby_window_t *stdby_w =
