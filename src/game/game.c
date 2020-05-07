@@ -186,8 +186,8 @@ void start_game(int8_t slot)
         int key = wgetch(game);
         if(state.boss_defeated.boss1 == 1)
         {
-            player->base_armor = .9f;
-            player->base_damage = 1.1f;
+            player->base_armor = .8f;
+            player->base_damage = 1.2f;
         }
         if(state.boss_defeated.boss2 == 1)
         {
@@ -601,7 +601,7 @@ void start_game(int8_t slot)
                                 break;
                                 case 1:
                                 {
-                                    static const char *text[] = {"¡Un fuerte ataaque mágico!, pero necesita MP    "};
+                                    static const char *text[] = {"¡Un fuerte ataque mágico!, pero necesita MP    "};
                                     standby_window_t *stdby_w =
                                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                                     draw_standby_window(stdby_w, 5);
