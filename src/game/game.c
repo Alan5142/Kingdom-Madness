@@ -507,9 +507,9 @@ void start_game(int8_t slot)
                     break;
                     case BATTLE_MAGIC:
                     {
-                        if ((player->magic->magic - 30) >= 0)
+                        if ((player->magic->magic - 35) >= 0)
                         {
-                            player->magic->magic -= 30;
+                            player->magic->magic -= 35;
                             player->magic->magic = max(0, player->magic->magic);
                             sound_t character_magic = create_sound();
                             add_sound_to_manager(character_magic);
@@ -540,7 +540,7 @@ void start_game(int8_t slot)
                             }
                             else
                             {
-                                *monster_health -= (int)(player->damage_multiplier * player->base_damage * 17 *
+                                *monster_health -= (int)(player->damage_multiplier * player->base_damage * 20 *
                                                          (rand() % 51 + 80) / 100);
                                 battle->turn            = false;
                                 success_action = true;
