@@ -302,7 +302,7 @@ void power_low(player_t *player)
     sound_open_file(sound, "sfx/power.ogg");
     set_loop(sound, false);
     play_sound(sound);
-    player->power_counter = 2;
+    player->power_counter = 3;
     player->damage_multiplier = 1.5f;
 }
 
@@ -313,7 +313,7 @@ void power_medium(player_t *player)
     sound_open_file(sound, "sfx/power.ogg");
     set_loop(sound, false);
     play_sound(sound);
-    player->power_counter = 3;
+    player->power_counter = 4;
     player->damage_multiplier = 1.8f;
 }
 

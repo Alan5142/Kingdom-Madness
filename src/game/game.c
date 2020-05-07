@@ -99,6 +99,8 @@ void start_game(int8_t slot)
 
     bool first_pass = true;
 
+    bool defended = false;
+
     char music_path[64];
 
     sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
@@ -354,7 +356,6 @@ void start_game(int8_t slot)
         }
         if (battle->should_show)
         {
-            bool defended = false;
             int *monster_health = 0;
             switch (battle->enemy.enemy_number)
             {
@@ -709,7 +710,7 @@ void start_game(int8_t slot)
                 }
                 if (player->power_counter == 0)
                 {
-                    player->power_counter = 1.f;
+                    player->damage_multiplier = 1.f;
                 }
                 else
                 {
@@ -864,6 +865,7 @@ void start_game(int8_t slot)
                 battle->battle_menu->should_show = true;
                 battle->enemy                    = create_enemy(player->location_x, player->location_y);
                 battle->turn                     = false;
+                defended = false;
             }
         }
     }
