@@ -40,7 +40,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
     else if(pos_x == 0 && pos_y == 2)
     {
         enemy.health = 150;
-        enemy.max_health = 300;
+        enemy.max_health = 250;
         enemy.power = 7;
         enemy.reward = 70;
         enemy.sprite = "enemy/DRAGON.txt";

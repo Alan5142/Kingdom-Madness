@@ -24,7 +24,7 @@ health_t *start_health(struct render_node_t *);
 
 void draw_health(health_t *health);
 
-void add_health(health_t *health, int8_t quantity);
+void add_health(health_t *health, int16_t quantity);
 
 bool is_alive(health_t *health);
 

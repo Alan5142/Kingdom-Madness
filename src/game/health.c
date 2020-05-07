@@ -44,9 +44,9 @@ void delete_health(health_t *health)
     free(health);
 }
 
-void add_health(health_t *health, int8_t quantity)
+void add_health(health_t *health, int16_t quantity)
 {
-    if ((int8_t) health->health + quantity < 0) // quantity < 0
+    if ((int16_t) health->health + quantity < 0) // quantity < 0
     {
         health->health = 0;
     }
