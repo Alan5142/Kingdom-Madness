@@ -281,7 +281,7 @@ void armor_low(player_t *player)
     set_loop(sound, false);
     play_sound(sound);
     player->shield_counter = 2;
-    player->armor_multiplier = 0.8f;
+    player->armor_multiplier = 0.7f;
 }
 
 void armor_medium(player_t *player)
