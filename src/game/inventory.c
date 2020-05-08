@@ -280,7 +280,7 @@ void armor_low(player_t *player)
     sound_open_file(sound, "sfx/armor.ogg");
     set_loop(sound, false);
     play_sound(sound);
-    player->shield_counter = 2;
+    player->shield_counter = 3;
     player->armor_multiplier = 0.7f;
 }
 
@@ -291,7 +291,7 @@ void armor_medium(player_t *player)
     sound_open_file(sound, "sfx/armor.ogg");
     set_loop(sound, false);
     play_sound(sound);
-    player->shield_counter = 3;
+    player->shield_counter = 4;
     player->armor_multiplier = 0.5f;
 }
 
@@ -410,6 +410,10 @@ bool process_inventory_input(struct player_t *player, int key)
                 {
                     player->inventory->items[i][j] = player->inventory->items[i][j + 1];
                 }
+            }
+            if(row == 0)
+            {
+                column = 0;
             }
         }
     }
