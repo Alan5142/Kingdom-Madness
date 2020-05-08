@@ -257,7 +257,9 @@ void potion_low_effect(player_t *player)
     add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/drink.ogg");
     set_loop(sound, false);
+    int millis = get_sound_milliseconds_duration(sound);
     play_sound(sound);
+    Sleep(millis);
     add_health(player->health, 15);
     player->health->health_node->require_redraw = true;
 }
@@ -268,8 +270,9 @@ void potion_medium_effect(player_t *player)
     add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/drink.ogg");
     set_loop(sound, false);
+    int millis = get_sound_milliseconds_duration(sound);
     play_sound(sound);
-
+    Sleep(millis);
     add_health(player->health, 40);
     player->health->health_node->require_redraw = true;
 }
@@ -280,7 +283,9 @@ void armor_low(player_t *player)
     add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/armor.ogg");
     set_loop(sound, false);
+    int millis = get_sound_milliseconds_duration(sound);
     play_sound(sound);
+    Sleep(millis);
     player->shield_counter = 3;
     player->armor_multiplier = 0.7f;
 }
@@ -291,7 +296,9 @@ void armor_medium(player_t *player)
     add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/armor.ogg");
     set_loop(sound, false);
+    int millis = get_sound_milliseconds_duration(sound);
     play_sound(sound);
+    Sleep(millis);
     player->shield_counter = 4;
     player->armor_multiplier = 0.5f;
 }
@@ -301,8 +308,10 @@ void power_low(player_t *player)
     sound_t sound = create_sound();
     add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/power.ogg");
+    int millis = get_sound_milliseconds_duration(sound);
     set_loop(sound, false);
     play_sound(sound);
+    Sleep(millis);
     player->power_counter = 2;
     player->damage_multiplier = 1.5f;
 }
@@ -312,8 +321,10 @@ void power_medium(player_t *player)
     sound_t sound = create_sound();
     add_sound_to_manager(sound);
     sound_open_file(sound, "sfx/power.ogg");
+    int millis = get_sound_milliseconds_duration(sound);
     set_loop(sound, false);
     play_sound(sound);
+    Sleep(millis);
     player->power_counter = 3;
     player->damage_multiplier = 1.8f;
 }
@@ -358,17 +369,17 @@ bool add_item(inventory_t *inventory, item_resource_e item, game_state_t* state)
     {
         MAX_ITEMS = 2;
     }
-    if(state->boss_defeated.boss2 == 3)
+    if(state->boss_defeated.boss2 == 1)
     {
-        MAX_ITEMS = 2;
+        MAX_ITEMS = 3;
     }
-    if(state->boss_defeated.boss2 == 4)
+    if(state->boss_defeated.boss3 == 1)
     {
-        MAX_ITEMS = 2;
+        MAX_ITEMS = 10;
     }
-    if(state->boss_defeated.boss2 == 10)
+    if(state->boss_defeated.boss4 == 1)
     {
-        MAX_ITEMS = 2;
+        MAX_ITEMS = 100;
     }
     for (int i = 0; i <= 1; i++)
     {

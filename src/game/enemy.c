@@ -12,9 +12,9 @@ enemy_t create_enemy(int pos_x, int pos_y)
     enemy_t enemy;
     if (pos_x == 0 && pos_y == 0)
     {
-        enemy.health = 1000;
-        enemy.max_health = 1500;
-        enemy.power = 17;
+        enemy.health = 1500;
+        enemy.max_health = 2000;
+        enemy.power = 19;
         enemy.reward = 1000;
         enemy.sprite = "enemy/DEVIL.txt";
         enemy.enemy_number = 3;

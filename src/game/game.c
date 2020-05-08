@@ -684,7 +684,7 @@ void start_game(int8_t slot)
                 {
                     case BATTLE_EXIT:
                     {
-                        if (score->money < 20)
+                        if (score->money < 30)
                         {
                             static const char *text[] = {"¡NO TIENES SUFICIENTE DINERO!                   "};
                             standby_window_t *stdby_w =
@@ -694,11 +694,13 @@ void start_game(int8_t slot)
                         }
                         else
                         {
-                            score->money                       = score->money - 20;
+                            score->money                       = score->money - 30;
                             battle->should_show                = false;
                             battle->battle_menu->should_show   = false;
                             game_screen_node->require_redraw   = true;
                             player_render_node->require_redraw = true;
+                            player->magic->magic_node->require_redraw = true;
+                            player_health->health_node->require_redraw = true;
                             score->score_node->require_redraw  = true;
                             first_pass                         = true;
                             sprintf(music_path, "game/%d.ogg", rand() % 6 + 1);
@@ -847,14 +849,12 @@ void start_game(int8_t slot)
                         {
                             success_action = true;
                             battle->turn   = false;
-                            Sleep(1000);
                         }
                         delete_node(inventory_battle);
                         game_screen_node->require_redraw = true;
                         battle_screen->require_redraw    = true;
                         player->inventory->shown         = false;
                         draw_render_graph(render_graph);
-                        Sleep(1500);
                         break;
                     }
                     case BATTLE_NONE:
@@ -1022,12 +1022,19 @@ void start_game(int8_t slot)
                 sound_t enemy_attack = create_sound();
                 add_sound_to_manager(enemy_attack);
                 int  enemy_critic = (rand() % 101 + 1) > 70 ? 2 : 1;
-                if(enemy_critic == 2 && battle->enemy.enemy_number == 3)
+                if(enemy_critic == 2 && battle->enemy.enemy_number == 3 && defended)
+                {
+                    static const char *text[] = {"¡NO HAS PODIDO CUBRIRTE DEL TODO!               "};
+                    standby_window_t *stdby_w =
+                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                    draw_standby_window(stdby_w, 0x0D);
+                }
+                else if(enemy_critic == 2 && battle->enemy.enemy_number == 3)
                 {
                     static const char *text[] = {"¡HAS RECIBIDO UN ATAQUE CRÍTICO!                "};
                     standby_window_t *stdby_w =
                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
-                    draw_standby_window(stdby_w, 5);
+                    draw_standby_window(stdby_w, 0x0D);
                 }
                 char rand_n[64];
                 sprintf(rand_n, "sfx/ataques/enemy_%d.ogg", 1);
