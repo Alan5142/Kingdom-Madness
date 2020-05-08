@@ -3,7 +3,7 @@
 //
 #include "game/inventory.h"
 #include "game/player/player.h"
-#include "game/game_state.h"
+#include "game_state.h"
 #include <sound.h>
 #include <stdlib.h>
 #include <utils/colors.h>
@@ -351,9 +351,9 @@ item_t create_item(item_resource_e item)
     return result;
 }
 
-bool add_item(inventory_t *inventory, item_resource_e item, struct game_state_t* state)
+bool add_item(inventory_t *inventory, item_resource_e item, game_state_t* state)
 {
-    uint8_t MAX_ITEMS;
+    uint8_t MAX_ITEMS = 0;
     if(state->boss_defeated.boss1 == 1)
     {
         MAX_ITEMS = 2;

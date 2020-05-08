@@ -150,7 +150,6 @@ void start_game(int8_t slot)
         {
             score->score               = state.score;
             score->money               = state.money;
-            player->health->health     = state.health;
             player->health->max_health = state.max_health;
             get_inventory_from_game_state(player->inventory, &state);
         }
@@ -159,14 +158,12 @@ void start_game(int8_t slot)
             state.money      = score->money;
             state.score      = score->score;
             state.max_health = player->health->max_health;
-            state.health     = player->health->health;
             fill_game_state_inventory_data(&state, player->inventory);
             save_game(&state, slot);
         }
     }
     else
     {
-        state.health     = player->health->health;
         state.max_health = player->health->max_health;
         fill_game_state_inventory_data(&state, player->inventory);
     }
