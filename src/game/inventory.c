@@ -247,7 +247,7 @@ const char *get_item_display_name(item_resource_e item)
         case ITEM_POWER_MEDIUM:
             return "Poder (medio)";
         default:
-            return NULL;
+            return "Ninguno";
     }
 }
 

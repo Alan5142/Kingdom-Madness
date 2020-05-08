@@ -1,6 +1,6 @@
+#include "game/game.h"
 #include "start_screen.h"
 #include <curses.h>
-#include <game/game.h>
 #include <sound.h>
 #include <stdbool.h>
 #include <stdlib.h>

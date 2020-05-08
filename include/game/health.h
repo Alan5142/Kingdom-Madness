@@ -15,8 +15,8 @@ struct render_node_t;
 typedef struct health_t
 {
     WINDOW *window;
-    uint16_t health;
-    uint16_t max_health;
+    int16_t health;
+    int16_t max_health;
     struct render_node_t* health_node;
 } health_t;
 

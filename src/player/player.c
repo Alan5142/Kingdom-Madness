@@ -3,7 +3,7 @@
 //
 #include "game/player/player.h"
 #include "game/health.h"
-#include <game/game_state.h>
+#include <game_state.h>
 #include <stdlib.h>
 
 typedef struct

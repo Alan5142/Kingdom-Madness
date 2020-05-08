@@ -5,6 +5,8 @@
 #ifndef PROGRA_GAME_H
 #define PROGRA_GAME_H
 
+#include <stdint.h>
+
 /**
  * Inicia el juego, esto es básicamente la pantalla donde el jugador se mueve
  */
