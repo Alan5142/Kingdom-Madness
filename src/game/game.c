@@ -171,11 +171,11 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG)&&0
+#if !defined(NDEBUG)
     state.boss_defeated.boss1 = 1;
-    state.boss_defeated.boss2 = 1;
-    state.boss_defeated.boss3 = 1;
-    state.boss_defeated.boss4 = 1;
+    state.boss_defeated.boss2 = 0;
+    state.boss_defeated.boss3 = 0;
+    state.boss_defeated.boss4 = 0;
 #endif
 
     player_health->health = player_health->max_health;
@@ -239,12 +239,43 @@ void start_game(int8_t slot)
                     }
                     break;
                 case STORE_BUY_POTION_MEDIUM:
-                    if (score->money < 100)
+                    if (state.boss_defeated.boss2 == 1)
                     {
-                        static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                        if (score->money < 100)
+                        {
+                            static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                                                         "(Presione alguna tecla para continuar)"};
+                            standby_window_t *stdby_w = create_standby_window(
+                                text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            draw_standby_window(stdby_w, 0x0D);
+                            while (!getch())
+                                ;
+                            delete_standby_window(stdby_w);
+                            store_screen->require_redraw = true;
+                            store->should_show           = true;
+                            store->buy_menu->should_show = true;
+                        }
+                        else
+                        {
+                            score->money -= 100;
+                            add_item(player->inventory, ITEM_POTION_MEDIUM);
+                            score->score_node->require_redraw = true;
+                        }
+                    }
+                    else
+                    {
+                        sound_t sound = create_sound();
+                        char rand_n[64];
+                        sprintf(rand_n, "sfx/error/%d.ogg", rand() % 1 + 1);
+                        sound_open_file(sound, rand_n);
+                        set_loop(sound, false);
+                        play_sound(sound);
+                        add_sound_to_manager(sound);
+                        static const char *text[] = {"Para desbloquear este objeto          ",
+                                                     "antes necesitad derrotar al GHOST.    ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
-                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
                         draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
@@ -252,12 +283,6 @@ void start_game(int8_t slot)
                         store_screen->require_redraw = true;
                         store->should_show           = true;
                         store->buy_menu->should_show = true;
-                    }
-                    else
-                    {
-                        score->money -= 100;
-                        add_item(player->inventory, ITEM_POTION_MEDIUM);
-                        score->score_node->require_redraw = true;
                     }
                     break;
                 case STORE_BUY_ARMOR_LOW:
@@ -283,12 +308,43 @@ void start_game(int8_t slot)
                     }
                     break;
                 case STORE_BUY_ARMOR_MEDIUM:
-                    if (score->money < 80)
+                    if(state.boss_defeated.boss3 == 1)
                     {
-                        static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                        if (score->money < 80)
+                        {
+                            static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                                                         "(Presione alguna tecla para continuar)"};
+                            standby_window_t *stdby_w = create_standby_window(
+                                text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            draw_standby_window(stdby_w, 0x0D);
+                            while (!getch())
+                                ;
+                            delete_standby_window(stdby_w);
+                            store_screen->require_redraw = true;
+                            store->should_show           = true;
+                            store->buy_menu->should_show = true;
+                        }
+                        else
+                        {
+                            score->money -= 80;
+                            add_item(player->inventory, ITEM_ARMOR_MEDIUM);
+                            score->score_node->require_redraw = true;
+                        }
+                    }
+                    else
+                    {
+                        sound_t sound = create_sound();
+                        char rand_n[64];
+                        sprintf(rand_n, "sfx/error/%d.ogg", rand() % 1 + 1);
+                        sound_open_file(sound, rand_n);
+                        set_loop(sound, false);
+                        play_sound(sound);
+                        add_sound_to_manager(sound);
+                        static const char *text[] = {"Para desbloquear este objeto          ",
+                                                     "antes necesitad derrotar al REAPER.   ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
-                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
                         draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
@@ -296,21 +352,46 @@ void start_game(int8_t slot)
                         store_screen->require_redraw = true;
                         store->should_show           = true;
                         store->buy_menu->should_show = true;
-                    }
-                    else
-                    {
-                        score->money -= 80;
-                        add_item(player->inventory, ITEM_ARMOR_MEDIUM);
-                        score->score_node->require_redraw = true;
                     }
                     break;
                 case STORE_BUY_POWER_LOW:
-                    if (score->money < 40)
+                    if(state.boss_defeated.boss2 == 1)
                     {
-                        static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                        if (score->money < 40)
+                        {
+                            static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                                                         "(Presione alguna tecla para continuar)"};
+                            standby_window_t *stdby_w = create_standby_window(
+                                text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            draw_standby_window(stdby_w, 0x0D);
+                            while (!getch())
+                                ;
+                            delete_standby_window(stdby_w);
+                            store_screen->require_redraw = true;
+                            store->should_show           = true;
+                            store->buy_menu->should_show = true;
+                        }
+                        else
+                        {
+                            score->money -= 40;
+                            add_item(player->inventory, ITEM_POWER_LOW);
+                            score->score_node->require_redraw = true;
+                        }
+                    }
+                    else
+                    {
+                        sound_t sound = create_sound();
+                        char rand_n[64];
+                        sprintf(rand_n, "sfx/error/%d.ogg", rand() % 1 + 1);
+                        sound_open_file(sound, rand_n);
+                        set_loop(sound, false);
+                        play_sound(sound);
+                        add_sound_to_manager(sound);
+                        static const char *text[] = {"Para desbloquear este objeto          ",
+                                                     "antes necesitad derrotar al GHOST.    ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
-                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
                         draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
@@ -318,21 +399,46 @@ void start_game(int8_t slot)
                         store_screen->require_redraw = true;
                         store->should_show           = true;
                         store->buy_menu->should_show = true;
-                    }
-                    else
-                    {
-                        score->money -= 40;
-                        add_item(player->inventory, ITEM_POWER_LOW);
-                        score->score_node->require_redraw = true;
                     }
                     break;
                 case STORE_BUY_POWER_MEDIUM:
-                    if (score->money < 90)
+                    if(state.boss_defeated.boss3 == 1)
                     {
-                        static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                        if (score->money < 90)
+                        {
+                            static const char *text[] = {"No cuentas con dinero suficiente.     ",
+                                                         "(Presione alguna tecla para continuar)"};
+                            standby_window_t *stdby_w = create_standby_window(
+                                text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            draw_standby_window(stdby_w, 0x0D);
+                            while (!getch())
+                                ;
+                            delete_standby_window(stdby_w);
+                            store_screen->require_redraw = true;
+                            store->should_show           = true;
+                            store->buy_menu->should_show = true;
+                        }
+                        else
+                        {
+                            score->money -= 90;
+                            add_item(player->inventory, ITEM_POWER_MEDIUM);
+                            score->score_node->require_redraw = true;
+                        }
+                    }
+                    else
+                    {
+                        sound_t sound = create_sound();
+                        char rand_n[64];
+                        sprintf(rand_n, "sfx/error/%d.ogg", rand() % 1 + 1);
+                        sound_open_file(sound, rand_n);
+                        set_loop(sound, false);
+                        play_sound(sound);
+                        add_sound_to_manager(sound);
+                        static const char *text[] = {"Para desbloquear este objeto          ",
+                                                     "antes necesitad derrotar al REAPER.   ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
-                            create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+                            create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
                         draw_standby_window(stdby_w, 0x0D);
                         while (!getch())
                             ;
@@ -340,12 +446,6 @@ void start_game(int8_t slot)
                         store_screen->require_redraw = true;
                         store->should_show           = true;
                         store->buy_menu->should_show = true;
-                    }
-                    else
-                    {
-                        score->money -= 90;
-                        add_item(player->inventory, ITEM_POWER_MEDIUM);
-                        score->score_node->require_redraw = true;
                     }
                     break;
                 case STORE_BUY_HP:
