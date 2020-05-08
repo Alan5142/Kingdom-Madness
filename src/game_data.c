@@ -57,7 +57,6 @@ void save_game(game_state_t *state, uint8_t slot)
         FILE *file = fopen(path, "w");
         state->saved_time = time(NULL);
 
-        save_bytes(file, (const unsigned char *)&state->health, sizeof(state->health));
         save_bytes(file, (const unsigned char *)&state->score, sizeof(state->score));
         save_bytes(file, (const unsigned char *)&state->money, sizeof(state->money));
         save_bytes(file, (const unsigned char *)&state->max_health, sizeof(state->max_health));
@@ -85,10 +84,9 @@ game_state_t load_game(uint8_t slot, bool *success)
     {
         FILE *file = fopen(path, "r");
 
-        load_bytes(file, &saved_state.health, sizeof(saved_state.health));
         load_bytes(file, (unsigned char *)&saved_state.score, sizeof(saved_state.score));
         load_bytes(file, (unsigned char *)&saved_state.money, sizeof(saved_state.money));
-        load_bytes(file, &saved_state.max_health, sizeof(saved_state.max_health));
+        load_bytes(file, (unsigned char *)&saved_state.max_health, sizeof(saved_state.max_health));
         load_bytes(file, (unsigned char *) &saved_state.items, sizeof(saved_state.items[0][0]) * 2 * 3);
         load_bytes(file, (unsigned char *) &saved_state.saved_time, sizeof(saved_state.saved_time));
         load_bytes(file, (unsigned char *) &saved_state.boss_defeated, sizeof(saved_state.boss_defeated));

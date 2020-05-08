@@ -25,8 +25,7 @@ typedef struct game_state_t
         unsigned int boss3: 1;
         unsigned int boss4: 1;
     } boss_defeated;
-    uint8_t health;
-    uint8_t max_health;
+    int16_t max_health;
     uint32_t score;
     uint16_t money;
     item_data_t items[2][3];
