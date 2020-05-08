@@ -27,7 +27,7 @@ typedef struct game_state_t
     } boss_defeated;
     int16_t max_health;
     uint32_t score;
-    uint16_t money;
+    int32_t money;
     item_data_t items[2][3];
     time_t saved_time;
 } game_state_t;
