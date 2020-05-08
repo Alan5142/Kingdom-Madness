@@ -1042,7 +1042,7 @@ void start_game(int8_t slot)
                 Sleep(milliseconds);
 
                 int damage;
-                if (battle->enemy.enemy_number == 3 & state.boss_defeated.boss4 == 1)
+                if ((battle->enemy.enemy_number == 3) & (state.boss_defeated.boss4 == 1))
                 {
                     damage = -(int)(player->base_armor * player->armor_multiplier * battle->enemy.power * 1.5 * enemy_critic *
                     (rand() % 51 + 80) / 100);
