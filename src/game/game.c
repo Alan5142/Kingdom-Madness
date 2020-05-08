@@ -171,9 +171,9 @@ void start_game(int8_t slot)
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
 #if !defined(NDEBUG) && 0
     state.boss_defeated.boss1 = 1;
-    state.boss_defeated.boss2 = 0;
-    state.boss_defeated.boss3 = 0;
-    state.boss_defeated.boss4 = 0;
+    state.boss_defeated.boss2 = 1;
+    state.boss_defeated.boss3 = 1;
+    state.boss_defeated.boss4 = 1;
 #endif
 
     player_health->health = player_health->max_health;
@@ -211,6 +211,11 @@ void start_game(int8_t slot)
         {
             player->base_armor  = .4f;
             player->base_damage = 1.6f;
+        }
+        if (state.boss_defeated.boss4 == 1)
+        {
+            player->base_armor = .3f;
+            player->base_damage = 1.7f;
         }
         if (store->should_show)
         {
@@ -1016,7 +1021,14 @@ void start_game(int8_t slot)
 
                 sound_t enemy_attack = create_sound();
                 add_sound_to_manager(enemy_attack);
-
+                int  enemy_critic = (rand() % 101 + 1) > 70 ? 2 : 1;
+                if(enemy_critic == 2 && battle->enemy.enemy_number == 3)
+                {
+                    static const char *text[] = {"¡HAS RECIBIDO UN ATAQUE CRÍTICO!                "};
+                    standby_window_t *stdby_w =
+                        create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
+                    draw_standby_window(stdby_w, 5);
+                }
                 char rand_n[64];
                 sprintf(rand_n, "sfx/ataques/enemy_%d.ogg", 1);
                 sound_open_file(enemy_attack, rand_n);
@@ -1025,8 +1037,24 @@ void start_game(int8_t slot)
                 int milliseconds = get_sound_milliseconds_duration(enemy_attack);
                 flash();
                 Sleep(milliseconds);
-                int damage = -(int)(player->base_armor * player->armor_multiplier * battle->enemy.power *
+
+                int damage;
+                if ((battle->enemy.enemy_number == 3) & (state.boss_defeated.boss4 == 1))
+                {
+                    damage = -(int)(player->base_armor * player->armor_multiplier * battle->enemy.power * 1.5 * enemy_critic *
+                    (rand() % 51 + 80) / 100);
+                }
+                else if (battle->enemy.enemy_number == 3)
+                {
+                    damage = -(int)(player->base_armor * player->armor_multiplier * battle->enemy.power * enemy_critic *
                                     (rand() % 51 + 80) / 100);
+                }
+                else
+                {
+                    damage = -(int)(player->base_armor * player->armor_multiplier * battle->enemy.power *
+                                    (rand() % 51 + 80) / 100);
+                }
+
                 add_health(player_health, damage);
                 static const char *text[] = {"¡TU TURNO!                                      "};
                 standby_window_t *stdby_w =

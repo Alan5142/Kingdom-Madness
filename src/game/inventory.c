@@ -376,7 +376,7 @@ bool add_item(inventory_t *inventory, item_resource_e item, game_state_t* state)
         {
             if(inventory->items[i][j].item == item)
             {
-                if (inventory->items[i][j].quantity == MAX_ITEMS)
+                if (inventory->items[i][j].quantity >= MAX_ITEMS)
                     return false;
                 inventory->items[i][j].quantity++;
                 return true;
