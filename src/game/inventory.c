@@ -11,6 +11,8 @@
 #include <utils/sprite.h>
 #include <windows.h>
 
+const uint8_t MAX_ITEMS = 10;
+
 void on_start_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
     if (character_to_draw == ' ' && ((y > 2 && x != 0 && y < 6) || (y > 0 && y < 3 && x > 1 && x < 9)))
@@ -350,7 +352,7 @@ item_t create_item(item_resource_e item)
     return result;
 }
 
-void add_item(inventory_t *inventory, item_resource_e item)
+bool add_item(inventory_t *inventory, item_resource_e item)
 {
     sound_t sound = create_sound();
     char rand_n[64];
@@ -365,8 +367,10 @@ void add_item(inventory_t *inventory, item_resource_e item)
         {
             if(inventory->items[i][j].item == item)
             {
-                inventory->items[i][j].quantity += 1;
-                return;
+                if (inventory->items[i][j].quantity == MAX_ITEMS)
+                    return false;
+                inventory->items[i][j].quantity++;
+                return true;
             }
         }
     }
@@ -378,10 +382,11 @@ void add_item(inventory_t *inventory, item_resource_e item)
             {
                 inventory->items[i][j] = create_item(item);
                 inventory->items[i][j].quantity = 1;
-                return;
+                return true;
             }
         }
     }
+    return false;
 }
 
 bool process_inventory_input(struct player_t *player, int key)
