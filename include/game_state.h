@@ -5,10 +5,10 @@
 #ifndef PROGRA_GAME_DATA_H
 #define PROGRA_GAME_DATA_H
 
+#include "game/inventory.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
-#include "inventory.h"
 
 typedef struct item_data_t
 {

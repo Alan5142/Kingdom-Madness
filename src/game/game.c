@@ -10,10 +10,10 @@
 #include <game/battle.h>
 #include <game/battle_menu.h>
 #include <game/enemy.h>
-#include <game/game_state.h>
 #include <game/pause.h>
 #include <game/save_game.h>
 #include <game/store_menu.h>
+#include <game_state.h>
 #include <sound.h>
 #include <stdlib.h>
 #include <time.h>
@@ -172,7 +172,7 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG)&&0
+#if !defined(NDEBUG) && 0
     state.boss_defeated.boss1 = 1;
     state.boss_defeated.boss2 = 1;
     state.boss_defeated.boss3 = 1;
@@ -198,6 +198,7 @@ void start_game(int8_t slot)
             }
         }
 
+        flushinp();
         int key = wgetch(game);
         if (state.boss_defeated.boss1 == 1)
         {
@@ -333,7 +334,7 @@ void start_game(int8_t slot)
                     }
                     break;
                 case STORE_BUY_ARMOR_MEDIUM:
-                    if(state.boss_defeated.boss3 == 1)
+                    if (state.boss_defeated.boss3 == 1)
                     {
                         if (score->money < 80)
                         {
@@ -386,7 +387,7 @@ void start_game(int8_t slot)
                     }
                     break;
                 case STORE_BUY_POWER_LOW:
-                    if(state.boss_defeated.boss2 == 1)
+                    if (state.boss_defeated.boss2 == 1)
                     {
                         if (score->money < 40)
                         {
@@ -439,7 +440,7 @@ void start_game(int8_t slot)
                     }
                     break;
                 case STORE_BUY_POWER_MEDIUM:
-                    if(state.boss_defeated.boss3 == 1)
+                    if (state.boss_defeated.boss3 == 1)
                     {
                         if (score->money < 90)
                         {
@@ -670,7 +671,7 @@ void start_game(int8_t slot)
                         flash();
                         Sleep(milliseconds);
                         int dmg;
-                        if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 70)
+                        if (battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 70)
                         {
                             static const char *text[] = {"¡EL ENEMIGO SE HA DEFENDIDO!                    "};
                             standby_window_t *stdby_w =
@@ -690,7 +691,7 @@ void start_game(int8_t slot)
                         {
                             dmg =
                                 (int)(player->damage_multiplier * player->base_damage * 10 * (rand() % 51 + 80) / 100);
-                            battle->turn = false;
+                            battle->turn   = false;
                             success_action = true;
                             Sleep(1000);
                         }
@@ -890,7 +891,7 @@ void start_game(int8_t slot)
                     standby_window_t *stdby_w =
                         create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                     draw_standby_window(stdby_w, 5);
-                    first_pass = false;
+                    first_pass      = false;
                     standby_wnds[0] = stdby_w;
                 }
                 // BOOM muerto
@@ -1192,7 +1193,6 @@ void start_game(int8_t slot)
                         battle->rematch = state.boss_defeated.boss4 == 1;
                         break;
                 }
-
             }
         }
     }

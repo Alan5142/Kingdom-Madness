@@ -7,9 +7,10 @@ add_subdirectory(lib/PDCurses)
 add_subdirectory(lib/SFML)
 add_subdirectory(lib/SoundBinding)
 
+
 add_definitions(-DPDC_WIDE=1)
-add_executable(progra WIN32 main.c
-        src/start_screen.c
+
+add_library(KingdomMadness src/start_screen.c
         src/game/game.c
         src/game/health.c
         src/game/inventory.c
@@ -20,7 +21,7 @@ add_executable(progra WIN32 main.c
         src/utils/sprite.c
         src/utils/render_graph.c
         src/game/store.c
-        src/game/game_data.c
+        src/game_data.c
         src/player/player.c
         src/game/store_menu.c
         src/load_game.c
@@ -30,17 +31,20 @@ add_executable(progra WIN32 main.c
         src/utils/standby_window.c
         src/utils/sound_manager.c
         src/game/magic.c
-        src/game/save_game.c
-        )
+        src/game/save_game.c)
 
-target_link_libraries(progra PDcurses winmm sound_binding shlwapi)
-target_include_directories(progra PRIVATE include)
+target_include_directories(KingdomMadness PUBLIC include)
+target_link_libraries(KingdomMadness PDcurses sound_binding shlwapi)
+
+add_executable(progra WIN32 main.c)
+
+target_link_libraries(progra winmm KingdomMadness)
 
 if (MSVC)
-    target_compile_options(progra PRIVATE /W4 /WX /wd4005 /wd4244 -D_CRT_SECURE_NO_WARNINGS)
+    target_compile_options(KingdomMadness PRIVATE /W4 /WX /wd4005 /wd4244 -D_CRT_SECURE_NO_WARNINGS)
     target_link_options(progra PRIVATE /subsystem:windows /ENTRY:mainCRTStartup)
 else ()
-    target_compile_options(progra PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(KingdomMadness PRIVATE -Wall -Wextra -pedantic -Werror)
 endif ()
 
 add_custom_target(copy_resources
@@ -49,3 +53,5 @@ add_custom_target(copy_resources
 
 add_dependencies(progra copy_resources)
 set_target_properties(progra PROPERTIES OUTPUT_NAME "Kingdom Madness")
+
+add_subdirectory(tools)

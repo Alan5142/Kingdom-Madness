@@ -2,7 +2,7 @@
 // Created by alan2 on 30/03/2020.
 //
 
-#include "game/game_state.h"
+#include "game_state.h"
 #include <stdlib.h>
 #define WIN32_LEAN_AND_MEAN // <- para no incluir todo
 #include <shlwapi.h>
