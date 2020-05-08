@@ -171,11 +171,11 @@ void start_game(int8_t slot)
     }
 
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
-#if !defined(NDEBUG)
+#if !defined(NDEBUG)&&0
     state.boss_defeated.boss1 = 1;
-    state.boss_defeated.boss2 = 0;
-    state.boss_defeated.boss3 = 0;
-    state.boss_defeated.boss4 = 0;
+    state.boss_defeated.boss2 = 1;
+    state.boss_defeated.boss3 = 1;
+    state.boss_defeated.boss4 = 1;
 #endif
 
     player_health->health = player_health->max_health;
@@ -621,7 +621,7 @@ void start_game(int8_t slot)
                         flash();
                         Sleep(milliseconds);
                         int dmg;
-                        if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 90)
+                        if(battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 70)
                         {
                             static const char *text[] = {"¡EL ENEMIGO SE HA DEFENDIDO!                    "};
                             standby_window_t *stdby_w =
@@ -638,6 +638,7 @@ void start_game(int8_t slot)
                         {
                             dmg = (int)(player->damage_multiplier * player->base_damage * 10 * (rand() % 51 + 80) / 100);
                             battle->turn = false;
+                            success_action = true;
                             Sleep(1000);
                         }
                         *monster_health -= dmg;
@@ -684,7 +685,7 @@ void start_game(int8_t slot)
                                 flash();
                                 Sleep(milliseconds / 100);
                             }
-                            if (battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 90)
+                            if (battle->enemy.enemy_number == 3 && rand() % 100 + 1 > 70)
                             {
                                 static const char *text[] = {"¡EL ENEMIGO SE HA DEFENDIDO!                    "};
                                 standby_window_t *stdby_w =
@@ -800,8 +801,7 @@ void start_game(int8_t slot)
                 }
                 if (*monster_health > 0)
                 {
-                    if ((success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC)) ||
-                        choice == BATTLE_ATTACK)
+                    if (success_action && (choice == BATTLE_ITEM || choice == BATTLE_MAGIC || choice == BATTLE_ATTACK))
                     {
                         static const char *text[] = {"¡EL ENEMIGO ATACA!                              "};
                         standby_window_t *stdby_w =
@@ -1093,7 +1093,7 @@ void start_game(int8_t slot)
             {
                 if (player->location_x == 0 && player->location_y == 0)
                 {
-                    sprintf(music_path, "combate_final/%d.ogg", rand() % 5 + 1);
+                    sprintf(music_path, "combate_final/%d.ogg", rand() % 6 + 1);
                 }
                 else
                 {
