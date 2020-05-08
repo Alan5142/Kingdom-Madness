@@ -297,7 +297,7 @@ void start_game(int8_t slot)
                         play_sound(sound);
                         add_sound_to_manager(sound);
                         static const char *text[] = {"Para desbloquear este objeto          ",
-                                                     "antes necesitad derrotar al GHOST.    ",
+                                                     "antes necesitad derrotar a Airin.     ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
@@ -372,7 +372,7 @@ void start_game(int8_t slot)
                         play_sound(sound);
                         add_sound_to_manager(sound);
                         static const char *text[] = {"Para desbloquear este objeto          ",
-                                                     "antes necesitad derrotar al REAPER.   ",
+                                                     "antes necesitad derrotar a Gatric.    ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
@@ -425,7 +425,7 @@ void start_game(int8_t slot)
                         play_sound(sound);
                         add_sound_to_manager(sound);
                         static const char *text[] = {"Para desbloquear este objeto          ",
-                                                     "antes necesitad derrotar al GHOST.    ",
+                                                     "antes necesitad derrotar a Airin.     ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
@@ -477,7 +477,7 @@ void start_game(int8_t slot)
                         play_sound(sound);
                         add_sound_to_manager(sound);
                         static const char *text[] = {"Para desbloquear este objeto          ",
-                                                     "antes necesitad derrotar al REAPER.   ",
+                                                     "antes necesitad derrotar a Gatric.    ",
                                                      "(Presione alguna tecla para continuar)"};
                         standby_window_t *stdby_w =
                             create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
@@ -1180,8 +1180,18 @@ void start_game(int8_t slot)
     }
 
     // clean resources
+    for (int i = 0; i < 3; i++)
+    {
+        if (standby_wnds[i] != NULL)
+        {
+            delete_standby_window(standby_wnds[i]);
+            standby_wnds[i] = NULL;
+        }
+    }
     destroy_finished_sounds();
     delete_pause_menu(menu);
+    delete_store(store);
+    delete_battle_screen(battle);
     delete_render_graph(render_graph);
     delete_player(player);
     stop_sound(music);
