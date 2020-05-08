@@ -4,9 +4,9 @@
 #ifndef PROGRA_INVENTORY_H
 #define PROGRA_INVENTORY_H
 
-#include <stdint.h>
-#include <stdbool.h>
 #include "health.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 typedef enum  item_resource_e
 {
@@ -21,6 +21,7 @@ typedef enum  item_resource_e
 
 
 struct player_t;
+struct game_state_t;
 
 typedef void(*item_effect_c)(struct player_t *);
 
@@ -50,6 +51,6 @@ bool process_inventory_input(struct player_t *player, int key);
 
 const char *get_item_display_name(item_resource_e item);
 
-bool add_item(inventory_t *inventory, item_resource_e item);
+bool add_item(inventory_t *inventory, item_resource_e item, struct game_state_t* state);
 
 #endif //PROGRA_INVENTORY_H

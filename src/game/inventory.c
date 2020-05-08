@@ -3,6 +3,7 @@
 //
 #include "game/inventory.h"
 #include "game/player/player.h"
+#include "game/game_state.h"
 #include <sound.h>
 #include <stdlib.h>
 #include <utils/colors.h>
@@ -10,8 +11,6 @@
 #include <utils/sound_manager.h>
 #include <utils/sprite.h>
 #include <windows.h>
-
-const uint8_t MAX_ITEMS = 10;
 
 void on_start_draw_potion_low(WINDOW *window, int16_t y, int16_t x, int character_to_draw)
 {
@@ -352,15 +351,25 @@ item_t create_item(item_resource_e item)
     return result;
 }
 
-bool add_item(inventory_t *inventory, item_resource_e item)
+bool add_item(inventory_t *inventory, item_resource_e item, struct game_state_t* state)
 {
-    sound_t sound = create_sound();
-    char rand_n[64];
-    sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
-    sound_open_file(sound, rand_n);
-    set_loop(sound, false);
-    play_sound(sound);
-    add_sound_to_manager(sound);
+    uint8_t MAX_ITEMS;
+    if(state->boss_defeated.boss1 == 1)
+    {
+        MAX_ITEMS = 2;
+    }
+    if(state->boss_defeated.boss2 == 3)
+    {
+        MAX_ITEMS = 2;
+    }
+    if(state->boss_defeated.boss2 == 4)
+    {
+        MAX_ITEMS = 2;
+    }
+    if(state->boss_defeated.boss2 == 10)
+    {
+        MAX_ITEMS = 2;
+    }
     for (int i = 0; i <= 1; i++)
     {
         for (int j = 0; j <= 2; j++)
