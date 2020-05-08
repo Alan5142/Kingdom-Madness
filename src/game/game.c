@@ -585,6 +585,7 @@ void start_game(int8_t slot)
                         (state.boss_defeated.boss4 == 1) ? &battle->enemy.max_health : &battle->enemy.health;
                     break;
             }
+
             if (battle->turn == true)
             {
                 // jugador muerto :(
@@ -1175,6 +1176,23 @@ void start_game(int8_t slot)
                 battle->turn                     = false;
                 defended                         = false;
                 player_health->health            = player_health->max_health;
+
+                switch (battle->enemy.enemy_number)
+                {
+                    case 0:
+                        battle->rematch = state.boss_defeated.boss1 == 1;
+                        break;
+                    case 1:
+                        battle->rematch = state.boss_defeated.boss2 == 1;
+                        break;
+                    case 2:
+                        battle->rematch = state.boss_defeated.boss3 == 1;
+                        break;
+                    case 3:
+                        battle->rematch = state.boss_defeated.boss4 == 1;
+                        break;
+                }
+
             }
         }
     }
