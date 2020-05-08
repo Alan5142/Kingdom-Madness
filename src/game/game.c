@@ -548,7 +548,10 @@ void start_game(int8_t slot)
                     hp_cost     = hp_cost == 0 ? 100 : (300 * hp_cost);
 
                     if ((player_health->max_health / 10 >= 10 && !state.boss_defeated.boss2) ||
-                        (player_health->max_health / 10 >= 15 && !state.boss_defeated.boss3))
+                        (player_health->max_health / 10 >= 13 && !state.boss_defeated.boss3) ||
+                        (player_health->max_health / 10 >= 15 && !state.boss_defeated.boss4) ||
+                        player_health->max_health / 10 >= 17
+                        )
                     {
                         static const char *text[] = {"No tenemos existencias, vuelve mas tarde",
                                                      "(  Presione alguna tecla para continuar  )"};
@@ -1013,7 +1016,8 @@ void start_game(int8_t slot)
                     player->health->health                     = player->health->max_health;
                     player->magic->magic                       = 100;
                     player_health->health_node->require_redraw = true;
-                    score->money += battle->enemy.reward;
+
+                    score->money += (monster_health == &battle->enemy.max_health) ? battle->enemy.reward * 1.3f : battle->enemy.reward;
                     score->score_node->require_redraw = true;
                     score->score += battle->enemy.reward * 5;
                     continue;
