@@ -24,8 +24,7 @@ create_standby_window(const char **text_list,
 
 void delete_standby_window(standby_window_t *window)
 {
-    wclear(window->window);
-    wrefresh(window->window);
+    delwin(window->window);
     free(window);
 }
 
