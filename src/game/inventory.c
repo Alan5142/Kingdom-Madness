@@ -3,7 +3,7 @@
 //
 #include "game/inventory.h"
 #include "game/player/player.h"
-#include "game/game_state.h"
+#include "game_state.h"
 #include <sound.h>
 #include <stdlib.h>
 #include <utils/colors.h>
