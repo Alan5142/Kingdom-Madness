@@ -31,7 +31,7 @@ enemy_t create_enemy(int pos_x, int pos_y)
     else if(pos_x == 1 && pos_y == 1)
     {
         enemy.health = 200;
-        enemy.max_health = 370;
+        enemy.max_health = 450;
         enemy.power = 9;
         enemy.reward = 130;
         enemy.sprite = "enemy/GHOST.txt";

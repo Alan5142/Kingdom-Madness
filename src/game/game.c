@@ -174,9 +174,9 @@ void start_game(int8_t slot)
     // para no lidiar con derrotar a los jefes cuando estemos en pruebas :)
 #if !defined(NDEBUG) && 0
     state.boss_defeated.boss1 = 1;
-    state.boss_defeated.boss2 = 1;
-    state.boss_defeated.boss3 = 1;
-    state.boss_defeated.boss4 = 1;
+    state.boss_defeated.boss2 = 0;
+    state.boss_defeated.boss3 = 0;
+    state.boss_defeated.boss4 = 0;
 #endif
 
     player_health->health = player_health->max_health;
@@ -248,8 +248,15 @@ void start_game(int8_t slot)
                     else
                     {
                         score->score_node->require_redraw = true;
-                        if (add_item(player->inventory, ITEM_POTION_LOW))
+                        if (add_item(player->inventory, ITEM_POTION_LOW, &state))
                         {
+                            sound_t sound = create_sound();
+                            char rand_n[64];
+                            sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+                            sound_open_file(sound, rand_n);
+                            set_loop(sound, false);
+                            play_sound(sound);
+                            add_sound_to_manager(sound);
                             score->money -= 50;
                         }
                         else
@@ -278,8 +285,15 @@ void start_game(int8_t slot)
                         else
                         {
                             score->score_node->require_redraw = true;
-                            if (add_item(player->inventory, ITEM_POTION_MEDIUM))
+                            if (add_item(player->inventory, ITEM_POTION_MEDIUM, &state))
                             {
+                                sound_t sound = create_sound();
+                                char rand_n[64];
+                                sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+                                sound_open_file(sound, rand_n);
+                                set_loop(sound, false);
+                                play_sound(sound);
+                                add_sound_to_manager(sound);
                                 score->money -= 100;
                             }
                             else
@@ -328,9 +342,22 @@ void start_game(int8_t slot)
                     }
                     else
                     {
-                        score->money -= 40;
-                        add_item(player->inventory, ITEM_ARMOR_LOW);
                         score->score_node->require_redraw = true;
+                        if (add_item(player->inventory, ITEM_ARMOR_LOW, &state))
+                        {
+                            sound_t sound = create_sound();
+                            char rand_n[64];
+                            sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+                            sound_open_file(sound, rand_n);
+                            set_loop(sound, false);
+                            play_sound(sound);
+                            add_sound_to_manager(sound);
+                            score->money -= 40;
+                        }
+                        else
+                        {
+                            cannot_add_item(game, store_screen);
+                        }
                     }
                     break;
                 case STORE_BUY_ARMOR_MEDIUM:
@@ -353,8 +380,15 @@ void start_game(int8_t slot)
                         else
                         {
                             score->score_node->require_redraw = true;
-                            if (add_item(player->inventory, ITEM_ARMOR_MEDIUM))
+                            if (add_item(player->inventory, ITEM_ARMOR_MEDIUM, &state))
                             {
+                                sound_t sound = create_sound();
+                                char rand_n[64];
+                                sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+                                sound_open_file(sound, rand_n);
+                                set_loop(sound, false);
+                                play_sound(sound);
+                                add_sound_to_manager(sound);
                                 score->money -= 80;
                             }
                             else
@@ -406,8 +440,15 @@ void start_game(int8_t slot)
                         else
                         {
                             score->score_node->require_redraw = true;
-                            if (add_item(player->inventory, ITEM_POWER_LOW))
+                            if (add_item(player->inventory, ITEM_POWER_LOW, &state))
                             {
+                                sound_t sound = create_sound();
+                                char rand_n[64];
+                                sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+                                sound_open_file(sound, rand_n);
+                                set_loop(sound, false);
+                                play_sound(sound);
+                                add_sound_to_manager(sound);
                                 score->money -= 40;
                             }
                             else
@@ -458,8 +499,16 @@ void start_game(int8_t slot)
                         }
                         else
                         {
-                            if (add_item(player->inventory, ITEM_POWER_MEDIUM))
+                            score->score_node->require_redraw = true;
+                            if (add_item(player->inventory, ITEM_POWER_MEDIUM, &state))
                             {
+                                sound_t sound = create_sound();
+                                char rand_n[64];
+                                sprintf(rand_n, "sfx/coins/coin_%d.ogg", rand() % 3 + 1);
+                                sound_open_file(sound, rand_n);
+                                set_loop(sound, false);
+                                play_sound(sound);
+                                add_sound_to_manager(sound);
                                 score->money -= 90;
                             }
                             else
@@ -678,6 +727,7 @@ void start_game(int8_t slot)
                                 create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                             draw_standby_window(stdby_w, 0x0D);
                             dmg = (int)(player->damage_multiplier * player->base_damage * 5 * (rand() % 51 + 80) / 100);
+                            player->magic->magic += 2;
                             Sleep(1000);
                             static const char *text2[] = {"¡TU TURNO!                                      "};
                             standby_window_t *stdby_w2 =
@@ -745,6 +795,7 @@ void start_game(int8_t slot)
                                 standby_window_t *stdby_w =
                                     create_standby_window(text, 1, game, 3, 50, getmaxy(battle->window) - 7, 16);
                                 draw_standby_window(stdby_w, 0x0D);
+                                player->magic->magic += 2;
                                 *monster_health -= (int)(player->damage_multiplier * player->base_damage * 9 *
                                                          (rand() % 51 + 80) / 100);
                                 Sleep(1000);
@@ -1218,9 +1269,11 @@ void start_game(int8_t slot)
 }
 void cannot_add_item(WINDOW *game, render_node_t *store_screen)
 {
-    static const char *text[] = {"Inventario lleno                      ", "(Presione alguna tecla para continuar)"};
+    static const char *text[] = {"No puedes llevar más de este objeto   ",
+                                 "el momento...                         ",
+                                 "(Presione alguna tecla para continuar)"};
     standby_window_t *stdby_w =
-        create_standby_window(text, 2, game, 4, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
+        create_standby_window(text, 3, game, 5, 40, getmaxy(game) / 2 + 8, getmaxx(game) / 2 + 5);
     draw_standby_window(stdby_w, 0x0D);
     while (!getch())
         ;
